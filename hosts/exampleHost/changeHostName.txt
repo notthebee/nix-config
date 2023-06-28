@@ -1,0 +1,45 @@
+How to set hostname for a host.
+
+This repo is structured in a way that allows managing multiple hosts
+in a single repo.  As a consequence of this, hostname appears in
+several different places and should be updated together if needed.
+
+The entry point of this repo is ``flake.nix'' file, which takes a
+revision of the nixpkgs as input then gives an attribute set (attrset)
+as output:
+
+  {
+    nixosConfigurations = {
+      exampleHost = { ... };
+      host2 = { ... };
+      host3 = { ... };
+      ...
+    };
+  }
+
+
+The hostname specified here inside nixosConfigurations attrset is used
+when ``nix command'' is invoked, as in
+
+  nixos-install --flake ./#exampleHost
+
+The hostname also appears in the filesystem path of the per-host
+configuration file:
+
+  hosts/exampleHost/default.nix
+  hosts/host2/default.nix
+  ...
+
+Finally, the hostname is specified in the zfs-boot.networking.hostName
+option inside per-host configuration file at
+hosts/exampleHost/default.nix:
+
+  zfs-boot.networking.hostName = "exampleHost";
+
+If the value of this option is identical to the name of
+nixosConfigurations.<hostname> attrset, all subsequent invocations of
+``nix command'' will default to this hostname, i.e. the command:
+
+  nixos-rebuild boot
+
+will automatically append ``#hostName'' when evaluating the flake.
