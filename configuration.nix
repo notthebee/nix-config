@@ -17,8 +17,13 @@
   networking.networkmanager.enable = false;
 
   users.users = {
+    notthebee = {
+      isNormalUser = true;
+      initialHashedPassword = "$6$tuU72Dtl7DhP1Hui$9pNeY3AkjcVNv90Nvo9EjTAaxizPaPMp0Cq0n4j89NvB3BWcya2hwNZ1i7OZ1neSLlQGGjXdg3fjn/X7aWIui0";
+      openssh.authorizedKeys.keys = [ "sshKey_placeholder" ];
+      };
     root = {
-      initialHashedPassword = "rootHash_placeholder";
+      initialHashedPassword = "$6$tuU72Dtl7DhP1Hui$9pNeY3AkjcVNv90Nvo9EjTAaxizPaPMp0Cq0n4j89NvB3BWcya2hwNZ1i7OZ1neSLlQGGjXdg3fjn/X7aWIui0";
       openssh.authorizedKeys.keys = [ "sshKey_placeholder" ];
     };
   };
@@ -36,7 +41,7 @@
 
   services.openssh = {
     enable = lib.mkDefault true;
-    settings = { PasswordAuthentication = lib.mkDefault false; };
+    settings = { PasswordAuthentication = lib.mkDefault true; };
   };
 
   boot.zfs.forceImportRoot = lib.mkDefault false;

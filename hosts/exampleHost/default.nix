@@ -9,9 +9,9 @@
   zfs-root = {
     boot = {
       devNodes = "/dev/disk/by-id/";
-      bootDevices = [ "bootDevices_placeholder" ];
+      bootDevices = [  "ata-QEMU_HARDDISK_vdisk1" ];
       immutable = false;
-      availableKernelModules = [ "kernelModules_placeholder" ];
+      availableKernelModules = [  "uhci_hcd" "ehci_pci" "ahci" "sd_mod" "sr_mod" ];
       removableEfi = true;
       kernelParams = [ ];
       sshUnlock = {
@@ -24,7 +24,7 @@
       # read changeHostName.txt file.
       hostName = "exampleHost";
       timeZone = "Europe/Berlin";
-      hostId = "abcd1234";
+      hostId = "0730ae50";
     };
   };
 
