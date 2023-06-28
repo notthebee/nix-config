@@ -1,6 +1,6 @@
-{ my-config, zfs-root, inputs, pkgs, lib, ... }: {
+{ zfs-root, my-config, inputs, pkgs, lib, ... }: {
   # load module config to top-level configuration
-  inherit my-config zfs-root;
+  inherit zfs-root my-config;
 
   # Let 'nixos-version --json' know about the Git revision
   # of this flake.
@@ -17,48 +17,53 @@
   networking.networkmanager.enable = false;
 
   users.users = {
-    notthebee = {
-      isNormalUser = true;
-      initialHashedPassword = "$6$tuU72Dtl7DhP1Hui$9pNeY3AkjcVNv90Nvo9EjTAaxizPaPMp0Cq0n4j89NvB3BWcya2hwNZ1i7OZ1neSLlQGGjXdg3fjn/X7aWIui0";
-      openssh.authorizedKeys.keys = [ "sshKey_placeholder" ];
-      };
     root = {
       initialHashedPassword = "$6$tuU72Dtl7DhP1Hui$9pNeY3AkjcVNv90Nvo9EjTAaxizPaPMp0Cq0n4j89NvB3BWcya2hwNZ1i7OZ1neSLlQGGjXdg3fjn/X7aWIui0";
       openssh.authorizedKeys.keys = [ "sshKey_placeholder" ];
     };
   };
+  services.openssh = {
+    enable = lib.mkDefault true;
+    settings = {
+    PasswordAuthentication = lib.mkDefault false; 
+    PermitRootLogin = "no";
+    };
+    ports = [ 69 ];
+  };
+
+  nix.settings.experimental-features = lib.mkDefault [ "nix-command" "flakes" ];
+
+  programs.git.enable = true;
+  programs.mosh.enable = true;
+  programs.htop.enable = true;
 
   programs.neovim = {
     enable = true;
     viAlias = true;
     vimAlias = true;
+    defaultEditor = true;
   };
-
-  imports = [
-    "${inputs.nixpkgs}/nixos/modules/installer/scan/not-detected.nix"
-    # "${inputs.nixpkgs}/nixos/modules/profiles/qemu-guest.nix"
-  ];
-
-  services.openssh = {
-    enable = lib.mkDefault true;
-    settings = { PasswordAuthentication = lib.mkDefault true; };
-  };
-
-  boot.zfs.forceImportRoot = lib.mkDefault false;
-
-  nix.settings.experimental-features = lib.mkDefault [ "nix-command" "flakes" ];
-
-  programs.git.enable = true;
 
   security = {
-    doas.enable = lib.mkDefault true;
-    sudo.enable = lib.mkDefault false;
+    doas.enable = lib.mkDefault false;
+    sudo = {
+      enable = lib.mkDefault true;
+      wheelNeedsPassword = lib.mkDefault false;
+    };
   };
 
   environment.systemPackages = builtins.attrValues {
     inherit (pkgs)
-      mg # emacs-like editor
-      jq # other programs
+      iperf3
+      exa
+      neofetch
+      tmux
+      rsync
+      iotop
+      ncdu
+      nmap
+      jq
+      ripgrep
     ;
   };
 }

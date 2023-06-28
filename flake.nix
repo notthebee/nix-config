@@ -1,27 +1,32 @@
 {
-  inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-23.05";
-  ## after reboot, you can track rolling release by using
-  #inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+  inputs = {
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-23.05";
+  };
 
   outputs = { self, nixpkgs }@inputs:
     let
+      local-overlays = import ./overlays;
+      overlays = with inputs;
+        [
+          local-overlays
+        ];
       lib = nixpkgs.lib;
-      mkHost = { my-config, zfs-root, pkgs, system, ... }:
+      mkHost = { zfs-root, my-config, pkgs, system, ... }:
         lib.nixosSystem {
           inherit system;
           modules = [
             ./modules
             (import ./configuration.nix {
-              inherit my-config zfs-root inputs pkgs lib;
+              inherit zfs-root my-config inputs pkgs lib;
             })
           ];
         };
     in {
-      nixosConfigurations = {
-        exampleHost = let
+    nixosConfigurations = {
+        emily = let
           system = "x86_64-linux";
-          pkgs = nixpkgs.legacyPackages.${system};
-        in mkHost (import ./hosts/exampleHost { inherit system pkgs; });
+          pkgs = nixpkgs.legacyPackages.x86_64-linux;
+        in mkHost (import ./machines/emily { inherit system pkgs; });
       };
     };
 }

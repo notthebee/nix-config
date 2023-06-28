@@ -1,9 +1,3 @@
-# #
-##
-##  per-host configuration for exampleHost
-##
-##
-
 { system, pkgs, ... }: {
   inherit pkgs system;
   zfs-root = {
@@ -27,11 +21,6 @@
       hostId = "0730ae50";
     };
   };
-
-  # To add more options to per-host configuration, you can create a
-  # custom configuration module, then add it here.
   my-config = {
-    # Enable custom gnome desktop on exampleHost
-    template.desktop.gnome.enable = false;
   };
 }
