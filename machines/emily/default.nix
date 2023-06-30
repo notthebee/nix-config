@@ -1,5 +1,4 @@
-{ system, pkgs, ... }: {
-  inherit pkgs system;
+{ config, pkgs, ... }: {
   boot.zfs.forceImportRoot = true;
   zfs-root = {
     boot = {
@@ -22,7 +21,8 @@
       hostId = "0730ae51";
     };
   };
-  my-config = {
-  template.desktop.gnome.enable = false;
-  };
+
+
+  virtualisation.docker.storageDriver = "zfs";
+
 }

@@ -1,13 +1,5 @@
-{ zfs-root, my-config, inputs, pkgs, lib, ... }: {
+{ config, pkgs, lib, ... }: {
   # load module config to top-level configuration
-  inherit zfs-root my-config;
-
-  # Let 'nixos-version --json' know about the Git revision
-  # of this flake.
-  system.configurationRevision = if (inputs.self ? rev) then
-    inputs.self.rev
-  else
-    throw "refuse to build: git tree is dirty";
 
   system.stateVersion = "22.11";
 
