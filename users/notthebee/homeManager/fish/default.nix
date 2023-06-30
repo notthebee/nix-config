@@ -63,6 +63,7 @@ if test -n "$exa_unavailable"
 end
       '';
     shellAliases = {
+        na = "pushd /etc/nixos; sudo nixos-rebuild switch && nix run home-manager -- switch --flake /etc/nixos; popd";
 	la = "ls -lha";
         df = "df -h";
 	du = "du -ch";
@@ -73,7 +74,6 @@ end
         pip_upgrade_all = "pip3 list --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1 | xargs -n1 pip3 install -U";
       };
     shellAbbrs = {
-      na = "pushd /etc/nixos && git add . && git commit -m 'update config' & sudo nixos-rebuild switch && nix run home-manager -- switch --flake /etc/nixos && popd";
       mkdir = "mkdir -p";
     };
 
