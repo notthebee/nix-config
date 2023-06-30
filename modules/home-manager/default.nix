@@ -8,6 +8,6 @@ in
 {
   imports = [
     (import "${home-manager}/nixos")
-    (import ../../users/notthebee/common.nix)
+    (import ../../users/notthebee/default.nix)
   ];
 }
