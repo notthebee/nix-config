@@ -1,6 +1,6 @@
 { config, pkgs, ... }: {
 
-  nix.trustedUsers = [ "notthebee" ];
+  nix.settings.trusted-users = [ "notthebee" ];
 
   users.users = {
     notthebee = {

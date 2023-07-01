@@ -2,7 +2,7 @@
 
   imports = [
   ./fish/default.nix
-  inputs.nixvim.homeManagerModules.nixvim
+  ./nvim/default.nix
   ./git/default.nix
   ];
   nixpkgs = {
@@ -23,7 +23,6 @@
 
 
 programs.home-manager.enable = true;
-programs.nixvim.enable = true;
 
 systemd.user.startServices = "sd-switch";
 home.stateVersion = "23.05";
