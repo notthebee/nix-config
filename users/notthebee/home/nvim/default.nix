@@ -1,15 +1,35 @@
-{ inputs, lib, config, pkgs, ... }: {
+{ inputs, lib, config, pkgs, ... }: 
+let 
+coc = import ./coc.nix;
+in
+{
   imports = [ inputs.nixvim.homeManagerModules.nixvim
   ];
 
 
   home.packages = with pkgs; [
     figlet
+      nodejs
+      rnix-lsp
+      ansible-language-server
+      ansible-lint
+      ansible 
+      (python39.withPackages(ps: with ps; [ 
+                            setuptools
+                            pip 
+      ]))
   ];
+
   programs.neovim = {
     viAlias = true;
     vimAlias = true;
     defaultEditor = true;
+  };
+
+  xdg.configFile = {
+    "nvim/coc-settings.json" = {
+      source = builtins.toFile "coc-settings.json" (builtins.toJSON (coc { homeDir = config.xdg.configHome; }));
+    };
   };
 
   programs.nixvim = {
@@ -22,20 +42,18 @@
       telescope = {
         enable = true;
       };
-      neo-tree = {
-        enable = true;
-        closeIfLastWindow = true;
-        window.mappings = {
-         h = "close_node";
-         l = "open";
-         sf = "close_window";
-        };
-      };
       fugitive = {
         enable = true;
       };
       lualine = {
         enable = true;
+        sections = {
+        lualine_x = [
+      "diagnostics"
+      "encoding"
+      "filetype"
+          ];
+        };
       };
       startify = {
         enable = true;
@@ -53,21 +71,16 @@
       gitgutter = {
         enable = true;
       };
-
       surround = {
         enable = true;
       };
-
       nvim-colorizer = {
         enable = true;
-      };
-      lsp = {
-        enable = true;
-        servers.bashls.enable = true;
       };
     };
     extraPlugins = with pkgs.vimPlugins; [
       ansible-vim
+        coc-nvim
     ];
     options = {
       number = true;
@@ -123,18 +136,85 @@
       command = "set nocul";
     }
     ];
+    highlight = {
+      BufferCurrent = {
+        fg = "#eceff4";
+        bg = "#434c5e";
+        bold = true;
+      };
+      BufferCurrentMod = {
+        fg = "#ebcb8b";
+        bg = "#434c5e";
+        bold = true;
+      };
+      BufferCurrentSign = {
+        fg = "#4c566a";
+        bg = "#4c566a";
+      };
+      BufferCurrentTarget = {
+        bg = "#434c5e";
+      };
+      BufferInactive = {
+        fg = "#4c566a";
+        bg = "none";
+      };
+      BufferInactiveSign = {
+        fg = "#4c566a";
+        bg = "none";
+      };
+      BufferInactiveMod = {
+        fg = "#ebcb8b";
+        bg = "none";
+      };
+      BufferTabpageFill = {
+        fg = "#4c566a";
+        bg = "none";
+      };
+    };
+    globals = {
+    coc_filetype_map = {
+      "yaml.ansible" = "ansible";
+      };
+      coc_global_extensions = [
+        "coc-explorer"
+          "@yaegassy/coc-ansible"
+      ];
+    };
     extraConfigLua = ''
       vim.api.nvim_set_hl(0, "MatchParen", { bg="#4c566a", fg="#88c0d0" })
       '';
     extraConfigVim = ''
-      filetype plugin indent on
-      set termguicolors
-      '';
+      function CheckForExplorer()
+      if CocAction('runCommand', 'explorer.getNodeInfo', 'closest') isnot# v:null
+        CocCommand explorer --toggle
+          endif
+          endfunction
+          '';
     maps = {
       normal."sf" = {
         silent = true;
-        action = "<cmd>NeoTreeRevealToggle<CR>";
+        action = "<cmd>CocCommand explorer<cr>";
+      };
+      normal.";r" = {
+        silent = true;
+        action = ":call CheckForExplorer()<CR> <cmd>lua require('telescope.builtin').live_grep()<cr>";
+      };
+      normal.";f" = {
+        silent = true;
+        action = ":call CheckForExplorer()<CR> <cmd>lua require('telescope.builtin').find_files()<cr>";
+      };
+      normal.";b" = {
+        silent = true;
+        action = ":call CheckForExplorer()<CR> <cmd>lua require('telescope.builtin').file_browser()<cr>";
+      };
+      normal."\\" = {
+        silent = true;
+        action = ":call CheckForExplorer()<CR> <cmd>Telescope buffers<cr>";
+      };
+      normal.";;" = {
+        silent = true;
+        action = ":call CheckForExplorer()<CR> <cmd>Telescope help_tags<cr>";
       };
     };
   };
-                                    }
+}

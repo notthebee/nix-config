@@ -8,14 +8,6 @@
 
   outputs = { self, nixpkgs, home-manager, nixvim, ... }@inputs: {
 
-    homeConfigurations = {
-    notthebee = home-manager.lib.homeManagerConfiguration {
-    pkgs = nixpkgs.legacyPackages.x86_64-linux;
-    extraSpecialArgs = { inherit inputs; };
-    modules = [ ./users/notthebee/homeManager ];
-    };
-    };
-
     nixosConfigurations = {
     emily = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
@@ -26,9 +18,15 @@
       ./machines/emily
       
       # User-specific configurations
-      ./users/notthebee/system.nix
+      ./users/notthebee
+      home-manager.nixosModules.home-manager
+        {
+          home-manager.useGlobalPkgs = false; # makes hm use nixos's pkgs value
+          home-manager.extraSpecialArgs = { inherit inputs; }; # allows access to flake inputs in hm modules
+          home-manager.users.notthebee.imports = [ ./users/notthebee/home ];
+      }
       ];
     };
-    };
   };
+};
 }

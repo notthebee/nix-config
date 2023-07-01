@@ -13,4 +13,5 @@
       };
 
       programs.fish.enable = true;
+
 }

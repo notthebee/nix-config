@@ -43,9 +43,7 @@
       wheelNeedsPassword = lib.mkDefault false;
     };
   };
-
-  environment.systemPackages = builtins.attrValues {
-    inherit (pkgs)
+  environment.systemPackages = with pkgs; [
       iperf3
       exa
       neofetch
@@ -56,6 +54,5 @@
       nmap
       jq
       ripgrep
-    ;
-  };
+    ];
 }
