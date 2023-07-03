@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }: {
+{ inputs, config, pkgs, lib, ... }: {
   # load module config to top-level configuration
 
   system.stateVersion = "22.11";
@@ -8,9 +8,11 @@
   networking.useDHCP = true;
   networking.networkmanager.enable = false;
 
+
+
   users.users = {
     root = {
-      initialHashedPassword = "$6$tuU72Dtl7DhP1Hui$9pNeY3AkjcVNv90Nvo9EjTAaxizPaPMp0Cq0n4j89NvB3BWcya2hwNZ1i7OZ1neSLlQGGjXdg3fjn/X7aWIui0";
+      initialHashedPassword = config.age.secrets.hashedUserPassword.path;
       openssh.authorizedKeys.keys = [ "sshKey_placeholder" ];
     };
   };
@@ -54,5 +56,7 @@
       nmap
       jq
       ripgrep
+      sqlite
+      inputs.agenix.packages."${system}".default 
     ];
 }

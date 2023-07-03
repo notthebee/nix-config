@@ -2,11 +2,17 @@
 
   nix.settings.trusted-users = [ "notthebee" ];
 
+  age.identityPaths = ["/home/notthebee/.ssh/notthebee"];
+
+  age.secrets.hashedUserPassword = {
+    file = ../../secrets/hashedUserPassword.age;
+  };
+
   users.users = {
     notthebee = {
       shell = pkgs.fish;
       isNormalUser = true;
-      initialHashedPassword = "$6$tuU72Dtl7DhP1Hui$9pNeY3AkjcVNv90Nvo9EjTAaxizPaPMp0Cq0n4j89NvB3BWcya2hwNZ1i7OZ1neSLlQGGjXdg3fjn/X7aWIui0";
+      passwordFile = config.age.secrets.hashedUserPassword.path;
       extraGroups = [ "wheel" "users" "video" "docker" ];
       openssh.authorizedKeys.keys = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKGUGMUo1dRl9xoDlMxQGb8dNSY+6xiEpbZWAu6FAbWw moe@notthebe.ee" ];
       };

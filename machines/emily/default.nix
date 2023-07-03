@@ -22,6 +22,10 @@
     };
   };
 
+  imports = [
+    ./filesystems
+    ];
+
 
   virtualisation.docker.storageDriver = "zfs";
 

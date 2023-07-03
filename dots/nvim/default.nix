@@ -12,12 +12,6 @@ in
       nodejs
       rnix-lsp
       ansible-language-server
-      ansible-lint
-      ansible 
-      (python39.withPackages(ps: with ps; [ 
-                            setuptools
-                            pip 
-      ]))
   ];
 
   programs.neovim = {
@@ -48,10 +42,10 @@ in
       lualine = {
         enable = true;
         sections = {
-        lualine_x = [
-      "diagnostics"
-      "encoding"
-      "filetype"
+          lualine_x = [
+            "diagnostics"
+            "encoding"
+            "filetype"
           ];
         };
       };
@@ -80,7 +74,8 @@ in
     };
     extraPlugins = with pkgs.vimPlugins; [
       ansible-vim
-        coc-nvim
+      coc-nvim
+      suda-vim
     ];
     options = {
       number = true;
@@ -172,13 +167,15 @@ in
       };
     };
     globals = {
-    coc_filetype_map = {
-      "yaml.ansible" = "ansible";
+      coc_filetype_map = {
+        "yaml.ansible" = "ansible";
       };
       coc_global_extensions = [
         "coc-explorer"
-          "@yaegassy/coc-ansible"
+        "@yaegassy/coc-ansible"
       ];
+      suda_smart_edit = 1;
+      "suda#nopass" = 1;
     };
     extraConfigLua = ''
       vim.api.nvim_set_hl(0, "MatchParen", { bg="#4c566a", fg="#88c0d0" })

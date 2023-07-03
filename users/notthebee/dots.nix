@@ -18,11 +18,27 @@ in
 
   home = home;
 
+
+
   imports = [
-      ./fish/default.nix
-      ./nvim/default.nix
-      ./git/default.nix
+      ../../dots/fish/default.nix
+      ../../dots/nvim/default.nix
+      ../../dots/neofetch/default.nix
+      ./packages.nix
   ];
+
+  programs.nix-index =
+  {
+    enable = true;
+    enableFishIntegration = true;
+  };
+
+
+  programs.git = {
+    enable = true;
+    userName  = "Wolfgang";
+    userEmail = "mail@weirdrescue.pw";
+  };
 
   programs.home-manager.enable = true;
 

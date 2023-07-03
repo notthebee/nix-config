@@ -4,26 +4,34 @@
   nixvim.url = "github:pta2002/nixvim/nixos-23.05";
   home-manager.url = "github:nix-community/home-manager/release-23.05";
   home-manager.inputs.nixpkgs.follows = "nixpkgs";
+  agenix.url = "github:ryantm/agenix";
+  agenix.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { self, nixpkgs, home-manager, nixvim, ... }@inputs: {
+  outputs = { self, nixpkgs, home-manager, nixvim, agenix, ... }@inputs: {
 
     nixosConfigurations = {
     emily = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
+      specialArgs = { inherit inputs; };
       modules = [ 
       ./machines
+      ./secrets
       ./modules/zfs-root
       ./modules/docker
       ./machines/emily
-      
+      agenix.nixosModules.default
+
       # User-specific configurations
       ./users/notthebee
       home-manager.nixosModules.home-manager
         {
           home-manager.useGlobalPkgs = false; # makes hm use nixos's pkgs value
           home-manager.extraSpecialArgs = { inherit inputs; }; # allows access to flake inputs in hm modules
-          home-manager.users.notthebee.imports = [ ./users/notthebee/home ];
+          home-manager.users.notthebee.imports = [ 
+          ./users/notthebee/dots.nix 
+          ];
+          home-manager.backupFileExtension = "bak";
       }
       ];
     };
