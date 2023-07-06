@@ -9,13 +9,11 @@
       removableEfi = true;
       kernelParams = [ ];
       sshUnlock = {
-        # read sshUnlock.txt file.
         enable = false;
         authorizedKeys = [ ];
       };
     };
     networking = {
-      # read changeHostName.txt file.
       hostName = "emily";
       timeZone = "Europe/Berlin";
       hostId = "0730ae51";
@@ -24,9 +22,10 @@
 
   imports = [
     ./filesystems
-    ];
+      ./shares
+  ];
 
 
   virtualisation.docker.storageDriver = "zfs";
 
-}
+                       }

@@ -1,4 +1,10 @@
-{ inputs, config, pkgs, lib, ... }: {
+{ inputs, config, pkgs, lib, ... }: 
+let 
+  mergerfs_root = "/mnt/user";
+  cache_root = "/mnt/cache";
+  docker_root = "/var/opt/docker";
+in
+{
   # load module config to top-level configuration
 
   system.stateVersion = "22.11";
@@ -7,8 +13,6 @@
   # You can configure networking with "nmtui" command.
   networking.useDHCP = true;
   networking.networkmanager.enable = false;
-
-
 
   users.users = {
     root = {

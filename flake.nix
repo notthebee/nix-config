@@ -18,6 +18,7 @@
       ./machines
       ./secrets
       ./modules/zfs-root
+      ./modules/email
       ./modules/docker
       ./machines/emily
       agenix.nixosModules.default
