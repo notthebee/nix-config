@@ -2,7 +2,6 @@
 let
 notify = pkgs.writeShellScriptBin "notify" ''
 #!/bin/bash
-set -x
 api_key=$(cat ${config.age.secrets.telegramApiKey.path})
 channel_id=$(cat ${config.age.secrets.telegramChannelId.path})
 severity=$1
@@ -20,6 +19,7 @@ esac
 text="
 $emoji <b>$title</b>
 Exit status: <b>$severity</b>
+$(date)
 
 <code>$message</code>
 "
