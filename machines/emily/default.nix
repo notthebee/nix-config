@@ -1,4 +1,4 @@
-{ config, pkgs, ... }: {
+{ inputs, config, pkgs, ... }: {
   boot.zfs.forceImportRoot = true;
   zfs-root = {
     boot = {
@@ -22,10 +22,9 @@
 
   imports = [
     ./filesystems
-      ./shares
+    ./shares
   ];
 
 
   virtualisation.docker.storageDriver = "zfs";
-
-                       }
+}

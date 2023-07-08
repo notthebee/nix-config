@@ -41,7 +41,7 @@ users.share = {
 
 users.users.notthebee.extraGroups = ["share"];
 
-systemd.tmpfiles.rules = map (x: "d ${x.path} 0770 share share - -") (lib.attrValues smb.share_list);
+systemd.tmpfiles.rules = map (x: "d ${x.path} 0775 share share - -") (lib.attrValues smb.share_list) ++ ["d /mnt 0775 share share - -"];
 
 system.activationScripts.samba_user_create = ''
     smb_password=$(cat "${config.age.secrets.sambaPassword.path}")

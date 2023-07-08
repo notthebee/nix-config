@@ -22,6 +22,7 @@
           ./machines
           ./modules/zfs-root
           ./modules/email
+          ./modules/tg-notify
           ./modules/docker
           ./machines/emily
           ./secrets
