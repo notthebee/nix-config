@@ -25,19 +25,31 @@ systemd.network.enable = true;
 systemd.services.snapraid-sync = {
   serviceConfig = {
     RestrictNamespaces = lib.mkForce false;
+    RestrictAddressFamilies = lib.mkForce "";
   };
+  postStop = ''
+  if [[ $SERVICE_RESULT =~ "success" ]]; then
+    message=""
+  else
+    message=$(journalctl --unit=snapraid-sync.service -n 20 --no-pager)
+  fi
+  /run/current-system/sw/bin/notify "$SERVICE_RESULT" "Snapraid Sync" "$message"
+  '';
 };
 
 systemd.services.snapraid-scrub = {
-  unitConfig = {
-    After = lib.mkForce "snapraid-sync.service nss-lookup.target";
-  };
   serviceConfig = {
     RestrictAddressFamilies = lib.mkForce "";
   };
   postStop = ''
-  /run/current-system/sw/bin/bash -c '/run/current-system/sw/bin/notify "$SERVICE_RESULT" "Snapraid Scrub" "$(journalctl --unit=snapraid-sync.service -n 20 --no-pager)"'
+  if [[ $SERVICE_RESULT =~ "success" ]]; then
+    message=""
+  else
+    message=$(journalctl --unit=snapraid-scrub.service -n 20 --no-pager)
+  fi
+  /run/current-system/sw/bin/notify "$SERVICE_RESULT" "Snapraid Scrub" "$message"
   '';
 };
+
 
 }
