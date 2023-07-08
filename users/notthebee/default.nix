@@ -1,5 +1,5 @@
-{ config, pkgs, ... }: {
-
+{ config, pkgs, ... }: 
+{
   nix.settings.trusted-users = [ "notthebee" ];
 
   age.identityPaths = ["/home/notthebee/.ssh/notthebee"];
@@ -27,6 +27,7 @@
       passwordeval = "cat ${config.email.smtpPasswordPath}";
     };
   };
+
 
   users = {
     users = {

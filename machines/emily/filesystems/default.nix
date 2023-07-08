@@ -1,5 +1,10 @@
-{ config, lib, pkgs, ... }:
+{ inputs, config, lib, pkgs, ... }:
 {
+
+  imports = [
+    ./snapraid.nix
+  ];
+
   environment.systemPackages = with pkgs; [
     gptfdisk
     xfsprogs
@@ -7,55 +12,6 @@
     snapraid
     mergerfs
   ];
-
-
-  # SnapRaid
-  environment.etc = 
-  { "snapraid.conf" =
-  { source = ./snapraid.conf;
-    mode = "0644";
-    };
-   "snapraid-runner.conf" = 
-  { text = ''
-    [snapraid]
-    executable = ${pkgs.snapraid}/bin/snapraid
-    config = /etc/snapraid.conf
-    deletethreshold = 250
-    touch = true
-
-    [logging]
-    file = snapraid.log
-    maxsize = 5000
-    [email]
-    sendon = success,error
-    short = true
-    subject = [SnapRAID] Status Report:
-    from = ${config.email.fromAddress}
-    to = ${config.email.toAddress}
-    maxsize = 500
-
-    [smtp]
-    host = ${config.email.smtpServer}
-    port = 465
-    tls = true
-    user = ${config.email.smtpUsername}
-    password = @smtpPassword@
-
-    [scrub]
-    ; set to true to run scrub after sync
-    enabled = true
-    percentage = 22
-    older-than = 8
-    '';
-    mode = "0644";
-    };
-    };
-
-  system.activationScripts."snapraid.smtpPassword" = ''
-    smtpPassword=$(cat "${config.email.smtpPasswordPath}")
-    ${pkgs.gnused}/bin/sed -i "s#@smtpPassword@#$smtpPassword#" /etc/snapraid-runner.conf;
-  '';
-
   fileSystems."/" =
   { device = "rpool/nixos/root";
     fsType = "zfs";
@@ -113,6 +69,7 @@
         "fsname=mergerfs_slow"
         "uid=994"
         "gid=993"
+        "umask=002"
     ];
     fsType = "fuse.mergerfs";
   };
@@ -130,6 +87,7 @@
         "fsname=user"
         "uid=994"
         "gid=993"
+        "umask=002"
     ];
     fsType = "fuse.mergerfs";
   };
