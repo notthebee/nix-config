@@ -35,4 +35,10 @@
   age.secrets.invoiceNinja = lib.mkDefault {
       file = ./invoiceNinja.age;
     };
+  age.secrets.radarrApiKey = lib.mkDefault {
+      file = ./radarrApiKey.age;
+    };
+  age.secrets.sonarrApiKey = lib.mkDefault {
+      file = ./sonarrApiKey.age;
+    };
 }

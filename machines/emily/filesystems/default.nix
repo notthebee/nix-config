@@ -60,7 +60,6 @@
   fileSystems.${vars.slowArray} = 
   { device = "/mnt/data*";
     options = [
-      "direct_io"
         "defaults"
         "allow_other"
         "moveonenospc=1"
@@ -78,7 +77,6 @@
   { device = "/mnt/cache:/mnt/mergerfs_slow";
     options = [
       "category.create=lfs"
-        "direct_io"
         "defaults"
         "allow_other"
         "moveonenospc=1"

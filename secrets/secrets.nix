@@ -11,4 +11,6 @@ in {
   "wireguardCredentials.age".publicKeys = allKeys;
   "cloudflareDnsApiCredentials.age".publicKeys = allKeys;
   "invoiceNinja.age".publicKeys = allKeys;
+  "radarrApiKey.age".publicKeys = allKeys;
+  "sonarrApiKey.age".publicKeys = allKeys;
 }

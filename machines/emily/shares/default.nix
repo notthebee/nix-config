@@ -1,4 +1,4 @@
-{ users, config, lib, ...}:
+{ users, pkgs, config, lib, ...}:
 let
 
   smb = {
@@ -38,6 +38,8 @@ users.share = {
   group = "share";
 };
 };
+
+environment.systemPackages = [ config.services.samba.package ];
 
 users.users.notthebee.extraGroups = ["share"];
 

@@ -10,9 +10,13 @@
       url = "github:ryantm/agenix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    recyclarr-configs = {
+      url = "github:recyclarr/config-templates";
+      flake = false;
+    };
   };
 
-  outputs = { self, nixpkgs, home-manager, nixvim, agenix, ... }@inputs: {
+  outputs = { self, nixpkgs, home-manager, recyclarr-configs, nixvim, agenix, ... }@inputs: {
 
     nixosConfigurations = {
       emily = nixpkgs.lib.nixosSystem {
@@ -33,11 +37,13 @@
           agenix.nixosModules.default
 
           # Services and applications
+          ./services/homepage
           ./services/invoiceninja
           ./services/traefik
           ./services/deluge
           ./services/arr
           ./services/jellyfin
+          ./services/vaultwarden
 
           # User-specific configurations
           ./users/notthebee
