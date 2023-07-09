@@ -30,14 +30,14 @@ in
           # HTTPS
           "--entrypoints.websecure.http.tls=true"
           "--entrypoints.websecure.http.tls.certResolver=letsencrypt"
-          "--entrypoints.websecure.http.tls.domains[0].main=goose.party"
-          "--entrypoints.websecure.http.tls.domains[0].sans=*.goose.party"
+          "--entrypoints.websecure.http.tls.domains[0].main=${vars.domainName}"
+          "--entrypoints.websecure.http.tls.domains[0].sans=*.${vars.domainName}"
 
         ];
         extraOptions = [
           # Proxying Traefik itslef
           "-l=traefik.enable=true"
-          "-l=traefik.http.routers.traefik.rule=Host(`${vars.domainName}`)"
+          "-l=traefik.http.routers.traefik.rule=Host(`proxy.${vars.domainName}`)"
           "-l=traefik.http.services.traefik.loadbalancer.server.port=8080"
         ];
         ports = [

@@ -44,9 +44,8 @@ in {
     };
     partitionScheme = mkOption {
       default = {
-        biosBoot = "-part5";
+        biosBoot = "-part4";
         efiBoot = "-part1";
-        swap = "-part4";
         bootPool = "-part2";
         rootPool = "-part3";
       };
@@ -100,9 +99,7 @@ in {
         efiSystemPartitions =
           (map (diskName: diskName + cfg.partitionScheme.efiBoot)
             cfg.bootDevices);
-        swapPartitions =
-          (map (diskName: diskName + cfg.partitionScheme.swap) cfg.bootDevices);
-      };
+	};
       boot = {
         kernelPackages =
           mkDefault config.boot.zfs.package.latestCompatibleLinuxPackages;
@@ -122,7 +119,8 @@ in {
           generationsDir.copyKernels = true;
           grub = {
             enable = true;
-            devices = (map (diskName: cfg.devNodes + diskName) cfg.bootDevices);
+            #devices = (map (diskName: cfg.devNodes + diskName) cfg.bootDevices);
+            device = "nodev";
             efiInstallAsRemovable = cfg.removableEfi;
             copyKernels = true;
             efiSupport = true;

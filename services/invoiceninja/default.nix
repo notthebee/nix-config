@@ -14,7 +14,7 @@ directories = [
         image = "maihai/invoiceninja_v5";
         autoStart = true;
         extraOptions = [
-          # Proxying Traefik itslef
+          "--network=container:invoiceninja-db"
           "-l=traefik.enable=true"
           "-l=traefik.http.routers.invoiceninja.rule=Host(`invoice.${vars.domainName}`)"
         ];
@@ -45,9 +45,6 @@ directories = [
       invoiceninja-db = {
         image = "mariadb";     
         autoStart = true;
-        extraOptions = [
-          "--network=container:invoiceninja"
-        ];
         volumes = [
           "${vars.serviceConfigRoot}/invoiceninja/mariadb:/var/lib/mysql"
         ];

@@ -182,11 +182,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1688566749,
-        "narHash": "sha256-3Og5xbNk1qncLWl2zrrL/k80UqRI/nEGPEbzz306Izk=",
+        "lastModified": 1688868408,
+        "narHash": "sha256-RR9N5XTAxSBhK8MCvLq9uxfdkd7etC//seVXldy0k48=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "c99004f75fd28cc10b9d2e01f51a412d768269c8",
+        "rev": "510d721ce097150ae3b80f84b04b13b039186571",
         "type": "github"
       },
       "original": {
@@ -302,12 +302,29 @@
         "type": "github"
       }
     },
+    "recyclarr-configs": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1688504126,
+        "narHash": "sha256-d4k6lNcMPGZpuCwN2a+axuLB4iG7NCvLoqzFDYOtwmw=",
+        "owner": "recyclarr",
+        "repo": "config-templates",
+        "rev": "e0eb683c02c8abfa59cbe7a69b9ccc9e7178112c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "recyclarr",
+        "repo": "config-templates",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "agenix": "agenix",
         "home-manager": "home-manager_2",
         "nixpkgs": "nixpkgs",
-        "nixvim": "nixvim"
+        "nixvim": "nixvim",
+        "recyclarr-configs": "recyclarr-configs"
       }
     },
     "systems": {

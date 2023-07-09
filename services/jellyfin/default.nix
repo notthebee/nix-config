@@ -14,8 +14,8 @@ in
         image = "lscr.io/linuxserver/jellyfin";
         autoStart = true;
         extraOptions = [
-          #"--device=/dev/dri/renderD128:/dev/dri/renderD128"
-          #"--device=/dev/dri/card0:/dev/dri/card0"
+          "--device=/dev/dri/renderD128:/dev/dri/renderD128"
+          "--device=/dev/dri/card0:/dev/dri/card0"
           "-l=traefik.enable=true"
           "-l=traefik.http.routers.jellyfin.rule=Host(`jellyfin.${vars.domainName}`)"
           "-l=traefik.http.services.jellyfin.loadbalancer.server.port=8096"
@@ -25,6 +25,7 @@ in
           "${vars.mainArray}/Media/Movies:/data/movies"
           "${vars.serviceConfigRoot}/jellyfin:/config"
         ];
+        ports = [ "8096:8096" ];
         environment = {
           TZ = vars.timeZone;
           PUID = "994";

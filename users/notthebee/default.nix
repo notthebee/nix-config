@@ -2,7 +2,7 @@
 {
   nix.settings.trusted-users = [ "notthebee" ];
 
-  age.identityPaths = ["/home/notthebee/.ssh/notthebee"];
+  age.identityPaths = ["/home/notthebee/.ssh/id_ed25519"];
 
   age.secrets.hashedUserPassword = {
     file = ../../secrets/hashedUserPassword.age;
@@ -11,8 +11,8 @@
   email = {
     fromAddress = "moe@notthebe.ee";
     toAddress = "server_announcements@mailbox.org";
-    smtpServer = "in-v3.mailjet.com";
-    smtpUsername = "223523d7459305169d27b42cb595385e";
+    smtpServer = "email-smtp.eu-west-1.amazonaws.com";
+    smtpUsername = "AKIAYYXVLL34J7LSXFZF";
     smtpPasswordPath = config.age.secrets.smtpPassword.path;
   };
 

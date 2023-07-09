@@ -4,7 +4,7 @@
   zfs-root = {
     boot = {
       devNodes = "/dev/disk/by-id/";
-      bootDevices = [  "ata-QEMU_HARDDISK_vdisk1" ];
+      bootDevices = [  "ata-Samsung_SSD_870_EVO_250GB_S6PENL0T902873K" ];
       immutable = false;
       availableKernelModules = [  "uhci_hcd" "ehci_pci" "ahci" "sd_mod" "sr_mod" ];
       removableEfi = true;
@@ -26,6 +26,16 @@
     ./shares 
   ];
 
+  powerManagement.powertop.enable = true;
+
+  systemd.services.hd-idle = {
+    description = "HD spin down daemon";
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "simple";
+      ExecStart = "${pkgs.hd-idle}/bin/hd-idle -i 900";
+    };
+  };
 
   virtualisation.docker.storageDriver = "zfs";
 }
