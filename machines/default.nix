@@ -1,9 +1,4 @@
 { inputs, config, pkgs, lib, ... }: 
-let 
-  mergerfs_root = "/mnt/user";
-  cache_root = "/mnt/cache";
-  docker_root = "/var/opt/docker";
-in
 {
   # load module config to top-level configuration
 
