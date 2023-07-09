@@ -7,6 +7,10 @@ directories = [
 ];
   in
 {
+systemd.services.podman-invoiceninja-db = {
+  requires = [ "podman-invoiceninja.service" ];
+  after = [ "podman-invoiceninja.service" ];
+};
   systemd.tmpfiles.rules = map (x: "d ${x} 0775 share share - -") directories;
   virtualisation.oci-containers = {
     containers = {
@@ -14,7 +18,6 @@ directories = [
         image = "maihai/invoiceninja_v5";
         autoStart = true;
         extraOptions = [
-          "--network=container:invoiceninja-db"
           "-l=traefik.enable=true"
           "-l=traefik.http.routers.invoiceninja.rule=Host(`invoice.${vars.domainName}`)"
         ];
@@ -47,6 +50,9 @@ directories = [
         autoStart = true;
         volumes = [
           "${vars.serviceConfigRoot}/invoiceninja/mariadb:/var/lib/mysql"
+        ];
+        extraOptions = [
+          "--network=container:invoiceninja"
         ];
         environmentFiles = [
           config.age.secrets.invoiceNinja.path
