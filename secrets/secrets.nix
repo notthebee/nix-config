@@ -8,4 +8,7 @@ in {
   "smtpPassword.age".publicKeys = allKeys;
   "telegramChannelId.age".publicKeys = allKeys;
   "telegramApiKey.age".publicKeys = allKeys;
+  "wireguardCredentials.age".publicKeys = allKeys;
+  "cloudflareDnsApiCredentials.age".publicKeys = allKeys;
+  "invoiceNinja.age".publicKeys = allKeys;
 }

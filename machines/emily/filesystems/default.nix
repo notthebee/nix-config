@@ -1,4 +1,4 @@
-{ inputs, config, lib, pkgs, ... }:
+{ inputs, config, lib, vars, pkgs, ... }:
 {
 
   imports = [
@@ -37,7 +37,7 @@
     fsType = "zfs";
   };
 
-  fileSystems."/mnt/cache" =
+  fileSystems.${vars.cacheArray} =
   { device = "cache";
     fsType = "zfs";
   };
@@ -57,7 +57,7 @@
     fsType = "xfs";
   };
 
-  fileSystems."/mnt/mergerfs_slow" = 
+  fileSystems.${vars.slowArray} = 
   { device = "/mnt/data*";
     options = [
       "direct_io"
@@ -74,7 +74,7 @@
     fsType = "fuse.mergerfs";
   };
 
-  fileSystems."/mnt/user" = 
+  fileSystems.${vars.mainArray} = 
   { device = "/mnt/cache:/mnt/mergerfs_slow";
     options = [
       "category.create=lfs"

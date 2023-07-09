@@ -29,4 +29,18 @@ in {
       type = types.path;
     };
     };
+
+  config.programs.msmtp = {
+    enable = true;
+    accounts.default = {
+      auth = true;
+      host = config.email.smtpServer;
+      from = config.email.fromAddress;
+      user = config.email.smtpUsername;
+      tls = true;
+      passwordeval = "cat ${config.email.smtpPasswordPath}";
+    };
+  };
+
+
   }

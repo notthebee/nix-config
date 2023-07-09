@@ -20,7 +20,6 @@ snapraid = {
       "/Media/"
   ];
 };
-systemd.network.enable = true;
 
 systemd.services.snapraid-sync = {
   serviceConfig = {

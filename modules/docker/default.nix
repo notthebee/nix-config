@@ -1,6 +1,15 @@
 { config, pkgs, ... }: {
-virtualisation.docker = {
+
+virtualisation.podman = {
   enable = true;
-  storageDriver = "zfs";
+  dockerCompat = true;
+  extraPackages = [ pkgs.zfs ];
+  defaultNetwork.settings = {
+    dns_enabled = true;
+    };
   };
-  }
+virtualisation.oci-containers = {
+backend = "podman";
+};
+networking.firewall.interfaces.podman0.allowedUDPPorts = [ 53 ];
+}

@@ -17,8 +17,12 @@
     nixosConfigurations = {
       emily = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
-        specialArgs = { inherit inputs; };
+        specialArgs = { 
+        inherit inputs; 
+        vars = import ./machines/emily/vars.nix;
+        };
         modules = [ 
+          # Base configuration and modules
           ./machines
           ./modules/zfs-root
           ./modules/email
@@ -27,6 +31,13 @@
           ./machines/emily
           ./secrets
           agenix.nixosModules.default
+
+          # Services and applications
+          ./services/invoiceninja
+          ./services/traefik
+          ./services/deluge
+          ./services/arr
+          ./services/jellyfin
 
           # User-specific configurations
           ./users/notthebee
