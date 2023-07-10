@@ -44,18 +44,33 @@
       wheelNeedsPassword = lib.mkDefault false;
     };
   };
+  
+  systemd.services.glances = {
+    after = [ "network.target" ];
+    script = "${pkgs.glances}/bin/glances -w";
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Restart = "on-abort";
+      RemainAfterExit = "yes";
+    };
+  };
+
+  networking.firewall.allowedTCPPorts = [ 61208 ];
+
   environment.systemPackages = with pkgs; [
-      iperf3
-      exa
-      neofetch
-      tmux
-      rsync
-      iotop
-      ncdu
-      nmap
-      jq
-      ripgrep
-      sqlite
-      inputs.agenix.packages."${system}".default 
-    ];
+    glances
+    iperf3
+    exa
+    neofetch
+    tmux
+    rsync
+    iotop
+    hddtemp
+    ncdu
+    nmap
+    jq
+    ripgrep
+    sqlite
+    inputs.agenix.packages."${system}".default 
+  ];
 }

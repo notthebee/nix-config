@@ -40,7 +40,7 @@
           agenix.nixosModules.default
 
           # Services and applications
-          ./services/homepage
+          ./services/dashy
           ./services/invoiceninja
           ./services/traefik
           ./services/deluge
