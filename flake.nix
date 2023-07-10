@@ -27,11 +27,14 @@
         };
         modules = [ 
           # Base configuration and modules
-          ./machines
           ./modules/zfs-root
           ./modules/email
           ./modules/tg-notify
-          ./modules/docker
+          ./modules/podman
+          ./modules/tailscale
+
+          # Import the machine config + secrets
+          ./machines
           ./machines/emily
           ./secrets
           agenix.nixosModules.default
