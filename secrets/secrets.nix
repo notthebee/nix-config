@@ -13,4 +13,5 @@ in {
   "invoiceNinja.age".publicKeys = allKeys;
   "radarrApiKey.age".publicKeys = allKeys;
   "sonarrApiKey.age".publicKeys = allKeys;
+  "tailscaleAuthKey.age".publicKeys = allKeys;
 }
