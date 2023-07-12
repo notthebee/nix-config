@@ -41,6 +41,22 @@
     };
   };
 
+  networking = {
+  interfaces = {
+    enp1s0f0.ipv4 = {
+    addresses = [{
+      address = "10.4.0.2";
+      prefixLength = 24;
+    }];
+    routes = [{
+      address = "10.4.0.0";
+      prefixLength = 24;
+      via = "10.4.0.1";
+    }];
+  };
+};
+};
+
   virtualisation.docker.storageDriver = "zfs";
 
 }
