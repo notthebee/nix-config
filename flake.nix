@@ -44,6 +44,7 @@
           # Services and applications
           ./services/dashy
           ./services/invoiceninja
+          ./services/paperless-ngx
           ./services/traefik
           ./services/deluge
           ./services/arr
