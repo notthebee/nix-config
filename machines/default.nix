@@ -55,7 +55,12 @@
     };
   };
 
-  networking.firewall.allowedTCPPorts = [ 61208 ];
+  networking.firewall.allowedTCPPorts = [ 
+  61208 # glances
+  5201 # iperf3 
+  ];
+
+  networking.firewall.allowPing = true;
 
   environment.systemPackages = with pkgs; [
     pciutils
