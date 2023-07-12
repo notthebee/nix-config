@@ -32,7 +32,7 @@ systemd.services.snapraid-sync = {
   else
     message=$(journalctl --unit=snapraid-sync.service -n 20 --no-pager)
   fi
-  /run/current-system/sw/bin/notify "$SERVICE_RESULT" "Snapraid Sync" "$message"
+  /run/current-system/sw/bin/notify -s "$SERVICE_RESULT" -t "Snapraid Sync" -m "$message"
   '';
 };
 
@@ -46,7 +46,7 @@ systemd.services.snapraid-scrub = {
   else
     message=$(journalctl --unit=snapraid-scrub.service -n 20 --no-pager)
   fi
-  /run/current-system/sw/bin/notify "$SERVICE_RESULT" "Snapraid Scrub" "$message"
+  /run/current-system/sw/bin/notify -s "$SERVICE_RESULT" -t "Snapraid Scrub" -m "$message"
   '';
 };
 
