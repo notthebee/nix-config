@@ -44,4 +44,7 @@
   age.secrets.tailscaleAuthKey = lib.mkDefault {
       file = ./sonarrApiKey.age;
     };
+  age.secrets.paperless = lib.mkDefault {
+      file = ./paperless.age;
+    };
 }

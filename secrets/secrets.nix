@@ -14,4 +14,5 @@ in {
   "radarrApiKey.age".publicKeys = allKeys;
   "sonarrApiKey.age".publicKeys = allKeys;
   "tailscaleAuthKey.age".publicKeys = allKeys;
+  "paperless.age".publicKeys = allKeys;
 }
