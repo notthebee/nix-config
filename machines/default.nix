@@ -58,6 +58,8 @@
   networking.firewall.allowedTCPPorts = [ 61208 ];
 
   environment.systemPackages = with pkgs; [
+    pciutils
+    cpufrequtils
     glances
     iperf3
     exa
@@ -65,7 +67,10 @@
     tmux
     rsync
     iotop
+    hdparm
+    hd-idle
     hddtemp
+    smartmontools
     ncdu
     nmap
     jq

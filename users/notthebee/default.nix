@@ -1,4 +1,4 @@
-{ config, pkgs, ... }: 
+{ config, pkgs, lib, ... }: 
 {
   nix.settings.trusted-users = [ "notthebee" ];
 

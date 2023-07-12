@@ -14,9 +14,11 @@
       url = "github:recyclarr/config-templates";
       flake = false;
     };
+    nix-index-database.url = "github:Mic92/nix-index-database";
+    nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { self, nixpkgs, home-manager, recyclarr-configs, nixvim, agenix, ... }@inputs: {
+  outputs = { self, nixpkgs, home-manager, recyclarr-configs, nixvim, nix-index-database, agenix, ... }@inputs: {
 
     nixosConfigurations = {
       emily = nixpkgs.lib.nixosSystem {
@@ -27,11 +29,11 @@
         };
         modules = [ 
           # Base configuration and modules
+          ./modules/aspm-tuning
           ./modules/zfs-root
           ./modules/email
           ./modules/tg-notify
           ./modules/podman
-          ./modules/tailscale
 
           # Import the machine config + secrets
           ./machines
@@ -55,6 +57,7 @@
             home-manager.useGlobalPkgs = false; # makes hm use nixos's pkgs value
             home-manager.extraSpecialArgs = { inherit inputs; }; # allows access to flake inputs in hm modules
             home-manager.users.notthebee.imports = [ 
+              nix-index-database.hmModules.nix-index
               ./users/notthebee/dots.nix 
             ];
             home-manager.backupFileExtension = "bak";

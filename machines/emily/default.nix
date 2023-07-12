@@ -8,7 +8,11 @@
       immutable = false;
       availableKernelModules = [  "uhci_hcd" "ehci_pci" "ahci" "sd_mod" "sr_mod" ];
       removableEfi = true;
-      kernelParams = [ ];
+      kernelParams = [ 
+      "pcie_aspm=force"
+      "i915.enable_guc=2" 
+      "enable_fbc=1" 
+      ];
       sshUnlock = {
         enable = false;
         authorizedKeys = [ ];
@@ -38,4 +42,5 @@
   };
 
   virtualisation.docker.storageDriver = "zfs";
+
 }

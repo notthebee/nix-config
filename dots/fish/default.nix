@@ -63,6 +63,7 @@
                           end
                           '';
                 shellAliases = {
+                  aspm = "sudo lspci -vv | awk '/ASPM/{print $0}' RS= | grep --color -P '(^[a-z0-9:.]+|ASPM )'";
                   na = "pushd /etc/nixos; sudo nixos-rebuild switch && nix run home-manager -- switch --flake /etc/nixos; popd";
                   la = "ls -lha";
                   df = "df -h";
