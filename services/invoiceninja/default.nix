@@ -12,6 +12,7 @@ systemd.services.podman-invoiceninja-db = {
   after = [ "podman-invoiceninja.service" ];
 };
   systemd.tmpfiles.rules = map (x: "d ${x} 0775 share share - -") directories;
+
   virtualisation.oci-containers = {
     containers = {
       invoiceninja = {
