@@ -41,7 +41,6 @@ directories = [
         "-l=traefik.http.services.deluge.loadbalancer.server.port=8112"
         "--device=/dev/net/tun:/dev/net/tun"
         ];
-        ports = [ "8112:8112" ];
         environmentFiles = [
           config.age.secrets.wireguardCredentials.path
         ];

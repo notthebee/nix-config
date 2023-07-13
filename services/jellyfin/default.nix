@@ -25,7 +25,6 @@ in
           "${vars.mainArray}/Media/Movies:/data/movies"
           "${vars.serviceConfigRoot}/jellyfin:/config"
         ];
-        ports = [ "8096:8096" ];
         environment = {
           TZ = vars.timeZone;
           PUID = "994";
