@@ -62,6 +62,8 @@
 
   networking.firewall.allowPing = true;
 
+  system.autoUpgrade.enable = true; 
+
   environment.systemPackages = with pkgs; [
     pciutils
     cpufrequtils
