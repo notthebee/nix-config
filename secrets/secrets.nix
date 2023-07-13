@@ -15,4 +15,6 @@ in {
   "sonarrApiKey.age".publicKeys = allKeys;
   "tailscaleAuthKey.age".publicKeys = allKeys;
   "paperless.age".publicKeys = allKeys;
+  "resticBackblazeEnv.age".publicKeys = allKeys;
+  "resticPassword.age".publicKeys = allKeys;
 }

@@ -47,4 +47,10 @@
   age.secrets.paperless = lib.mkDefault {
       file = ./paperless.age;
     };
+  age.secrets.resticBackblazeEnv = lib.mkDefault {
+      file = ./resticBackblazeEnv.age;
+    };
+  age.secrets.resticPassword = lib.mkDefault {
+      file = ./resticPassword.age;
+    };
 }

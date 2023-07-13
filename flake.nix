@@ -34,6 +34,7 @@
           ./modules/email
           ./modules/tg-notify
           ./modules/podman
+          ./modules/appdata-backup
 
           # Import the machine config + secrets
           ./machines

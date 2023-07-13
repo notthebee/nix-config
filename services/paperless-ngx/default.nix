@@ -16,12 +16,33 @@ in
     requires = [ "podman-paperless.service" ];
     after = [ "podman-paperless.service" ];
   };
-  podman-paperless-webdav = {
-    requires = [ "podman-paperless.service" ];
-    after = [ "podman-paperless.service" ];
-  };
   };
   systemd.tmpfiles.rules = map (x: "d ${x} 0775 share share - -") directories;
+
+  networking.firewall.allowedTCPPorts = [ 
+  8080 # WebDAV
+  ];
+
+  services.webdav = {
+  enable = true;
+  user = "share";
+  group = "share";
+  environmentFile = config.age.secrets.paperless.path;
+  settings = {
+    address = "0.0.0.0";
+    port = 8080;
+    scope = "${vars.mainArray}/Documents/Paperless/Import";
+    modify = true;
+    auth = true;
+    users = [
+      {
+        username = "notthebee";
+        password = "{env}PASSWORD";
+      }
+    ];
+  };
+  };
+
   virtualisation.oci-containers = {
     containers = {
       paperless = {
@@ -62,31 +83,6 @@ in
         extraOptions = [
           "--network=container:paperless"
         ];
-      };
-    paperless-webdav = {
-        image = "apachewebdav/apachewebdav";
-        autoStart = true;
-        extraOptions = [
-          "-l=traefik.enable=true"
-          "-l=traefik.http.routers.paperless-upload.rule=Host(`paperless-upload.${vars.domainName}`)"
-          "-l=traefik.http.services.paperless-upload.loadbalancer.server.port=80"
-        ];
-        volumes = [
-          "${vars.mainArray}/Documents/Paperless:/var/lib/dav/data"
-        ];
-        environmentFiles = [
-          config.age.secrets.paperless.path
-        ];
-        environment = {
-          SERVER_NAMES = "paperless-upload.${vars.domainName}";
-          LOCATION = "/";
-          AUTH_TYPE = "Basic";
-          REALM = "Paperless Upload Login";
-          USERNAME = "notthebee";
-          PGID = "994";
-          PUID = "993";
-          UMASK = "002";
-        };
       };
 };
 };
