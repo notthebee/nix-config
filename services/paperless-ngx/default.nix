@@ -38,7 +38,7 @@ in
           "${vars.mainArray}/Documents/Paperless/Documents:/usr/src/paperless/media"
           "${vars.mainArray}/Documents/Paperless/Import:/usr/src/paperless/consume"
           "${vars.mainArray}/Documents/Paperless/Export:/usr/src/paperless/export"
-          "${vars.serviceConfigRoot}/paperless:/usr/src/paperless/data"
+          "${vars.serviceConfigRoot}/paperless/data:/usr/src/paperless/data"
         ];
         environmentFiles = [
           config.age.secrets.paperless.path
@@ -48,7 +48,7 @@ in
           PAPERLESS_OCR_LANGUAGE = "deu";
           PAPERLESS_FILENAME_FORMAT = "{created}-{correspondent}-{title}";
           PAPERLESS_TIME_ZONE = "${vars.timeZone}";
-          PAPERLESS_URL = "paperless.${vars.domainName}";
+          PAPERLESS_URL = "https://paperless.${vars.domainName}";
           PAPERLESS_ADMIN_USER = "notthebee";
           PAPERLESS_CONSUMER_POLLING = "1";
           PAPERLESS_SECRET_KEY = "changeme";
@@ -78,7 +78,7 @@ in
           config.age.secrets.paperless.path
         ];
         environment = {
-          SERVER_NAME = "paperless-upload.${vars.domainName}";
+          SERVER_NAMES = "paperless-upload.${vars.domainName}";
           LOCATION = "/";
           AUTH_TYPE = "Basic";
           REALM = "Paperless Upload Login";
