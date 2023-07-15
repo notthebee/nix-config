@@ -33,13 +33,13 @@
     mergerfs-tools
   ];
 
+  # This fixes the weird mergerfs permissions issue
+  boot.initrd.systemd.enable = true;
+
   fileSystems."/" = lib.mkForce
   { device = "rpool/nixos/empty";
     fsType = "zfs";
   };
-
-  # This fixes the weird mergerfs permissions issue
-  boot.initrd.systemd.enable = true;
 
   boot.initrd.postDeviceCommands = lib.mkAfter ''
     zfs rollback -r rpool/nixos/empty@start
