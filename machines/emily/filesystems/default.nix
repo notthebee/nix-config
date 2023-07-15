@@ -22,11 +22,7 @@
     zed.enableMail = false;
   };
 
-  system.activationScripts.mergerfs_remount = ''
-    umount /mnt/mergerfs_slow
-    mount /mnt/mergerfs_slow
-    '';
- 
+  programs.fuse.userAllowOther = true;
 
   environment.systemPackages = with pkgs; [
     gptfdisk
@@ -36,10 +32,14 @@
     mergerfs
     mergerfs-tools
   ];
+
   fileSystems."/" = lib.mkForce
   { device = "rpool/nixos/empty";
     fsType = "zfs";
   };
+
+  # This fixes the weird mergerfs permissions issue
+  boot.initrd.systemd.enable = true;
 
   boot.initrd.postDeviceCommands = lib.mkAfter ''
     zfs rollback -r rpool/nixos/empty@start
@@ -116,6 +116,7 @@
         "uid=994"
         "gid=993"
         "umask=002"
+        "x-mount.mkdir"
     ];
     fsType = "fuse.mergerfs";
   };
@@ -133,6 +134,7 @@
         "uid=994"
         "gid=993"
         "umask=002"
+        "x-mount.mkdir"
     ];
     fsType = "fuse.mergerfs";
   };
