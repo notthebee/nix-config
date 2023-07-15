@@ -35,6 +35,7 @@
           ./modules/tg-notify
           ./modules/podman
           ./modules/mover
+          ./modules/motd
           ./modules/appdata-backup
 
           # Import the machine config + secrets

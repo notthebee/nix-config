@@ -77,6 +77,7 @@
 
   environment.systemPackages = with pkgs; [
     pciutils
+    wget
     cpufrequtils
     glances
     iperf3
