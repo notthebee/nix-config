@@ -5,6 +5,7 @@ Configuration files for my NixOS home server and maybe my Mac (one day).
 Very much a work in progress.
 
 ## emily (Home server)
+<img width="857" alt="neofetch" src="https://github.com/notthebee/nix-config/assets/30384331/becfe931-55e9-4eb8-a73b-138ce3be10cd">
 
 ### Services
 * Traefik
