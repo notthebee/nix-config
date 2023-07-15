@@ -1,7 +1,11 @@
-{ vars, config, ...}:
+{ vars, config, pkgs, ...}:
 {
   systemd.tmpfiles.rules = [
   "d ${vars.mainArray}/Backups/restic 0775 share share - -"
+  ];
+
+  environment.systemPackages = with pkgs; [
+    restic
   ];
 
   users = {

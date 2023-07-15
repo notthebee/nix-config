@@ -1,4 +1,4 @@
-{ inputs, config, vars, pkgs, ... }:
+{ inputs, lib, config, vars, pkgs, ... }:
 {
   boot.zfs.forceImportRoot = true;
   zfs-root = {
@@ -57,5 +57,7 @@
 };
 };
   
-  virtualisation.docker.storageDriver = "zfs";
+  virtualisation.docker.storageDriver = "overlay2";
+
+  systemd.services.mergerfs-uncache.serviceConfig.ExecStart = lib.mkForce "/run/current-system/sw/bin/mergerfs-uncache -s ${vars.cacheArray} -d ${vars.slowArray} -t 50 --exclude 'YoutubeCurrent/'";
 }

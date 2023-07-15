@@ -4,6 +4,6 @@
   slowArray = "/mnt/mergerfs_slow";
   cacheArray = "/mnt/cache";
   mainArray = "/mnt/user";
-  serviceConfigRoot = "/var/opt/services";
+  serviceConfigRoot = "/persist/opt/services";
   lanNetwork = "192.168.2.0/24";
 }

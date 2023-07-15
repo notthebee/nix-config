@@ -74,6 +74,8 @@ in
           PAPERLESS_CONSUMER_POLLING = "1";
           PAPERLESS_SECRET_KEY = "changeme";
           USERMAP_UID = "994";
+          UID = "994";
+          GID = "9943";
           USERMAP_GID = "993";
         };
       };
