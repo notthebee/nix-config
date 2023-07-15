@@ -43,14 +43,14 @@ echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
 ```
 
 Install git, jq and parted
-```
+```bash
 if ! command -v git; then nix-env -f '<nixpkgs>' -iA git; fi
 if ! command -v jq;  then nix-env -f '<nixpkgs>' -iA jq; fi
 if ! command -v partprobe;  then nix-env -f '<nixpkgs>' -iA parted; fi
 ```
 
 Partition the drives
-```
+```bash
 partition_disk () {
  local disk="${1}"
  blkdiscard -f "${disk}" || true
@@ -75,7 +75,7 @@ done
 ```
 
 Create the boot pool
-```
+```bash
 zpool create \
     -o compatibility=grub2 \
     -o ashift=12 \
@@ -96,7 +96,7 @@ zpool create \
 ```
 
 Create the root pool
-```
+```bash
 zpool create \
     -o ashift=12 \
     -o autotrim=on \
@@ -116,7 +116,7 @@ zpool create \
 ```
 
 Create root system container
-```
+```bash
 zfs create \
  -o canmount=off \
  -o mountpoint=none \
@@ -124,7 +124,7 @@ rpool/nixos
 ```
 
 Create the system datasets
-```
+```bash
 zfs create -o mountpoint=legacy rpool/nixos/empty
 mount -t zfs rpool/nixos/empty "${MNT}"/
 zfs snapshot rpool/nixos/empty@start
@@ -155,7 +155,7 @@ mount -t zfs rpool/nixos/persist "${MNT}"/persist
 ```
 
 Format and mount ESP
-```
+```bash
 for i in ${DISK}; do
  mkfs.vfat -n EFI "${i}"-part1
  mkdir -p "${MNT}"/boot/efis/"${i##*/}"-part1
@@ -169,7 +169,7 @@ git clone https://github.com/notthebee/nix-config.git "${MNT}"/etc/nixos
 ```
 
 Put the private key into place (required for secret management)
-```
+```bash
 mkdir /mnt/home/notthebee/.ssh
 exit
 scp ~/.ssh/id_ed25519 nixos_installation_ip:/mnt/home/
@@ -179,7 +179,7 @@ chmod 600 /mnt/home/notthebee/id_ed25519
 ```
 
 Install the system
-```
+```bash
 nixos-install \
 --root "${MNT}" \
 --no-root-passwd \
@@ -187,12 +187,12 @@ nixos-install \
 ```
 
 Unmount the filesystems
-```
+```bash
 umount -Rl "${MNT}"
 zpool export -a
 ```
 
 Reboot
-```
+```bash
 reboot
 ```
