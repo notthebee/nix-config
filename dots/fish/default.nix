@@ -10,7 +10,6 @@
   programs.fish = {
     enable = true;
     interactiveShellInit = ''
-      set fish_greeting
       set fish_color_autosuggestion brblack
       set fish_color_command blue
       set fish_color_comment black
