@@ -22,16 +22,39 @@
     zed.enableMail = false;
   };
 
+  system.activationScripts.mergerfs_remount = ''
+    umount /mnt/mergerfs_slow
+    mount /mnt/mergerfs_slow
+    '';
+ 
+
   environment.systemPackages = with pkgs; [
     gptfdisk
     xfsprogs
     parted
     snapraid
     mergerfs
+    mergerfs-tools
   ];
-  fileSystems."/" =
-  { device = "rpool/nixos/root";
+  fileSystems."/" = lib.mkForce
+  { device = "rpool/nixos/empty";
     fsType = "zfs";
+  };
+
+  boot.initrd.postDeviceCommands = lib.mkAfter ''
+    zfs rollback -r rpool/nixos/empty@start
+  '';
+
+  fileSystems."/nix" =
+  { device = "rpool/nixos/nix";
+    fsType = "zfs";
+    neededForBoot = true;
+  };
+
+  fileSystems."/etc/nixos" =
+  { device = "rpool/nixos/config";
+    fsType = "zfs";
+    neededForBoot = true;
   };
 
   fileSystems."/boot" =
@@ -42,16 +65,23 @@
   fileSystems."/home" =
   { device = "rpool/nixos/home";
     fsType = "zfs";
+    neededForBoot = true;
   };
 
-  fileSystems."/var/lib" =
-  { device = "rpool/nixos/var/lib";
+  fileSystems."/persist" =
+  { device = "rpool/nixos/persist";
     fsType = "zfs";
+    neededForBoot = true;
   };
 
   fileSystems."/var/log" =
   { device = "rpool/nixos/var/log";
     fsType = "zfs";
+  };
+
+  fileSystems."/var/lib/containers" =
+  { device = "/dev/zvol/rpool/docker";
+    fsType = "ext4";
   };
 
   fileSystems.${vars.cacheArray} =
@@ -91,7 +121,7 @@
   };
 
   fileSystems.${vars.mainArray} = 
-  { device = "/mnt/cache:/mnt/mergerfs_slow";
+  { device = "${vars.cacheArray}:${vars.slowArray}";
     options = [
       "category.create=lfs"
         "defaults"
