@@ -26,7 +26,8 @@ Very much a work in progress.
 * MergerFS array of 3x 16TB HDDs formatted in XFS
 * MergerFS tiered storage set up
 
-### Installation
+
+<details><summary>### Installation</summary><p>
 Adapted from [ne9z's "NixOS Root on ZFS"](https://openzfs.github.io/openzfs-docs/Getting%20Started/NixOS/Root%20on%20ZFS.html)
 
 Elevate privileges, prepare the drive variable and the mountpoint
@@ -197,3 +198,4 @@ Reboot
 ```bash
 reboot
 ```
+</p></details>
