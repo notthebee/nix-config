@@ -63,7 +63,7 @@
         system = "x86_64-linux";
         specialArgs = {
         inherit inputs;
-        vars = import ./machines/emily/vars.nix;
+        vars = import ./machines/nixos/emily/vars.nix;
         };
         modules = [
           # Base configuration and modules
