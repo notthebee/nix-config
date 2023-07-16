@@ -18,8 +18,6 @@ in
 
   home = home;
 
-
-
   imports = [
       ../../dots/fish/default.nix
       ../../dots/nvim/default.nix

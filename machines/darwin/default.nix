@@ -9,6 +9,8 @@
         imports = [
           inputs.nix-index-database.hmModules.nix-index
           ../../users/notthebee/dots.nix
+          ../../dots/tmux
+          ../../dots/kitty
         ];
       };
     backupFileExtension = "bak";
