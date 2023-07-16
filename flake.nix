@@ -31,6 +31,8 @@
 
     nur.url = "github:nix-community/nur";
 
+    deploy-rs.url = "github:serokell/deploy-rs";
+
   };
 
   outputs = { self, 
@@ -42,13 +44,17 @@
               nix-index-database, 
               nixpkgs-firefox-darwin,
               agenix, 
+              deploy-rs,
               nur,
-              ... }@inputs: {
+              ... }@inputs:
+    let 
+      machines = import ./machines.nix;
+    in {
 
     darwinConfigurations."meredith" = nix-darwin.lib.darwinSystem {
       system = "aarch64-darwin";
       specialArgs = {
-        inherit inputs;
+        inherit inputs machines;
       };
       modules = [
         agenix.darwinModules.default
@@ -57,55 +63,111 @@
         ];
       };
 
+    deploy.nodes = {
+      emily = {
+        hostname = machines.emily.address;
+        profiles.system = {
+          sshUser = "notthebee";
+          user = "root";
+          sshOpts = [ "-p" "69" ];
+          remoteBuild = true;
+          path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.emily;
+        };
+      };
+      spencer = {
+        hostname = machines.spencer.address;
+        profiles.system = {
+          sshUser = "notthebee";
+          user = "root";
+          sshOpts = [ "-p" "69" ];
+          remoteBuild = true;
+          path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.spencer;
+        };
+      };
+    };
 
     nixosConfigurations = {
-      emily = nixpkgs.lib.nixosSystem {
+      spencer = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = {
-        inherit inputs;
-        vars = import ./machines/nixos/emily/vars.nix;
+          inherit inputs machines;
+          vars = import ./machines/nixos/spencer/vars.nix;
         };
         modules = [
           # Base configuration and modules
-          ./modules/aspm-tuning
-          ./modules/zfs-root
-          ./modules/email
-          ./modules/tg-notify
-          ./modules/podman
-          ./modules/mover
-          ./modules/motd
-          ./modules/appdata-backup
+            ./modules/email
+            ./modules/wireguard
+            ./modules/tg-notify
+            ./modules/notthebe.ee
 
-          # Import the machine config + secrets
-          ./machines/nixos
-          ./machines/nixos/emily
-          ./secrets
-          agenix.nixosModules.default
+            # Import the machine config + secrets
+            ./machines/nixos
+            ./machines/nixos/spencer
+            ./secrets
+            agenix.nixosModules.default
 
-          # Services and applications
-          ./services/dashy
-          ./services/invoiceninja
-          ./services/paperless-ngx
-          ./services/traefik
-          ./services/deluge
-          ./services/arr
-          ./services/jellyfin
-          ./services/vaultwarden
+            # User-specific configurations
+            ./users/notthebee
+            home-manager.nixosModules.home-manager
+            {
+              home-manager.useGlobalPkgs = false; # makes hm use nixos's pkgs value
+                home-manager.extraSpecialArgs = { inherit inputs machines; }; # allows access to flake inputs in hm modules
+                home-manager.users.notthebee.imports = [ 
+                nix-index-database.hmModules.nix-index
+                ./users/notthebee/dots.nix 
+                ];
+              home-manager.backupFileExtension = "bak";
+            }
+        ];
+      };
 
-          # User-specific configurations
-          ./users/notthebee
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = false; # makes hm use nixos's pkgs value
-            home-manager.extraSpecialArgs = { inherit inputs; }; # allows access to flake inputs in hm modules
-            home-manager.users.notthebee.imports = [ 
-              nix-index-database.hmModules.nix-index
-              ./users/notthebee/dots.nix 
-            ];
-            home-manager.backupFileExtension = "bak";
-          }
+      emily = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        specialArgs = {
+          inherit inputs machines;
+          vars = import ./machines/nixos/emily/vars.nix;
+        };
+        modules = [
+            # Base configuration and modules
+            ./modules/aspm-tuning
+            ./modules/zfs-root
+            ./modules/email
+            ./modules/tg-notify
+            ./modules/podman
+            ./modules/mover
+            ./modules/motd
+            ./modules/appdata-backup
+
+            # Import the machine config + secrets
+            ./machines/nixos
+            ./machines/nixos/emily
+            ./secrets
+            agenix.nixosModules.default
+
+            # Services and applications
+            ./services/dashy
+            ./services/invoiceninja
+            ./services/paperless-ngx
+            ./services/traefik
+            ./services/deluge
+            ./services/arr
+            ./services/jellyfin
+            ./services/vaultwarden
+
+            # User-specific configurations
+            ./users/notthebee
+            home-manager.nixosModules.home-manager
+            {
+              home-manager.useGlobalPkgs = false; # makes hm use nixos's pkgs value
+                home-manager.extraSpecialArgs = { inherit inputs machines; }; # allows access to flake inputs in hm modules
+                home-manager.users.notthebee.imports = [ 
+                nix-index-database.hmModules.nix-index
+                ./users/notthebee/dots.nix 
+                ];
+              home-manager.backupFileExtension = "bak";
+            }
         ];
       };
     };
-};
+  };
 }

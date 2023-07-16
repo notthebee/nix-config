@@ -56,8 +56,33 @@
   };
 };
 };
-  
+
+  systemd.services.glances = {
+    after = [ "network.target" ];
+    script = "${pkgs.glances}/bin/glances -w";
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Restart = "on-abort";
+      RemainAfterExit = "yes";
+    };
+  };
+
+  networking.firewall.allowedTCPPorts = [ 
+  61208 # glances
+  5201 # iperf3 
+  ];
+
   virtualisation.docker.storageDriver = "overlay2";
 
   systemd.services.mergerfs-uncache.serviceConfig.ExecStart = lib.mkForce "/run/current-system/sw/bin/mergerfs-uncache -s ${vars.cacheArray} -d ${vars.slowArray} -t 50 --exclude 'YoutubeCurrent/'";
+
+  environment.systemPackages = with pkgs; [
+    pciutils
+    glances
+    hdparm
+    hd-idle
+    hddtemp
+    smartmontools
+  ];
+
 }
