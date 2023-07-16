@@ -14,20 +14,37 @@
       url = "github:recyclarr/config-templates";
       flake = false;
     };
+    nix-darwin.url = "github:LnL7/nix-darwin/master";
+    nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
+
     nix-index-database.url = "github:Mic92/nix-index-database";
     nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { self, nixpkgs, home-manager, recyclarr-configs, nixvim, nix-index-database, agenix, ... }@inputs: {
+  outputs = { self, nixpkgs, nix-darwin, home-manager, recyclarr-configs, nixvim, nix-index-database, agenix, ... }@inputs: {
+
+    darwinConfigurations."meredith" = nix-darwin.lib.darwinSystem {
+      system = "aarch64-darwin";
+      inputs = { inherit nix-darwin home-manager nixpkgs agenix; };
+      specialArgs = {
+        inherit inputs;
+      };
+      modules = [
+        agenix.darwinModules.default
+        ./machines/darwin
+        ./machines/darwin/meredith
+        ];
+      };
+
 
     nixosConfigurations = {
       emily = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
-        specialArgs = { 
-        inherit inputs; 
+        specialArgs = {
+        inherit inputs;
         vars = import ./machines/emily/vars.nix;
         };
-        modules = [ 
+        modules = [
           # Base configuration and modules
           ./modules/aspm-tuning
           ./modules/zfs-root
@@ -39,8 +56,8 @@
           ./modules/appdata-backup
 
           # Import the machine config + secrets
-          ./machines
-          ./machines/emily
+          ./machines/nixos
+          ./machines/nixos/emily
           ./secrets
           agenix.nixosModules.default
 
@@ -69,5 +86,5 @@
         ];
       };
     };
-  };
+};
 }

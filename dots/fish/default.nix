@@ -1,10 +1,7 @@
 { pkgs, ... }: {
   home.packages = with pkgs; [
-    fishPlugins.done
-      fishPlugins.fzf-fish
-      fzf
-      fishPlugins.grc
-      grc
+    grc
+    fishPlugins.grc
   ];
 
   programs.fish = {

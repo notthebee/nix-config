@@ -1,5 +1,5 @@
-{ inputs, lib, config, pkgs, ... }: 
-let 
+{ inputs, lib, config, pkgs, ... }:
+let
 coc = import ./coc.nix;
 in
 {
@@ -9,9 +9,10 @@ in
 
   home.packages = with pkgs; [
     figlet
-      nodejs
-      rnix-lsp
-      ansible-language-server
+    nodejs
+    ripgrep
+    rnix-lsp
+    ansible-language-server
   ];
 
   programs.neovim = {
