@@ -5,11 +5,16 @@
     useGlobalPkgs = false; # makes hm use nixos's pkgs value
       extraSpecialArgs = { inherit inputs; }; # allows access to flake inputs in hm modules
       users.notthebee = {
+        nixpkgs.overlays = [ 
+        inputs.nixpkgs-firefox-darwin.overlay 
+        inputs.nur.overlay
+        ];
         home.homeDirectory = lib.mkForce "/Users/notthebee";
         imports = [
           inputs.nix-index-database.hmModules.nix-index
           ../../users/notthebee/dots.nix
           ../../dots/tmux
+          ../../dots/firefox
           ../../dots/kitty
         ];
       };

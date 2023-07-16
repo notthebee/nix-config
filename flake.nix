@@ -14,18 +14,39 @@
       url = "github:recyclarr/config-templates";
       flake = false;
     };
-    nix-darwin.url = "github:LnL7/nix-darwin/master";
-    nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
+    nix-darwin = {
+      url = "github:LnL7/nix-darwin/master";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
-    nix-index-database.url = "github:Mic92/nix-index-database";
-    nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
+    nix-index-database = {
+      url = "github:Mic92/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    nixpkgs-firefox-darwin = {
+      url = "github:bandithedoge/nixpkgs-firefox-darwin";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    nur.url = "github:nix-community/nur";
+
   };
 
-  outputs = { self, nixpkgs, nix-darwin, home-manager, recyclarr-configs, nixvim, nix-index-database, agenix, ... }@inputs: {
+  outputs = { self, 
+              nixpkgs, 
+              nix-darwin, 
+              home-manager, 
+              recyclarr-configs, 
+              nixvim, 
+              nix-index-database, 
+              nixpkgs-firefox-darwin,
+              agenix, 
+              nur,
+              ... }@inputs: {
 
     darwinConfigurations."meredith" = nix-darwin.lib.darwinSystem {
       system = "aarch64-darwin";
-      inputs = { inherit nix-darwin home-manager nixpkgs agenix; };
       specialArgs = {
         inherit inputs;
       };
