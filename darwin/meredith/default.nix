@@ -1,0 +1,3 @@
+{
+  nix.useDaemon = true;
+}

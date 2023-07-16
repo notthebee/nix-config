@@ -1,3 +1,3 @@
 function fish_greeting
-  motd
+  motd || true
 end
