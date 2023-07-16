@@ -43,7 +43,15 @@
         "${vars.serviceConfigRoot}"
       ];
       backupPrepareCommand = "systemctl stop podman-*";
-      backupCleanupCommand = "systemctl start --all podman-*";
+      backupCleanupCommand = ''
+      systemctl start --all "podman-*"
+      if [[ $SERVICE_RESULT =~ "success" ]]; then
+        message=$(journalctl -xeu restic-backups-appdata-local | grep Files: | tail -1 | sed 's/^.*Files/Files/g')
+      else
+        message=$(journalctl --unit=restic-backups-appdata-local.service -n 20 --no-pager)
+      fi
+      /run/current-system/sw/bin/notify -s "$SERVICE_RESULT" -t "Backup Job appdata-local" -m "$message"
+      '';
     };
     backups.appdata-backblaze = {
       timerConfig = {
@@ -65,7 +73,15 @@
         "${vars.serviceConfigRoot}"
       ];
       backupPrepareCommand = "systemctl stop podman-*";
-      backupCleanupCommand = "systemctl start --all podman-*";
+      backupCleanupCommand = ''
+      systemctl start --all "podman-*"
+      if [[ $SERVICE_RESULT =~ "success" ]]; then
+        message=$(journalctl -xeu restic-backups-appdata-backblaze | grep Files: | tail -1 | sed 's/^.*Files/Files/g')
+      else
+        message=$(journalctl --unit=restic-backups-appdata-backblaze.service -n 20 --no-pager)
+      fi
+      /run/current-system/sw/bin/notify -s "$SERVICE_RESULT" -t "Backup Job appdata-backblaze" -m "$message"
+      '';
     };
   };
 }
