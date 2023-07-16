@@ -1,6 +1,6 @@
 # nix-config
 
-Configuration files for my NixOS home server and my Mac.
+Configuration files for my NixOS and nix-darwin machines.
 
 Very much a work in progress.
 
