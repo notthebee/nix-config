@@ -53,4 +53,7 @@
   age.secrets.resticPassword = lib.mkDefault {
       file = ./resticPassword.age;
     };
+  age.secrets.wireguardPrivateKey = lib.mkDefault {
+      file = ./wireguardPrivateKey.age;
+    };
 }

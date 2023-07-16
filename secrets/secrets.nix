@@ -17,4 +17,5 @@ in {
   "paperless.age".publicKeys = allKeys;
   "resticBackblazeEnv.age".publicKeys = allKeys;
   "resticPassword.age".publicKeys = allKeys;
+  "wireguardPrivateKey.age".publicKeys = allKeys;
 }
