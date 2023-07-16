@@ -36,6 +36,7 @@
       switch (uname)
     case "*Darwin"
         alias lsblk="diskutil list"
+        ulimit -n 2048
           switch (whoami)
     case "notthebee"
             :
