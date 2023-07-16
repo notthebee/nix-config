@@ -237,6 +237,26 @@
         "type": "github"
       }
     },
+    "nixpkgs-firefox-darwin": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1689296454,
+        "narHash": "sha256-Cb0YNqphkhkvTAyarqTEo/iJQroIYXAPpBGijOpHx+g=",
+        "owner": "bandithedoge",
+        "repo": "nixpkgs-firefox-darwin",
+        "rev": "66511fc67bc65b5cdffb24a716daed27389e7eac",
+        "type": "github"
+      },
+      "original": {
+        "owner": "bandithedoge",
+        "repo": "nixpkgs-firefox-darwin",
+        "type": "github"
+      }
+    },
     "nixpkgs-stable": {
       "locked": {
         "lastModified": 1678872516,
@@ -288,6 +308,21 @@
         "owner": "pta2002",
         "ref": "nixos-23.05",
         "repo": "nixvim",
+        "type": "github"
+      }
+    },
+    "nur": {
+      "locked": {
+        "lastModified": 1689504350,
+        "narHash": "sha256-3r6BE9TuV7Q+mo/7kfwDyzEdZd8lMUZQPbIZ7qCowFg=",
+        "owner": "nix-community",
+        "repo": "nur",
+        "rev": "f811d7c51c38df83a53012cd489d33ea4ebfbb45",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "nur",
         "type": "github"
       }
     },
@@ -366,7 +401,9 @@
         "nix-darwin": "nix-darwin",
         "nix-index-database": "nix-index-database",
         "nixpkgs": "nixpkgs",
+        "nixpkgs-firefox-darwin": "nixpkgs-firefox-darwin",
         "nixvim": "nixvim",
+        "nur": "nur",
         "recyclarr-configs": "recyclarr-configs"
       }
     },
