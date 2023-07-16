@@ -27,7 +27,8 @@ Very much a work in progress.
 * MergerFS tiered storage set up
 
 
-<details><summary>### Installation</summary><p>
+### Installation
+<details><summary>Installation process</summary><p>
 Adapted from [ne9z's "NixOS Root on ZFS"](https://openzfs.github.io/openzfs-docs/Getting%20Started/NixOS/Root%20on%20ZFS.html)
 
 Elevate privileges, prepare the drive variable and the mountpoint
