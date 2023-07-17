@@ -56,40 +56,18 @@
     };
   };
   
-  systemd.services.glances = {
-    after = [ "network.target" ];
-    script = "${pkgs.glances}/bin/glances -w";
-    wantedBy = [ "multi-user.target" ];
-    serviceConfig = {
-      Restart = "on-abort";
-      RemainAfterExit = "yes";
-    };
-  };
-
-  networking.firewall.allowedTCPPorts = [ 
-  61208 # glances
-  5201 # iperf3 
-  ];
-
   networking.firewall.allowPing = true;
 
   system.autoUpgrade.enable = true; 
 
   environment.systemPackages = with pkgs; [
-    pciutils
     wget
-    cpufrequtils
-    glances
     iperf3
     exa
     neofetch
     tmux
     rsync
     iotop
-    hdparm
-    hd-idle
-    hddtemp
-    smartmontools
     ncdu
     nmap
     jq
