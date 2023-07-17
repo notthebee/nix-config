@@ -182,6 +182,7 @@ in
       vim.api.nvim_set_hl(0, "MatchParen", { bg="#4c566a", fg="#88c0d0" })
       '';
     extraConfigVim = ''
+      inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
       set clipboard+=unnamedplus
       function CheckForExplorer()
       if CocAction('runCommand', 'explorer.getNodeInfo', 'closest') isnot# v:null

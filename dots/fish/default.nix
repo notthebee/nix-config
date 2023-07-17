@@ -6,6 +6,12 @@
 
   programs.fish = {
     enable = true;
+    loginShellInit = ''
+    if test (uname) = Darwin
+      fish_add_path -m "/run/current-system/sw/bin"
+      fish_add_path --move --path $HOME/.nix-profile/bin /run/wrappers/bin /etc/profiles/per-user/$USER/bin /nix/var/nix/profiles/default/bin /run/current-system/sw/bin /opt/homebrew/bin
+    end
+    '';
     interactiveShellInit = ''
       set fish_color_autosuggestion brblack
       set fish_color_command blue
@@ -31,7 +37,6 @@
       export EDITOR=nvim || export EDITOR=vim
       export LANG=en_US.UTF-8
       export LC_CTYPE=en_US.UTF-8
-      set -gx PATH $HOME/.local/bin /usr/local/bin /opt/chromium /opt/android-sdk/platform-tools /opt/homebrew/bin $HOME/.cargo/bin $PATH
 
       switch (uname)
     case "*Darwin"

@@ -16,9 +16,6 @@
         wvous-br-corner = 14;
         tilesize = 50;
       };
-      ".GlobalPreferences" = {
-        "com.apple.mouse.scaling" = "-1";
-      };
       NSGlobalDomain = {
         "com.apple.sound.beep.volume" = 0.000;
         InitialKeyRepeat = 13;

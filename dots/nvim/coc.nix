@@ -5,11 +5,11 @@
   prettier.disableSuccessMessage = true;
   coc.preferences.formatOnSaveFiletypes = [
     "css"
-      "javascript"
-      "javascriptreact"
-      "typescript"
-      "typescriptreact"
-      "ansible"
+    "javascript"
+    "javascriptreact"
+    "typescript"
+    "typescriptreact"
+    "ansible"
   ];
   suggest.completionItemKindLabels = {
     variable = "";
