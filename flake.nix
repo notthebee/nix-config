@@ -31,6 +31,7 @@
 
     nur.url = "github:nix-community/nur";
 
+    deploy-rs.url = "github:serokell/deploy-rs";
   };
 
   outputs = { self, 
@@ -42,6 +43,7 @@
               nix-index-database, 
               nixpkgs-firefox-darwin,
               agenix, 
+              deploy-rs,
               nur,
               ... }@inputs: {
 
@@ -57,6 +59,29 @@
         ];
       };
 
+    deploy.nodes = {
+      emily = {
+        hostname = "192.168.2.230";
+      profiles.system = {
+        sshUser = "notthebee";
+        user = "root";
+        sshOpts = [ "-p" "69" ];
+        remoteBuild = true;
+        path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.emily;
+    };
+    };
+
+      spencer = {
+        hostname = "***REMOVED***";
+      profiles.system = {
+        sshUser = "notthebee";
+        user = "root";
+        sshOpts = [ "-p" "69" ];
+        remoteBuild = true;
+        path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.spencer;
+    };
+    };
+    };
 
     nixosConfigurations = {
       spencer = nixpkgs.lib.nixosSystem {

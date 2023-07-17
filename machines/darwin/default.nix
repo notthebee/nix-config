@@ -90,6 +90,7 @@
   environment.systemPackages = with pkgs; [
     wget
       iperf3
+      deploy-rs
       exa
       neofetch
       tmux
