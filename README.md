@@ -1,6 +1,6 @@
 # nix-config
 
-Configuration files for my NixOS home server and my Mac.
+Configuration files for my NixOS and nix-darwin machines.
 
 Very much a work in progress.
 
@@ -200,3 +200,8 @@ Reboot
 reboot
 ```
 </p></details>
+
+## meredith (Mac)
+<img width="796" alt="Screenshot 2023-07-16 at 18 00 16" src="https://github.com/notthebee/nix-config/assets/30384331/65c3cdb2-9d56-497f-bf10-51aa1b65b488">
+
+Managed using `nix-darwin` and `home-manager`. Impure packages and apps are managed by `homebrew` and `mas`
