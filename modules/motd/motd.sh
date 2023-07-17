@@ -54,10 +54,10 @@ while IFS= read -r line; do
   fi
   if echo "$line" | grep -q 'failed'; then
     service_name=$(echo $line | awk '{print $2;}' | sed 's/podman-//g')
-    printf "${RED}• ${ENDCOLOR}%-50s ${RED}FAILED${ENDCOLOR}\n" "$service_name"
+    printf "${RED}• ${ENDCOLOR}%-50s ${RED}[failed]${ENDCOLOR}\n" "$service_name"
   elif echo "$line" | grep -q 'running'; then
     service_name=$(echo $line | awk '{print $1;}' | sed 's/podman-//g')
-    printf "${GREEN}• ${ENDCOLOR}%-50s ${GREEN}ACTIVE${ENDCOLOR}\n" "$service_name"
+    printf "${GREEN}• ${ENDCOLOR}%-50s ${GREEN}[active]${ENDCOLOR}\n" "$service_name"
   else
     echo "service status unknown"
   fi
