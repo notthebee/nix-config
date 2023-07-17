@@ -54,5 +54,9 @@
   "extensions.autoDisableScopes" = 0;
 
   "browser.sessionstore.resume_session_once" = false;
+
+  "services.sync.prefs.sync.browser.urlbar.suggest.searches" = false;
+
+  "browser.search.suggest.enabled" = false;
 }
 

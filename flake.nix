@@ -59,6 +59,40 @@
 
 
     nixosConfigurations = {
+      spencer = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        specialArgs = {
+        inherit inputs;
+        vars = import ./machines/nixos/spencer/vars.nix;
+        };
+        modules = [
+          # Base configuration and modules
+          ./modules/email
+          ./modules/wireguard
+          ./modules/tg-notify
+          ./modules/notthebe.ee
+
+          # Import the machine config + secrets
+          ./machines/nixos
+          ./machines/nixos/spencer
+          ./secrets
+          agenix.nixosModules.default
+
+          # User-specific configurations
+          ./users/notthebee
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = false; # makes hm use nixos's pkgs value
+            home-manager.extraSpecialArgs = { inherit inputs; }; # allows access to flake inputs in hm modules
+            home-manager.users.notthebee.imports = [ 
+              nix-index-database.hmModules.nix-index
+              ./users/notthebee/dots.nix 
+            ];
+            home-manager.backupFileExtension = "bak";
+          }
+        ];
+      };
+
       emily = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = {
