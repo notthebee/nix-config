@@ -68,7 +68,9 @@
         modules = [
           # Base configuration and modules
           ./modules/email
+          ./modules/wireguard
           ./modules/tg-notify
+          ./modules/notthebe.ee
 
           # Import the machine config + secrets
           ./machines/nixos
