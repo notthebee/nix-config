@@ -65,6 +65,7 @@
     iperf3
     exa
     neofetch
+    (python310.withPackages(ps: with ps; [ pip ]))
     tmux
     rsync
     iotop
