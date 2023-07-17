@@ -67,7 +67,7 @@
     };
   };
 
-  networking.irewall.allowedTCPPorts = [ 
+  networking.firewall.allowedTCPPorts = [ 
   61208 # glances
   5201 # iperf3 
   ];
