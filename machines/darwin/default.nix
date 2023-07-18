@@ -98,6 +98,7 @@
       ncdu
       nmap
       jq
+      bitwarden-cli
       ripgrep
       sqlite
       inputs.agenix.packages."${system}".default 
