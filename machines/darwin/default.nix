@@ -89,6 +89,7 @@
 
   environment.systemPackages = with pkgs; [
     wget
+    git-crypt
       iperf3
       deploy-rs
       exa

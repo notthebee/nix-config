@@ -1,4 +1,4 @@
-{ modulesPath, ... }: {
+{ modulesPath, machines, ... }: {
   imports = [ (modulesPath + "/profiles/qemu-guest.nix") ];
   boot.loader.grub.device = "/dev/vda";
   boot.initrd.availableKernelModules = [ "ata_piix" "uhci_hcd" "xen_blkfront" "vmw_pvscsi" ];
@@ -17,14 +17,14 @@
     hostName = "spencer";
     nameservers = [ "1.1.1.1" "9.9.9.9" ];
     defaultGateway = {
-      address = "***REMOVED***";
+      address = machines.spencer.gateway;
       interface = "ens3";
     };  
     interfaces = {    
       ens3.ipv4 = {    
         addresses = [{      
-          address = "***REMOVED***";      
-          prefixLength = 25;    
+          address = machines.spencer.address;
+          prefixLength = 25;
         }];    
       };
     };
