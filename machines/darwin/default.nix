@@ -89,7 +89,9 @@
 
   environment.systemPackages = with pkgs; [
     wget
+    git-crypt
       iperf3
+      deploy-rs
       exa
       neofetch
       tmux
@@ -97,6 +99,7 @@
       ncdu
       nmap
       jq
+      bitwarden-cli
       ripgrep
       sqlite
       inputs.agenix.packages."${system}".default 
