@@ -12,7 +12,6 @@ in
     nodejs
     ripgrep
     rnix-lsp
-    ansible-language-server
   ];
 
   programs.neovim = {
@@ -183,6 +182,7 @@ in
       '';
     extraConfigVim = ''
       inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
+      set undofile
       set clipboard+=unnamedplus
       function CheckForExplorer()
       if CocAction('runCommand', 'explorer.getNodeInfo', 'closest') isnot# v:null

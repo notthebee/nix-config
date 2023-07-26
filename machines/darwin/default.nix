@@ -4,21 +4,25 @@
   home-manager = {
     useGlobalPkgs = false; # makes hm use nixos's pkgs value
       extraSpecialArgs = { inherit inputs; }; # allows access to flake inputs in hm modules
-      users.notthebee = {
+      users.notthebee = { config, pkgs, ... }: {
         nixpkgs.overlays = [ 
         inputs.nixpkgs-firefox-darwin.overlay 
         inputs.nur.overlay
         ];
         home.homeDirectory = lib.mkForce "/Users/notthebee";
+        
+        age.secrets.bwSessionFish.file = ../../secrets/bwSessionFish.age;
+
         imports = [
           inputs.nix-index-database.hmModules.nix-index
+          inputs.agenix.homeManagerModules.default
           ../../users/notthebee/dots.nix
           ../../dots/tmux
           ../../dots/firefox
           ../../dots/kitty
         ];
       };
-      users.beethenot = {
+      users.beethenot = { config, pkgs, ... }: {
         nixpkgs.overlays = [ 
         inputs.nixpkgs-firefox-darwin.overlay 
         inputs.nur.overlay
@@ -26,6 +30,8 @@
         home.homeDirectory = lib.mkForce "/Users/beethenot";
         imports = [
           inputs.nix-index-database.hmModules.nix-index
+          inputs.agenix.homeManagerModules.default
+          ../../users/beethenot/default.nix
           ../../users/beethenot/dots.nix
           ../../dots/tmux
           ../../dots/firefox
@@ -83,26 +89,24 @@
 
   system.stateVersion = 4;
 
-  environment.systemPath = [
-   /run/current-system/sw/bin
-  ];
-
   environment.systemPackages = with pkgs; [
     wget
     git-crypt
-      iperf3
-      deploy-rs
-      exa
-      neofetch
-      tmux
-      rsync
-      ncdu
-      nmap
-      jq
-      bitwarden-cli
-      ripgrep
-      sqlite
-      inputs.agenix.packages."${system}".default 
+    iperf3
+    deploy-rs
+    exa
+    neofetch
+    tmux
+    rsync
+    ncdu
+    nmap
+    jq
+    bitwarden-cli
+    ripgrep
+    sqlite
+    pwgen
+    gnupg
+    inputs.agenix.packages."${system}".default 
   ];
 
 }

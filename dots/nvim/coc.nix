@@ -9,7 +9,7 @@
     "javascriptreact"
     "typescript"
     "typescriptreact"
-    "ansible"
+    #"ansible"
   ];
   suggest.completionItemKindLabels = {
     variable = "";

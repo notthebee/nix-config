@@ -1,16 +1,27 @@
-{ pkgs, ... }: {
+{ inputs, pkgs, lib, config, ... }: {
   home.packages = with pkgs; [
     grc
     fishPlugins.grc
   ];
 
+
+  age.secrets.bwSessionFish = {
+    file = ../../secrets/bwSessionFish.age;
+  };
+
   programs.fish = {
     enable = true;
     loginShellInit = ''
-    if test (uname) = Darwin
-      fish_add_path -m "/run/current-system/sw/bin"
-      fish_add_path --move --path $HOME/.nix-profile/bin /run/wrappers/bin /etc/profiles/per-user/$USER/bin /nix/var/nix/profiles/default/bin /run/current-system/sw/bin /opt/homebrew/bin
-    end
+      if test (uname) = Darwin
+        fish_add_path -m "/run/current-system/sw/bin"
+        fish_add_path --move --path $HOME/.nix-profile/bin /run/wrappers/bin /etc/profiles/per-user/$USER/bin /nix/var/nix/profiles/default/bin /run/current-system/sw/bin /opt/homebrew/bin
+      end
+      switch (whoami)
+        case "beethenot"
+          export BW_SESSION=(${pkgs.coreutils}/bin/cat ${config.age.secrets.bwSessionFish.path})
+        case "notthebee"
+        :
+      end
     '';
     interactiveShellInit = ''
       set fish_color_autosuggestion brblack
@@ -35,7 +46,6 @@
       set fish_pager_color_progress 'brwhite' '--background=blue'
 
       export EDITOR=nvim || export EDITOR=vim
-      export BW_SESSION="***REMOVED***"
       export LANG=en_US.UTF-8
       export LC_CTYPE=en_US.UTF-8
 
@@ -66,8 +76,6 @@
                           end
                           '';
                 shellAliases = {
-                  aspm = "sudo lspci -vv | awk '/ASPM/{print $0}' RS= | grep --color -P '(^[a-z0-9:.]+|ASPM )'";
-                  na = "pushd /etc/nixos; sudo nixos-rebuild switch && nix run home-manager -- switch --flake /etc/nixos; popd";
                   la = "ls -lha";
                   df = "df -h";
                   du = "du -ch";
@@ -78,11 +86,12 @@
                   pip_upgrade_all = "pip3 list --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1 | xargs -n1 pip3 install -U";
                 };
                 shellAbbrs = {
+                  aspm = "sudo lspci -vv | awk '/ASPM/{print $0}' RS= | grep --color -P '(^[a-z0-9:.]+|ASPM )'";
                   mkdir = "mkdir -p";
                 };
 
                 plugins = [
-# Enable a plugin (here grc for colorized command output) from nixpkgs
+                # Enable a plugin (here grc for colorized command output) from nixpkgs
                 { name = "grc"; src = pkgs.fishPlugins.grc.src; }
                 ];
   };
@@ -92,5 +101,4 @@
       recursive = true;
     };
   };
-               }
-
+  }
