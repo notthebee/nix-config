@@ -32,10 +32,6 @@
     nur.url = "github:nix-community/nur";
 
     deploy-rs.url = "github:serokell/deploy-rs";
-<<<<<<< HEAD
-=======
-
->>>>>>> d95818ef87574613473eaf65114dede14acd73e7
   };
 
   outputs = { self, 
@@ -68,28 +64,6 @@
 
     deploy.nodes = {
       emily = {
-<<<<<<< HEAD
-        hostname = "192.168.2.230";
-      profiles.system = {
-        sshUser = "notthebee";
-        user = "root";
-        sshOpts = [ "-p" "69" ];
-        remoteBuild = true;
-        path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.emily;
-    };
-    };
-
-      spencer = {
-        hostname = "***REMOVED***";
-      profiles.system = {
-        sshUser = "notthebee";
-        user = "root";
-        sshOpts = [ "-p" "69" ];
-        remoteBuild = true;
-        path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.spencer;
-    };
-    };
-=======
         hostname = machines.emily.address;
         profiles.system = {
           sshUser = "notthebee";
@@ -109,48 +83,10 @@
           path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.spencer;
         };
       };
->>>>>>> d95818ef87574613473eaf65114dede14acd73e7
     };
 
     nixosConfigurations = {
       spencer = nixpkgs.lib.nixosSystem {
-<<<<<<< HEAD
-        system = "x86_64-linux";
-        specialArgs = {
-        inherit inputs;
-        vars = import ./machines/nixos/spencer/vars.nix;
-        };
-        modules = [
-          # Base configuration and modules
-          ./modules/email
-          ./modules/wireguard
-          ./modules/tg-notify
-          ./modules/notthebe.ee
-
-          # Import the machine config + secrets
-          ./machines/nixos
-          ./machines/nixos/spencer
-          ./secrets
-          agenix.nixosModules.default
-
-          # User-specific configurations
-          ./users/notthebee
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = false; # makes hm use nixos's pkgs value
-            home-manager.extraSpecialArgs = { inherit inputs; }; # allows access to flake inputs in hm modules
-            home-manager.users.notthebee.imports = [ 
-              nix-index-database.hmModules.nix-index
-              ./users/notthebee/dots.nix 
-            ];
-            home-manager.backupFileExtension = "bak";
-          }
-        ];
-      };
-
-      emily = nixpkgs.lib.nixosSystem {
-=======
->>>>>>> d95818ef87574613473eaf65114dede14acd73e7
         system = "x86_64-linux";
         specialArgs = {
           inherit inputs machines;

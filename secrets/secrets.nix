@@ -18,4 +18,5 @@ in {
   "resticBackblazeEnv.age".publicKeys = allKeys;
   "resticPassword.age".publicKeys = allKeys;
   "wireguardPrivateKey.age".publicKeys = allKeys;
+  "bwSessionFish.age".publicKeys = allKeys;
 }
