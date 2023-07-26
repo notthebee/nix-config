@@ -49,6 +49,7 @@ in
       yq
       git-lfs
       pre-commit
+      bfg-repo-cleaner
   ];
 
   }
