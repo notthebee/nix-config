@@ -11,8 +11,6 @@
         ];
         home.homeDirectory = lib.mkForce "/Users/notthebee";
         
-        age.secrets.bwSessionFish.file = ../../secrets/bwSessionFish.age;
-
         imports = [
           inputs.nix-index-database.hmModules.nix-index
           inputs.agenix.homeManagerModules.default
