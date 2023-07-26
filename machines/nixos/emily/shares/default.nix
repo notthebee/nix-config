@@ -6,8 +6,8 @@ let
       Backups = { path = "/mnt/user/Backups"; };
       Documents = { path = "/mnt/user/Documents"; };
       Media = { path = "/mnt/user/Media"; };
-      Misc = { path = "/mnt/mergerfs_slow/Misc"; "fruit:time machine" = "yes"; };
-      TimeMachine = { path = "/mnt/cache/TimeMachine"; };
+      Misc = { path = "/mnt/mergerfs_slow/Misc";  };
+      TimeMachine = { path = "/mnt/cache/TimeMachine"; "fruit:time machine" = "yes"; };
       YoutubeArchive = { path = "/mnt/user/YoutubeArchive"; };
       YoutubeCurrent = { path = "/mnt/cache/YoutubeCurrent"; };
     };
@@ -67,7 +67,7 @@ services.samba = {
     server string = emily
     netbios name = emily
     security = user 
-    hosts allow = 192.168.2.0/24 14.0.0.0/24
+    hosts allow = 192.168.2.0/24 10.4.0.0/24
     guest account = nobody
     map to guest = bad user
     passdb backend = tdbsam
