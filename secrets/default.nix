@@ -56,4 +56,7 @@
   age.secrets.wireguardPrivateKey = lib.mkDefault {
       file = ./wireguardPrivateKey.age;
     };
+  age.secrets.bwSessionFish = lib.mkDefault {
+      file = ./bwSessionFish.age;
+    };
 }

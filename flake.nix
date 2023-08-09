@@ -32,7 +32,6 @@
     nur.url = "github:nix-community/nur";
 
     deploy-rs.url = "github:serokell/deploy-rs";
-
   };
 
   outputs = { self, 
@@ -113,6 +112,7 @@
               home-manager.useGlobalPkgs = false; # makes hm use nixos's pkgs value
                 home-manager.extraSpecialArgs = { inherit inputs machines; }; # allows access to flake inputs in hm modules
                 home-manager.users.notthebee.imports = [ 
+                agenix.homeManagerModules.default
                 nix-index-database.hmModules.nix-index
                 ./users/notthebee/dots.nix 
                 ];
@@ -158,11 +158,12 @@
             ./users/notthebee
             home-manager.nixosModules.home-manager
             {
-              home-manager.useGlobalPkgs = false; # makes hm use nixos's pkgs value
-                home-manager.extraSpecialArgs = { inherit inputs machines; }; # allows access to flake inputs in hm modules
+              home-manager.useGlobalPkgs = false; 
+                home-manager.extraSpecialArgs = { inherit inputs machines; }; 
                 home-manager.users.notthebee.imports = [ 
-                nix-index-database.hmModules.nix-index
-                ./users/notthebee/dots.nix 
+                  agenix.homeManagerModules.default
+                  nix-index-database.hmModules.nix-index
+                  ./users/notthebee/dots.nix 
                 ];
               home-manager.backupFileExtension = "bak";
             }
