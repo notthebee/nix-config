@@ -31,6 +31,7 @@ in
     enableFishIntegration = true;
   };
 
+
   programs.git = {
     enable = true;
     userName  = "Wolfgang";

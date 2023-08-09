@@ -12,6 +12,8 @@
       "pcie_aspm=force"
       "i915.enable_guc=2" 
       "enable_fbc=1" 
+      "amd_pstate.shared_mem=1"
+      "amd_pstate=passive"
       ];
       sshUnlock = {
         enable = false;
@@ -83,6 +85,17 @@
     hd-idle
     hddtemp
     smartmontools
+    go
+    gotools
+    gopls
+    go-outline
+    gocode
+    gopkgs
+    gocode-gomod
+    godef
+    golint
+    powertop
+    cpufrequtils
   ];
 
-}
+  }

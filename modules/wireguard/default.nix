@@ -40,6 +40,11 @@
           publicKey = "npTrLwAIJZ3m4XqdmQpP/KIi0C6urjBQHoCuA1vOOTc=";
           allowedIPs = [ "10.100.0.2/32" ];
         }
+        {
+          name = "meredith";
+          publicKey = "qbSQWspWHmucDmU/BsrXpcVF+txPETo4c74/tGkE4C0=";
+          allowedIPs = [ "10.100.0.3/32" ];
+        }
       ];
     };
   };
