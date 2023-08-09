@@ -64,7 +64,6 @@
 
     casks = [
       "discord"
-      "homebrew/cask/docker"
       "notion"
       "telegram"
       "spotify"
@@ -72,7 +71,6 @@
       "karabiner-elements"
       "grid"
       "scroll-reverser"
-      "utm"
       "topnotch"
       "bambu-studio"
       "monitorcontrol"

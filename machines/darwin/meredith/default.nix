@@ -19,6 +19,10 @@ in
 
   imports = [ ./system.nix ];
   homebrew = {
+    brews = [
+      "ansible"
+      "ansible-lint"
+      ];
     casks = [
       "google-chrome"
         "slack"
@@ -46,10 +50,23 @@ in
       pyyaml
       ]))
       ansible-language-server
+      vault
       yq
       git-lfs
       pre-commit
       bfg-repo-cleaner
+      go
+      gotools
+      gopls
+      go-outline
+      gocode
+      gopkgs
+      gocode-gomod
+      godef
+      golint
+      colima
+      docker
+      utm
   ];
 
   }
