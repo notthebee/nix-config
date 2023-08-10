@@ -48,6 +48,7 @@
       export EDITOR=nvim || export EDITOR=vim
       export LANG=en_US.UTF-8
       export LC_CTYPE=en_US.UTF-8
+      export DOCKER_HOST="unix://$HOME/.colima/default/docker.sock"
 
       switch (uname)
     case "*Darwin"
