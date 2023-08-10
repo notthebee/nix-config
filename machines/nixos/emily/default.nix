@@ -1,5 +1,6 @@
 { inputs, lib, config, vars, pkgs, ... }:
 {
+  hardware.cpu.amd.updateMicrocode = true;
   boot.zfs.forceImportRoot = true;
   zfs-root = {
     boot = {
@@ -13,7 +14,7 @@
       "i915.enable_guc=2" 
       "enable_fbc=1" 
       "amd_pstate.shared_mem=1"
-      "amd_pstate=passive"
+      "amd_pstate=active"
       ];
       sshUnlock = {
         enable = false;
@@ -96,6 +97,7 @@
     golint
     powertop
     cpufrequtils
+    ryzenadj
   ];
 
   }
