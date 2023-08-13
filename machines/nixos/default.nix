@@ -8,6 +8,17 @@
   # You can configure networking with "nmtui" command.
   networking.useDHCP = true;
   networking.networkmanager.enable = false;
+  nixpkgs = {
+    overlays = [
+        inputs.nur.overlay
+    ];
+    config = {
+      allowUnfree = true;
+      allowUnfreePredicate = (_: true);
+    };
+  };
+
+
 
   users.users = {
     root = {

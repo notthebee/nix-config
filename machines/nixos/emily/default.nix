@@ -1,6 +1,18 @@
 { inputs, lib, config, vars, pkgs, ... }:
+let 
+  ryzenPackages = with pkgs.nur.repos.arc.packages; [
+    ryzen-smu
+    ryzen-monitor
+  ];
+in
 {
-  hardware.cpu.amd.updateMicrocode = true;
+
+  
+  boot.initrd.kernelModules = [ "amdgpu" ];
+  hardware.cpu.amd.updateMicrocode = true;                                                                                                                                                                         
+  hardware.enableRedistributableFirmware = true;
+  hardware.opengl.enable = true;                                                                                                                                                                                   
+  hardware.opengl.driSupport = true;
   boot.zfs.forceImportRoot = true;
   zfs-root = {
     boot = {
@@ -98,6 +110,7 @@
     powertop
     cpufrequtils
     ryzenadj
-  ];
-
+    gnumake
+    gcc
+  ] ++ ryzenPackages;
   }
