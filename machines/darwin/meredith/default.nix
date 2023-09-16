@@ -30,6 +30,7 @@ in
         "mattermost"
         "viscosity"
         "sequel-ace"
+        "obs"
     ];
 
     masApps = {
@@ -45,6 +46,7 @@ in
   environment.systemPackages = with pkgs; [
       (python311.withPackages(ps: with ps; [ 
       pip 
+      jmespath
       requests
       setuptools
       pyyaml
