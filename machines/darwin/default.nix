@@ -97,12 +97,14 @@
     ncdu
     nmap
     jq
+    yq
     bitwarden-cli
     ripgrep
     sqlite
     pwgen
     gnupg
     inputs.agenix.packages."${system}".default 
+    direnv
   ];
 
 }
