@@ -52,9 +52,10 @@
 # 1    0b01    L0s only
 # 2    0b10    L1 only
 # 3    0b11    L1 and L0s
-ASPM_SETTING=3
-ENDPOINT="00:01.0"
-ROOT_COMPLEX="00:01.0"
+ASPM_SETTING=2
+ENDPOINT="08:00.0"
+echo "power" | tee /sys/devices/system/cpu/cpufreq/policy*/energy_performance_preference
+echo powersave | tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
 
 function aspm_setting_to_string()
 {
@@ -263,24 +264,16 @@ fi
 # 3    0b11    L1 and L0s
 
 
-ASPM_SETTING=3
-ENDPOINT="00:01.0"
-enable_aspm_byte $ENDPOINT
 ASPM_SETTING=2
-ENDPOINT="00:1c.0"
+ENDPOINT="00:08.1"
 enable_aspm_byte $ENDPOINT
-ASPM_SETTING=3
-ENDPOINT="00:1d.0"
+ENDPOINT="08:00.0"
 enable_aspm_byte $ENDPOINT
-ASPM_SETTING=2
-ENDPOINT="01:00.0"
+ENDPOINT="08:00.2"
 enable_aspm_byte $ENDPOINT
-ENDPOINT="01:00.1"
+ENDPOINT="08:00.3"
 enable_aspm_byte $ENDPOINT
-ASPM_SETTING=3
-ENDPOINT="02:00.0"
-enable_aspm_byte $ENDPOINT
-ENDPOINT="03:00.0"
+ENDPOINT="08:00.4"
 enable_aspm_byte $ENDPOINT
 echo
 

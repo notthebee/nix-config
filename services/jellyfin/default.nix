@@ -15,7 +15,6 @@ in
         autoStart = true;
         extraOptions = [
           "--device=/dev/dri/renderD128:/dev/dri/renderD128"
-          "--device=/dev/dri/card0:/dev/dri/card0"
           "-l=traefik.enable=true"
           "-l=traefik.http.routers.jellyfin.rule=Host(`jellyfin.${vars.domainName}`)"
           "-l=traefik.http.services.jellyfin.loadbalancer.server.port=8096"
@@ -30,7 +29,8 @@ in
           PUID = "994";
           UMASK = "002";
           GUID = "993";
-          DOCKER_MODS = "linuxserver/mods:jellyfin-opencl-intel";
+          DOCKER_MODS = "linuxserver/mods:jellyfin-amd";
+          ROC_ENABLE_PRE_VEGA = "1";
         };
       };
     };
