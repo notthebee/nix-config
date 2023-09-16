@@ -1,14 +1,6 @@
 { inputs, lib, config, vars, pkgs, ... }:
-let 
-  ryzenPackages = with pkgs.nur.repos.arc.packages; [
-    ryzen-smu
-    ryzen-monitor
-  ];
-in
 {
-
-  
-  boot.initrd.kernelModules = [ "amdgpu" ];
+  boot.initrd.kernelModules = [ "amdgpu i915" ];
   hardware.cpu.amd.updateMicrocode = true;                                                                                                                                                                         
   hardware.enableRedistributableFirmware = true;
   hardware.opengl.enable = true;                                                                                                                                                                                   
@@ -24,6 +16,7 @@ in
       kernelParams = [ 
       "pcie_aspm=force"
       "i915.enable_guc=2" 
+      "i915.force_probe=56a5"
       "enable_fbc=1" 
       "amd_pstate.shared_mem=1"
       "amd_pstate=active"
@@ -109,8 +102,8 @@ in
     golint
     powertop
     cpufrequtils
-    ryzenadj
     gnumake
     gcc
-  ] ++ ryzenPackages;
+    intel-gpu-tools
+  ];
   }

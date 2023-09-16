@@ -42,7 +42,10 @@
       paths = [
         "${vars.serviceConfigRoot}"
       ];
-      backupPrepareCommand = "systemctl stop podman-*";
+      backupPrepareCommand = ''
+      systemctl stop podman-*
+      ${pkgs.restic}/bin/restic -r "${config.services.restic.backups.appdata-local.repository}" -p ${config.age.secrets.resticPassword.path} unlock
+      '';
       backupCleanupCommand = ''
       systemctl start --all "podman-*"
       if [[ $SERVICE_RESULT =~ "success" ]]; then
@@ -72,7 +75,10 @@
       paths = [
         "${vars.serviceConfigRoot}"
       ];
-      backupPrepareCommand = "systemctl stop podman-*";
+      backupPrepareCommand = ''
+      systemctl stop podman-*
+      ${pkgs.restic}/bin/restic -r "${config.services.restic.backups.appdata-backblaze.repository}" -p ${config.age.secrets.resticPassword.path} unlock
+      '';
       backupCleanupCommand = ''
       systemctl start --all "podman-*"
       if [[ $SERVICE_RESULT =~ "success" ]]; then

@@ -145,7 +145,6 @@
             agenix.nixosModules.default
 
             # Services and applications
-            ./services/dashy
             ./services/invoiceninja
             ./services/paperless-ngx
             ./services/traefik
