@@ -5,9 +5,11 @@ directories = [
 "${vars.serviceConfigRoot}/radarr"
 "${vars.serviceConfigRoot}/prowlarr"
 "${vars.serviceConfigRoot}/recyclarr"
+"${vars.serviceConfigRoot}/booksonic"
 "${vars.mainArray}/Media/Downloads"
-"${vars.mainArray}/Media/Plex/TV"
-"${vars.mainArray}/Media/Plex/Movies"
+"${vars.mainArray}/Media/TV"
+"${vars.mainArray}/Media/Movies"
+"${vars.mainArray}/Media/Audiobooks"
 ];
   in
   {
@@ -89,6 +91,26 @@ system.activationScripts.recyclarr_configure = ''
           TZ = vars.timeZone;
           PUID = "994";
           GUID = "993";
+          UMASK = "002";
+        };
+      };
+      booksonic = {
+        image = "lscr.io/linuxserver/booksonic-air";
+        autoStart = true;
+        extraOptions = [
+          "-l=traefik.enable=true"
+          "-l=traefik.http.routers.booksonic.rule=Host(`booksonic.${vars.domainName}`)"
+          "-l=traefik.http.services.booksonic.loadbalancer.server.port=4040"
+        ];
+        volumes = [
+            "${vars.mainArray}/Media/Audiobooks:/audiobooks"
+            "${vars.serviceConfigRoot}/booksonic:/config"
+        ];
+        environment = {
+          TZ = vars.timeZone;
+          PUID = "994";
+          GUID = "993";
+          CONTEXT_PATH = "/";
           UMASK = "002";
         };
       };
