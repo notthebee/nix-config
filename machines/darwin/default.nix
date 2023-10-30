@@ -105,6 +105,9 @@
     gnupg
     inputs.agenix.packages."${system}".default 
     direnv
+    yt-dlp
+    ffmpeg
+    php
   ];
 
 }
