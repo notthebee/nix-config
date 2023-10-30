@@ -29,7 +29,7 @@ in
           PUID = "994";
           UMASK = "002";
           GUID = "993";
-          DOCKER_MODS = "linuxserver/mods:jellyfin-amd";
+          DOCKER_MODS = "linuxserver/mods:jellyfin-opencl-intel";
           ROC_ENABLE_PRE_VEGA = "1";
         };
       };

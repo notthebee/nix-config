@@ -1,7 +1,7 @@
 { inputs, lib, config, vars, pkgs, ... }:
 {
-  boot.initrd.kernelModules = [ "amdgpu i915" ];
-  hardware.cpu.amd.updateMicrocode = true;                                                                                                                                                                         
+  boot.initrd.kernelModules = [ "i915" ];
+  hardware.cpu.intel.updateMicrocode = true;                                                                                                                                                                         
   hardware.enableRedistributableFirmware = true;
   hardware.opengl.enable = true;                                                                                                                                                                                   
   hardware.opengl.driSupport = true;
@@ -15,11 +15,7 @@
       removableEfi = true;
       kernelParams = [ 
       "pcie_aspm=force"
-      "i915.enable_guc=2" 
-      "i915.force_probe=56a5"
-      "enable_fbc=1" 
-      "amd_pstate.shared_mem=1"
-      "amd_pstate=active"
+      "consoleblank=60"
       ];
       sshUnlock = {
         enable = false;
@@ -35,8 +31,7 @@
 
   imports = [
     ./filesystems
-    ./shares 
-  ];
+    ./shares ];
 
   powerManagement.powertop.enable = true;
 
@@ -62,7 +57,7 @@
       via = "10.4.0.1";
     }];
   };
-};
+    };
 };
 
   systemd.services.glances = {

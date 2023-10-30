@@ -53,7 +53,7 @@
 # 2    0b10    L1 only
 # 3    0b11    L1 and L0s
 ASPM_SETTING=2
-ENDPOINT="08:00.0"
+ENDPOINT="00:01.1"
 echo "power" | tee /sys/devices/system/cpu/cpufreq/policy*/energy_performance_preference
 echo powersave | tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
 
@@ -265,15 +265,15 @@ fi
 
 
 ASPM_SETTING=2
+ENDPOINT="07:00.0"
+enable_aspm_byte $ENDPOINT
+ENDPOINT="07:00.2"
+enable_aspm_byte $ENDPOINT
+ENDPOINT="07:00.3"
+enable_aspm_byte $ENDPOINT
+ENDPOINT="07:00.4"
+enable_aspm_byte $ENDPOINT
 ENDPOINT="00:08.1"
-enable_aspm_byte $ENDPOINT
-ENDPOINT="08:00.0"
-enable_aspm_byte $ENDPOINT
-ENDPOINT="08:00.2"
-enable_aspm_byte $ENDPOINT
-ENDPOINT="08:00.3"
-enable_aspm_byte $ENDPOINT
-ENDPOINT="08:00.4"
 enable_aspm_byte $ENDPOINT
 echo
 
