@@ -2,11 +2,11 @@
 let
 directories = [
 "${vars.serviceConfigRoot}/paperless"
-"${vars.mainArray}/Documents"
-"${vars.mainArray}/Documents/Paperless"
-"${vars.mainArray}/Documents/Paperless/Documents"
-"${vars.mainArray}/Documents/Paperless/Import"
-"${vars.mainArray}/Documents/Paperless/Export"
+"${vars.cacheArray}/Documents"
+"${vars.cacheArray}/Documents/Paperless"
+"${vars.cacheArray}/Documents/Paperless/Documents"
+"${vars.cacheArray}/Documents/Paperless/Import"
+"${vars.cacheArray}/Documents/Paperless/Export"
 ];
 in
 {
