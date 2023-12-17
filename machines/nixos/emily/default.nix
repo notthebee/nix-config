@@ -45,39 +45,42 @@
   };
 
   networking = {
+  nameservers = [ "192.168.2.1" ];
+  defaultGateway = "192.168.2.1";
   interfaces = {
     enp1s0f0.ipv4 = {
     addresses = [{
-      address = "10.4.0.2";
+      address = "192.168.2.230";
       prefixLength = 24;
     }];
     routes = [{
-      address = "10.4.0.0";
+      address = "192.168.2.0";
       prefixLength = 24;
-      via = "10.4.0.1";
+      via = "192.168.2.1";
     }];
   };
     };
 };
 
-  systemd.services.glances = {
-    after = [ "network.target" ];
-    script = "${pkgs.glances}/bin/glances -w";
-    wantedBy = [ "multi-user.target" ];
-    serviceConfig = {
-      Restart = "on-abort";
-      RemainAfterExit = "yes";
-    };
-  };
-
   networking.firewall.allowedTCPPorts = [ 
-  61208 # glances
   5201 # iperf3 
   ];
 
   virtualisation.docker.storageDriver = "overlay2";
 
   systemd.services.mergerfs-uncache.serviceConfig.ExecStart = lib.mkForce "/run/current-system/sw/bin/mergerfs-uncache -s ${vars.cacheArray} -d ${vars.slowArray} -t 50 --exclude 'YoutubeCurrent/'";
+
+  services.prometheus = {
+    enable = true;
+    exporters = {
+      node = {
+        enable = true;
+        openFirewall = true;
+        enabledCollectors = [ "systemd" "zfs" "smartctl" "collectd" ];
+      };
+    };
+  };
+
 
   environment.systemPackages = with pkgs; [
     pciutils
