@@ -147,11 +147,14 @@
             # Services and applications
             ./services/invoiceninja
             ./services/paperless-ngx
+            ./services/icloud-drive
             ./services/traefik
             ./services/deluge
             ./services/arr
             ./services/jellyfin
             ./services/vaultwarden
+            ./services/monitoring
+            ./services/kiwix
 
             # User-specific configurations
             ./users/notthebee

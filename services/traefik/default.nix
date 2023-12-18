@@ -42,6 +42,7 @@ in
         ];
         ports = [
           "443:443"
+          "80:80"
         ];
         environmentFiles = [
           config.age.secrets.cloudflareDnsApiCredentials.path
