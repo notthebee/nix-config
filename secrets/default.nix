@@ -59,4 +59,10 @@
   age.secrets.bwSessionFish = lib.mkDefault {
       file = ./bwSessionFish.age;
     };
+  age.secrets.icloudDrive = lib.mkDefault {
+      file = ./icloudDrive.age;
+      };
+  age.secrets.icloudDriveUsername = lib.mkDefault {
+      file = ./icloudDriveUsername.age;
+      };
 }

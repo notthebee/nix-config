@@ -19,4 +19,6 @@ in {
   "resticPassword.age".publicKeys = allKeys;
   "wireguardPrivateKey.age".publicKeys = allKeys;
   "bwSessionFish.age".publicKeys = allKeys;
+  "icloudDrive.age".publicKeys = allKeys;
+  "icloudDriveUsername.age".publicKeys = allKeys;
 }

@@ -1,15 +1,6 @@
 { config, vars, ... }:
 {
 # grafana configuration
-  services.grafana = {
-    enable = true;
-    domain = "grafana.goose.party";
-    port = 2342;
-    addr = "0.0.0.0";
-  };
-
-  networking.firewall.allowedTCPPorts = [ 2342 ];
-
   services.prometheus = {
     enable = true;
     port = 9001;
