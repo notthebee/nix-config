@@ -5,12 +5,24 @@ in
 {
   environment.systemPackages = [ mergerfs-uncache ];
 
+  security.sudo.extraRules = [{
+    commands = [
+      {
+        command = "${pkgs.systemd}/bin/journalctl --unit=mergerfs-uncache.service *";
+        options = [ "NOPASSWD" ];
+      }];
+      groups = [ "share" ];
+      }];
+
   systemd = {
     services.mergerfs-uncache = {
       description = "MergerFS Mover script";
       path = [
         pkgs.rsync
         pkgs.python3
+        pkgs.systemd
+        pkgs.coreutils
+        pkgs.gawk
       ];
       serviceConfig = {
         Type = "simple";
@@ -18,6 +30,11 @@ in
         User = "share";
         Group = "share";
       };
+    postStop = ''
+      ts=$(systemctl show -p ActiveEnterTimestamp mergerfs-uncache.service | awk '{print $2 $3}')
+      message=$(/run/wrappers/bin/sudo journalctl --unit=mergerfs-uncache.service --since "$ts" --no-pager)
+      /run/current-system/sw/bin/notify -s "$SERVICE_RESULT" -t "mergerfs-uncache Mover" -m "$message"
+      '';
     };
     timers.mergerfs-uncache = {
       wantedBy = ["multi-user.target"];
@@ -27,10 +44,4 @@ in
       };
     };
   };
-
-
-
-
 }
-
-

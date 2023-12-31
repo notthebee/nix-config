@@ -26,7 +26,7 @@
     };
     backups.appdata-local = {
       timerConfig = {
-        OnCalendar = "Mon...Sat *-*-* 05:00:00";
+        OnCalendar = "Mon..Sat *-*-* 05:00:00";
         Persistent = true;
       };
       repository = "rest:http://localhost:8000/appdata-local";

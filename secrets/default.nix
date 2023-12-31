@@ -11,14 +11,14 @@
   age.secrets.telegramApiKey = lib.mkDefault {
     file = ./telegramApiKey.age;
     owner = "notthebee";
-    group = "notthebee";
-    mode = "640";
+    group = "share";
+    mode = "660";
     };
   age.secrets.telegramChannelId = lib.mkDefault {
     file = ./telegramChannelId.age;
     owner = "notthebee";
-    group = "notthebee";
-    mode = "640";
+    group = "share";
+    mode = "660";
     };
   age.secrets.smtpPassword = lib.mkDefault {
     file = ./smtpPassword.age;
@@ -64,5 +64,8 @@
       };
   age.secrets.icloudDriveUsername = lib.mkDefault {
       file = ./icloudDriveUsername.age;
+      };
+  age.secrets.pingvinCloudflared = lib.mkDefault {
+      file = ./pingvinCloudflared.age;
       };
 }

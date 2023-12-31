@@ -21,4 +21,5 @@ in {
   "bwSessionFish.age".publicKeys = allKeys;
   "icloudDrive.age".publicKeys = allKeys;
   "icloudDriveUsername.age".publicKeys = allKeys;
+  "pingvinCloudflared.age".publicKeys = allKeys;
 }

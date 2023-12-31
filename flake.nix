@@ -155,6 +155,7 @@
             ./services/vaultwarden
             ./services/monitoring
             ./services/kiwix
+            ./services/pingvin-share
 
             # User-specific configurations
             ./users/notthebee
