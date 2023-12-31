@@ -68,19 +68,7 @@
 
   virtualisation.docker.storageDriver = "overlay2";
 
-  systemd.services.mergerfs-uncache.serviceConfig.ExecStart = lib.mkForce "/run/current-system/sw/bin/mergerfs-uncache -s ${vars.cacheArray} -d ${vars.slowArray} -t 50 --exclude 'YoutubeCurrent/'";
-
-  services.prometheus = {
-    enable = true;
-    exporters = {
-      node = {
-        enable = true;
-        openFirewall = true;
-        enabledCollectors = [ "systemd" "zfs" "smartctl" "collectd" ];
-      };
-    };
-  };
-
+  systemd.services.mergerfs-uncache.serviceConfig.ExecStart = lib.mkForce "/run/current-system/sw/bin/mergerfs-uncache -s ${vars.cacheArray} -d ${vars.slowArray} -t 50 --exclude 'YoutubeCurrent'";
 
   environment.systemPackages = with pkgs; [
     pciutils

@@ -15,6 +15,8 @@ in
       serviceConfig = {
         Type = "simple";
         ExecStart = "/run/current-system/sw/bin/mergerfs-uncache -s <cache-fs> -d <backing-pool> -t 50 --exclude";
+        User = "share";
+        Group = "share";
       };
     };
     timers.mergerfs-uncache = {

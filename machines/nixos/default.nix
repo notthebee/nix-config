@@ -74,7 +74,7 @@
   environment.systemPackages = with pkgs; [
     wget
     iperf3
-    exa
+    eza
     neofetch
     (python310.withPackages(ps: with ps; [ pip ]))
     tmux
