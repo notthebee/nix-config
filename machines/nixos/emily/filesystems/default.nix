@@ -41,9 +41,27 @@
     fsType = "zfs";
   };
 
-  boot.initrd.postDeviceCommands = lib.mkAfter ''
-    zfs rollback -r rpool/nixos/empty@start
-  '';
+  boot.initrd.systemd.services.rollback = {
+    description = "Rollback ZFS datasets to a pristine state";
+    wantedBy = [
+      "initrd.target"
+    ]; 
+    after = [
+      "zfs-import-zroot.service"
+    ];
+    before = [ 
+      "sysroot.mount"
+    ];
+    path = with pkgs; [
+      zfs
+    ];
+    unitConfig.DefaultDependencies = "no";
+    serviceConfig.Type = "oneshot";
+    script = ''
+      zfs rollback -r rpool/nixos/empty@start
+    '';
+  };
+
 
   fileSystems."/nix" =
   { device = "rpool/nixos/nix";

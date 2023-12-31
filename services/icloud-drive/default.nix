@@ -33,7 +33,7 @@ icloudDriveSettings = {
   drive = {
     destination = "drive";
     remove_obsolete = false;
-    sync_interval = 300;
+    sync_interval = 86400;
     ignore = [
       "node_modules"
         "*.md"
@@ -42,7 +42,7 @@ icloudDriveSettings = {
   photos = {
     destination = "photos"; 
     remove_obsolete = false;
-    sync_interval = 500;
+    sync_interval = 86400;
     all_albums = true;
     folder_format = "%Y/%m";
   };

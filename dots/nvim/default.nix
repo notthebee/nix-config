@@ -55,7 +55,7 @@ in
       };
       indent-blankline = {
         enable = true;
-        filetypeExclude = [
+        exclude.filetypes = [
           "startify"
         ];
       };
