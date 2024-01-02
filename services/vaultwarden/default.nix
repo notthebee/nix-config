@@ -15,6 +15,11 @@ directories = [
           "-l=traefik.enable=true"
           "-l=traefik.http.routers.vaultwarden.rule=Host(`pass.${vars.domainName}`)"
           "-l=traefik.http.services.vaultwarden.loadbalancer.server.port=80"
+          "-l=homepage.group=Services"
+          "-l=homepage.name=Vaultwarden"
+          "-l=homepage.icon=bitwarden.svg"
+          "-l=homepage.href=https://pass.${vars.domainName}"
+          "-l=homepage.description=Password manager"
         ];
         volumes = [
           "${vars.serviceConfigRoot}/vaultwarden:/data"

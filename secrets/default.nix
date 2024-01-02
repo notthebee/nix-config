@@ -68,4 +68,7 @@
   age.secrets.pingvinCloudflared = lib.mkDefault {
       file = ./pingvinCloudflared.age;
       };
+  age.secrets.jellyfinApiKey = lib.mkDefault {
+      file = ./jellyfinApiKey.age;
+      };
 }

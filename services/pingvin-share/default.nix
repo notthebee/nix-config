@@ -20,11 +20,17 @@ directories = [
         ];
         extraOptions = [
         "--network=container:pingvin-cloudflared"
+        "-l=homepage.group=Services"
+        "-l=homepage.name=pingvin-share"
+        "-l=homepage.icon=pingvin-share.svg"
+        "-l=homepage.href=https://share.${vars.domainName}"
+        "-l=homepage.description=File sharing"
         ];
         volumes = [
           "${vars.serviceConfigRoot}/pingvin/backend:/opt/app/backend/data"
           "${vars.mainArray}/Media/Uploads:/opt/app/frontend/public"
           "${vars.serviceConfigRoot}/pingvin/frontend:/opt/app/frontend/public/img"
+          
         ];
         environment = {
           TZ = vars.timeZone;
