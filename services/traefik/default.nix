@@ -35,10 +35,15 @@ in
 
         ];
         extraOptions = [
-          # Proxying Traefik itslef
+          # Proxying Traefik itself
           "-l=traefik.enable=true"
           "-l=traefik.http.routers.traefik.rule=Host(`proxy.${vars.domainName}`)"
           "-l=traefik.http.services.traefik.loadbalancer.server.port=8080"
+          "-l=homepage.group=Services"
+          "-l=homepage.name=Traefik"
+          "-l=homepage.icon=traefik.svg"
+          "-l=homepage.href=https://traefik.${vars.domainName}"
+          "-l=homepage.description=Reverse proxy"
         ];
         ports = [
           "443:443"

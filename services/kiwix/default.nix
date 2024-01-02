@@ -15,6 +15,11 @@ directories = [
         "-l=traefik.enable=true"
         "-l=traefik.http.routers.kiwix.rule=Host(`kiwix.${vars.domainName}`)"
         "-l=traefik.http.services.kiwix.loadbalancer.server.port=8080"
+        "-l=homepage.group=Services"
+        "-l=homepage.name=Kiwix"
+        "-l=homepage.icon=kiwix-light.png"
+        "-l=homepage.href=https://kiwix.${vars.domainName}"
+        "-l=homepage.description=Wiki mirror"
         ];
         cmd = [
           "*.zim"

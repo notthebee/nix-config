@@ -20,6 +20,14 @@ directories = [
         ];
         extraOptions = [
         "--network=container:gluetun"
+        "-l=homepage.group=Arr"
+        "-l=homepage.name=Deluge"
+        "-l=homepage.icon=deluge.svg"
+        "-l=homepage.href=https://deluge.${vars.domainName}"
+        "-l=homepage.description=Torrent client"
+        "-l=homepage.widget.type=deluge"
+        "-l=homepage.widget.password=deluge"
+        "-l=homepage.widget.url=http://gluetun:8112"
         ];
         volumes = [
           "${vars.mainArray}/Media/Downloads:/data/completed"
@@ -40,6 +48,16 @@ directories = [
         "-l=traefik.http.routers.deluge.rule=Host(`deluge.${vars.domainName}`)"
         "-l=traefik.http.services.deluge.loadbalancer.server.port=8112"
         "--device=/dev/net/tun:/dev/net/tun"
+        "-l=homepage.group=Arr"
+        "-l=homepage.name=Gluetun"
+        "-l=homepage.icon=gluetun.svg"
+        "-l=homepage.href=https://deluge.${vars.domainName}"
+        "-l=homepage.description=VPN killswitch"
+        "-l=homepage.widget.type=gluetun"
+        "-l=homepage.widget.url=http://gluetun:8000"
+        ];
+        ports = [
+          "127.0.0.1:8083:8000"
         ];
         environmentFiles = [
           config.age.secrets.wireguardCredentials.path

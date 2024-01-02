@@ -125,16 +125,16 @@
   fileSystems.${vars.slowArray} = 
   { device = "/mnt/data*";
     options = [
-        "defaults"
-        "allow_other"
-        "moveonenospc=1"
-        "minfreespace=1000G"
-        "func.getattr=newest"
-        "fsname=mergerfs_slow"
-        "uid=994"
-        "gid=993"
-        "umask=002"
-        "x-mount.mkdir"
+      "defaults"
+      "allow_other"
+      "moveonenospc=1"
+      "minfreespace=1000G"
+      "func.getattr=newest"
+      "fsname=mergerfs_slow"
+      "uid=994"
+      "gid=993"
+      "umask=002"
+      "x-mount.mkdir"
     ];
     fsType = "fuse.mergerfs";
   };
@@ -142,17 +142,17 @@
   fileSystems.${vars.mainArray} = 
   { device = "${vars.cacheArray}:${vars.slowArray}";
     options = [
-      "category.create=lfs"
-        "defaults"
-        "allow_other"
-        "moveonenospc=1"
-        "minfreespace=500G"
-        "func.getattr=newest"
-        "fsname=user"
-        "uid=994"
-        "gid=993"
-        "umask=002"
-        "x-mount.mkdir"
+      "category.create=epff"
+      "defaults"
+      "allow_other"
+      "moveonenospc=1"
+      "minfreespace=500G"
+      "func.getattr=newest"
+      "fsname=user"
+      "uid=994"
+      "gid=993"
+      "umask=002"
+      "x-mount.mkdir"
     ];
     fsType = "fuse.mergerfs";
   };

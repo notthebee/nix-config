@@ -156,6 +156,8 @@
             ./services/monitoring
             ./services/kiwix
             ./services/pingvin-share
+            ./services/scrutiny
+            ./services/homepage
 
             # User-specific configurations
             ./users/notthebee
