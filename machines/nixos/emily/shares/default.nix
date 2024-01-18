@@ -4,7 +4,7 @@ let
   smb = {
     share_list = {
       Backups = { path = "/mnt/user/Backups"; };
-      Documents = { path = "/mnt/user/Documents"; };
+      Documents = { path = "/mnt/cache/Documents"; };
       Media = { path = "/mnt/user/Media"; };
       Misc = { path = "/mnt/mergerfs_slow/Misc";  };
       TimeMachine = { path = "/mnt/cache/TimeMachine"; "fruit:time machine" = "yes"; };

@@ -90,7 +90,7 @@
     git-crypt
     iperf3
     deploy-rs
-    exa
+    eza
     neofetch
     tmux
     rsync

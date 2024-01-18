@@ -1,0 +1,7 @@
+- Monitoring:
+    - Network:
+        widget:
+          type: glances
+          url: http://host.containers.internal:61208
+          metric: network:enp1s0f0
+          chart: true

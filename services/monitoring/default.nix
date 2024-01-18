@@ -1,6 +1,11 @@
 { config, vars, ... }:
 {
 # grafana configuration
+networking.firewall.allowedTCPPorts = [ 
+  9100
+  ];
+
+
   services.prometheus = {
     enable = true;
     port = 9001;
@@ -15,8 +20,7 @@
     exporters = {
       node = {
         enable = true;
-        enabledCollectors = [ "systemd"  ];
-        port = 9002;
+        port = 9100;
       };
     };
   };

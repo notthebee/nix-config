@@ -31,7 +31,7 @@ in
   settings = {
     address = "0.0.0.0";
     port = 8080;
-    scope = "${vars.mainArray}/Documents/Paperless/Import";
+    scope = "${vars.cacheArray}/Documents/Paperless/Import";
     modify = true;
     auth = true;
     users = [
@@ -54,11 +54,19 @@ in
           "-l=traefik.enable=true"
           "-l=traefik.http.routers.paperless.rule=Host(`paperless.${vars.domainName}`)"
           "-l=traefik.http.services.paperless.loadbalancer.server.port=8000"
+          "-l=homepage.group=Services"
+          "-l=homepage.name=Paperless"
+          "-l=homepage.icon=paperless.svg"
+          "-l=homepage.href=https://paperless.${vars.domainName}"
+          "-l=homepage.description=Digital document database"
+          "-l=homepage.widget.type=paperlessngx"
+          "-l=homepage.widget.key={{HOMEPAGE_VAR_PAPERLESS_TOKEN}}"
+          "-l=homepage.widget.url=http://paperless:8000"
         ];
         volumes = [
-          "${vars.mainArray}/Documents/Paperless/Documents:/usr/src/paperless/media"
-          "${vars.mainArray}/Documents/Paperless/Import:/usr/src/paperless/consume"
-          "${vars.mainArray}/Documents/Paperless/Export:/usr/src/paperless/export"
+          "${vars.cacheArray}/Documents/Paperless/Documents:/usr/src/paperless/media"
+          "${vars.cacheArray}/Documents/Paperless/Import:/usr/src/paperless/consume"
+          "${vars.cacheArray}/Documents/Paperless/Export:/usr/src/paperless/export"
           "${vars.serviceConfigRoot}/paperless/data:/usr/src/paperless/data"
         ];
         environmentFiles = [
