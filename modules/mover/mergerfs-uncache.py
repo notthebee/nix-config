@@ -120,6 +120,20 @@ if __name__ == "__main__":
         syslog.LOG_INFO,
         f"Uncaching from {cache_path} ({usage_percentage:.2f}% used) to {slow_path}.",
     )
+    syslog.syslog(syslog.LOG_INFO, "Computing candidates...")
+    candidates = sorted(
+        [(c, c.stat()) for c in cache_path.glob("**/*") if c.is_file()],
+        key=lambda p: p[1].st_atime,
+    )
+    for c_id, (c_path, c_stat) in enumerate(candidates):
+        for excluded_path in excluded_paths:
+            if f"{c_path}".startswith(excluded_path):
+                syslog.syslog(
+                    syslog.LOG_DEBUG,
+                    f"Skipping {c_path} since it is excluded by {excluded_path}.",
+                )
+                continue
+
     if usage_percentage <= target:
         syslog.syslog(
             syslog.LOG_INFO,
@@ -132,23 +146,10 @@ if __name__ == "__main__":
                 syslog.syslog(syslog.LOG_ERR, f"Failed to open {args.hc_url}.")
         exit(0)
 
-    syslog.syslog(syslog.LOG_INFO, "Computing candidates...")
-    candidates = sorted(
-        [(c, c.stat()) for c in cache_path.glob("**/*") if c.is_file()],
-        key=lambda p: p[1].st_atime,
-    )
-
     t_start = time.monotonic()
     syslog.syslog(syslog.LOG_INFO, "Processing candidates...")
     cache_used = cache_stats.used
     for c_id, (c_path, c_stat) in enumerate(candidates):
-        for excluded_path in excluded_paths:
-            if f"{c_path}".startswith(excluded_path):
-                syslog.syslog(
-                    syslog.LOG_DEBUG,
-                    f"Skipping {c_path} since it is excluded by {excluded_path}.",
-                )
-                continue
 
         syslog.syslog(syslog.LOG_DEBUG, f"{c_path}")
 

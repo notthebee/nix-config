@@ -3,7 +3,7 @@ let
   home = {
     username = "beethenot";
     homeDirectory = "/Users/beethenot";
-    stateVersion = "23.05";
+    stateVersion = "23.11";
     };
 in
 {

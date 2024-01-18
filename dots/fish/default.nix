@@ -66,13 +66,13 @@
                 :
                   end
 
-                  set -l exa_available (which exa)
+                  set -l exa_available (which eza)
                   if test -n "$exa_unavailable"
-                    set -l exa_git_unavailable (exa --version | grep "\-git")
+                    set -l exa_git_unavailable (eza --version | grep "\-git")
                       if test -n "$exa_git_unavailable"
-                        alias ls="exa --icons"
+                        alias ls="eza --icons"
                       else
-                        alias ls="exa --icons --git"
+                        alias ls="eza --icons --git"
                           end
                           end
                           '';

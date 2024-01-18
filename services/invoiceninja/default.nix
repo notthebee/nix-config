@@ -21,6 +21,11 @@ systemd.services.podman-invoiceninja-db = {
         extraOptions = [
           "-l=traefik.enable=true"
           "-l=traefik.http.routers.invoiceninja.rule=Host(`invoice.${vars.domainName}`)"
+          "-l=homepage.group=Services"
+          "-l=homepage.name=InvoiceNinja"
+          "-l=homepage.icon=invoiceninja-light.png"
+          "-l=homepage.href=https://invoice.${vars.domainName}"
+          "-l=homepage.description=Invoicing software"
         ];
         volumes = [
           "${vars.serviceConfigRoot}/invoiceninja/config:/config"

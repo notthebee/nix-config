@@ -43,6 +43,8 @@ declare -a error_messages=(
 "Permanent errors have been detected"
 "UNAVAIL"
 "devices are faulted"
+"DEGRADED"
+"unrecoverable error"
 )
 
 if [ -z "''${message}" ] || [ "''${message}" == " " ]; then
@@ -60,6 +62,9 @@ else
   case ''${severity} in
   "success")
     emoji="✅"
+    ;;
+  "info")
+    emoji="ℹ️"
     ;;
   *)
     emoji="❌"

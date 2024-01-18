@@ -43,6 +43,14 @@ system.activationScripts.recyclarr_configure = ''
           "-l=traefik.enable=true"
           "-l=traefik.http.routers.sonarr.rule=Host(`sonarr.${vars.domainName}`)"
           "-l=traefik.http.services.sonarr.loadbalancer.server.port=8989"
+          "-l=homepage.group=Arr"
+          "-l=homepage.name=Sonarr"
+          "-l=homepage.icon=sonarr.svg"
+          "-l=homepage.href=https://sonarr.${vars.domainName}"
+          "-l=homepage.description=TV show tracker"
+          "-l=homepage.widget.type=sonarr"
+          "-l=homepage.widget.key={{HOMEPAGE_FILE_SONARR_KEY}}"
+          "-l=homepage.widget.url=http://sonarr:8989"
         ];
         volumes = [
             "${vars.mainArray}/Media/Downloads:/downloads"
@@ -63,6 +71,11 @@ system.activationScripts.recyclarr_configure = ''
           "-l=traefik.enable=true"
           "-l=traefik.http.routers.prowlarr.rule=Host(`prowlarr.${vars.domainName}`)"
           "-l=traefik.http.services.prowlarr.loadbalancer.server.port=9696"
+          "-l=homepage.group=Arr"
+          "-l=homepage.name=Prowlarr"
+          "-l=homepage.icon=prowlarr.svg"
+          "-l=homepage.href=https://prowlarr.${vars.domainName}"
+          "-l=homepage.description=Torrent indexer"
         ];
         volumes = [
           "${vars.serviceConfigRoot}/prowlarr:/config"
@@ -81,6 +94,14 @@ system.activationScripts.recyclarr_configure = ''
           "-l=traefik.enable=true"
           "-l=traefik.http.routers.radarr.rule=Host(`radarr.${vars.domainName}`)"
           "-l=traefik.http.services.radarr.loadbalancer.server.port=7878"
+          "-l=homepage.group=Arr"
+          "-l=homepage.name=Radarr"
+          "-l=homepage.icon=radarr.svg"
+          "-l=homepage.href=https://radarr.${vars.domainName}"
+          "-l=homepage.description=Movie tracker"
+          "-l=homepage.widget.type=radarr"
+          "-l=homepage.widget.key={{HOMEPAGE_FILE_RADARR_KEY}}"
+          "-l=homepage.widget.url=http://radarr:7878"
         ];
         volumes = [
             "${vars.mainArray}/Media/Downloads:/downloads"
@@ -101,6 +122,11 @@ system.activationScripts.recyclarr_configure = ''
           "-l=traefik.enable=true"
           "-l=traefik.http.routers.booksonic.rule=Host(`booksonic.${vars.domainName}`)"
           "-l=traefik.http.services.booksonic.loadbalancer.server.port=4040"
+          "-l=homepage.group=Media"
+          "-l=homepage.name=Booksonic"
+          "-l=homepage.icon=booksonic.png"
+          "-l=homepage.href=https://booksonic.${vars.domainName}"
+          "-l=homepage.description=Audiobook server"
         ];
         volumes = [
             "${vars.mainArray}/Media/Audiobooks:/audiobooks"
