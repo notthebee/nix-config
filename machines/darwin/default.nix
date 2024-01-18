@@ -108,6 +108,7 @@
     yt-dlp
     ffmpeg
     php
+    chromedriver
   ];
 
 }
