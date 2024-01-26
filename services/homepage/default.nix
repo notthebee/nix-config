@@ -12,7 +12,10 @@ homepageSettings = {
     name = "services.yaml";
     text = builtins.readFile ./services.yaml;
   };
-  settings = settingsFormat.generate "settings.yaml" (import ./settings.nix);
+  settings = pkgs.writeTextFile {
+    name = "settings.yaml";
+    text = builtins.readFile ./settings.yaml;
+  };
   bookmarks = settingsFormat.generate "bookmarks.yaml" (import ./bookmarks.nix);
   widgets = pkgs.writeTextFile {
     name = "widgets.yaml";

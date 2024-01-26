@@ -17,3 +17,6 @@
 div#footer {
   display: none;
 }
+.services-group.basis-full.flex-1.px-1.-my-1 {
+  padding-bottom: 3rem;
+};

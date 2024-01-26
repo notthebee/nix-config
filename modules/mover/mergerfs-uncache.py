@@ -127,7 +127,7 @@ if __name__ == "__main__":
     )
     for c_id, (c_path, c_stat) in enumerate(candidates):
         for excluded_path in excluded_paths:
-            if f"{c_path}".startswith(excluded_path):
+            if excluded_path in f"{c_path}":
                 syslog.syslog(
                     syslog.LOG_DEBUG,
                     f"Skipping {c_path} since it is excluded by {excluded_path}.",
