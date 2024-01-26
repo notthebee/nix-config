@@ -116,11 +116,6 @@ in
 
     autoCmd = [
     {
-      event = [ "InsertLeave" ];
-      pattern = [ "*" ];
-      command = "set nopaste";
-    }
-    {
       event = [ "WinEnter" ];
       pattern = [ "*" ];
       command = "set cul";
@@ -195,6 +190,20 @@ in
         silent = true;
         action = "<cmd>CocCommand explorer<cr>";
       };
+      normal."p" = {
+        silent = true;
+        action = "p`]<Esc>";
+      };
+      normal."<A-CR>" = {
+        silent = true;
+        action = "O<Esc>";
+        remap = true;
+    };
+      normal."<CR>" = {
+        silent = true;
+        action = "o<Esc>";
+        remap = true;
+        };
       normal.";r" = {
         silent = true;
         action = ":call CheckForExplorer()<CR> <cmd>lua require('telescope.builtin').live_grep()<cr>";
