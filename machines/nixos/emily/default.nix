@@ -1,6 +1,6 @@
 { inputs, lib, config, vars, pkgs, ... }:
 {
-  boot.initrd.kernelModules = [ "i915" ];
+  boot.kernelModules = [ "nct6775" ];
   hardware.cpu.intel.updateMicrocode = true;                                                                                                                                                                         
   hardware.enableRedistributableFirmware = true;
   hardware.opengl.enable = true;                                                                                                                                                                                   
@@ -16,6 +16,7 @@
       kernelParams = [ 
       "pcie_aspm=force"
       "consoleblank=60"
+      "amd_pstate=active"
       ];
       sshUnlock = {
         enable = false;
@@ -74,7 +75,10 @@
     percentageFree = 60;
     excludedPaths = [
       "YoutubeCurrent"
+      "Media/Kiwix"
+      "Documents"
       "TimeMachine"
+      ".DS_Store"
     ];
   };
 

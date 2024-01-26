@@ -6,7 +6,7 @@ let
       Backups = { path = "/mnt/user/Backups"; };
       Documents = { path = "/mnt/cache/Documents"; };
       Media = { path = "/mnt/user/Media"; };
-      Misc = { path = "/mnt/mergerfs_slow/Misc";  };
+      Misc = { path = "/mnt/user/Misc";  };
       TimeMachine = { path = "/mnt/cache/TimeMachine"; "fruit:time machine" = "yes"; };
       YoutubeArchive = { path = "/mnt/user/YoutubeArchive"; };
       YoutubeCurrent = { path = "/mnt/cache/YoutubeCurrent"; };

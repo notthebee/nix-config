@@ -1,7 +1,30 @@
-- Monitoring:
+- Glances:
+    - Info:
+        widget:
+          type: glances
+          url: http://host.containers.internal:61208
+          metric: info
+    - CPU Temp:
+        widget:
+          type: glances
+          url: http://host.containers.internal:61208
+          metric: sensor:Composite
+    - Storage:
+        widget:
+          type: glances
+          url: http://host.containers.internal:61208
+          metric: process
     - Network:
         widget:
           type: glances
           url: http://host.containers.internal:61208
           metric: network:enp1s0f0
           chart: true
+
+- Arr: []
+
+- Media: []
+
+- Monitoring: []
+
+- Services: []

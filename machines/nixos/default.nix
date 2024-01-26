@@ -89,5 +89,7 @@
     lm_sensors
     jc
     moreutils
+    lsof
+    fatrace
   ];
 }

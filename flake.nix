@@ -130,6 +130,7 @@
         modules = [
             # Base configuration and modules
             ./modules/aspm-tuning
+            #./modules/hddtemp-monitor
             ./modules/zfs-root
             ./modules/email
             ./modules/tg-notify
@@ -156,7 +157,7 @@
             ./services/monitoring
             ./services/kiwix
             ./services/pingvin-share
-            ./services/scrutiny
+            #./services/scrutiny
             ./services/homepage
 
             # User-specific configurations

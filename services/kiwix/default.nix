@@ -1,7 +1,7 @@
 { config, vars, ... }:
 let
 directories = [
-"${vars.mainArray}/Media/Kiwix"
+"${vars.cacheArray}/Media/Kiwix"
 ];
   in
 {
@@ -25,7 +25,7 @@ directories = [
           "*.zim"
           ];
         volumes = [
-          "${vars.mainArray}/Media/Kiwix:/data"
+          "${vars.cacheArray}/Media/Kiwix:/data"
         ];
         environment = {
           TZ = vars.timeZone;
