@@ -1,9 +1,9 @@
 { inputs, lib, config, vars, pkgs, ... }:
 {
   boot.kernelModules = [ "nct6775" ];
-  hardware.cpu.intel.updateMicrocode = true;                                                                                                                                                                         
+  hardware.cpu.amd.updateMicrocode = true;
   hardware.enableRedistributableFirmware = true;
-  hardware.opengl.enable = true;                                                                                                                                                                                   
+  hardware.opengl.enable = true;
   hardware.opengl.driSupport = true;
   boot.zfs.forceImportRoot = true;
   zfs-root = {
@@ -46,6 +46,12 @@
   };
 
   networking = {
+  useDHCP = true;
+  networkmanager.enable = false;
+  firewall = {
+  allowPing = true;
+  allowedTCPPorts = [ 5201 ];
+  };
   nameservers = [ "192.168.2.1" ];
   defaultGateway = "192.168.2.1";
   interfaces = {
@@ -63,11 +69,9 @@
     };
 };
 
-  networking.firewall.allowedTCPPorts = [ 
-  5201 # iperf3 
-  ];
-
   virtualisation.docker.storageDriver = "overlay2";
+
+  system.autoUpgrade.enable = true; 
 
   mover = {
     cacheArray = vars.cacheArray;

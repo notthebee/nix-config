@@ -1,1 +1,2 @@
 machines.nix filter=git-crypt diff=git-crypt
+networks.nix filter=git-crypt diff=git-crypt
