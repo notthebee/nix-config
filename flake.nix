@@ -90,7 +90,7 @@
         system = "x86_64-linux";
         specialArgs = {
           inherit inputs machines;
-          vars = import ./machines/nixos/spencer/vars.nix;
+          vars = import ./machines/nixos/vars.nix;
         };
         modules = [
           # Base configuration and modules
@@ -121,11 +121,46 @@
         ];
       };
 
+      alison = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        specialArgs = {
+          inherit inputs machines;
+          vars = import ./machines/nixos/vars.nix;
+        };
+        modules = [
+          # Base configuration and modules
+            ./modules/tg-notify
+
+            ./modules/router
+            # Import the machine config + secrets
+            ./modules/zfs-root
+            ./modules/email
+            ./machines/nixos
+            ./machines/nixos/alison
+            ./secrets
+            agenix.nixosModules.default
+
+            # User-specific configurations
+            ./users/notthebee
+            home-manager.nixosModules.home-manager
+            {
+              home-manager.useGlobalPkgs = false; # makes hm use nixos's pkgs value
+                home-manager.extraSpecialArgs = { inherit inputs machines; }; # allows access to flake inputs in hm modules
+                home-manager.users.notthebee.imports = [ 
+                agenix.homeManagerModules.default
+                nix-index-database.hmModules.nix-index
+                ./users/notthebee/dots.nix 
+                ];
+              home-manager.backupFileExtension = "bak";
+            }
+        ];
+      };
+
       emily = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = {
           inherit inputs machines;
-          vars = import ./machines/nixos/emily/vars.nix;
+          vars = import ./machines/nixos/vars.nix;
         };
         modules = [
             # Base configuration and modules
