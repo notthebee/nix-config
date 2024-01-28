@@ -137,9 +137,14 @@ mkdir "${MNT}"/home
 mount -t zfs rpool/nixos/home "${MNT}"/home
 
 zfs create -o mountpoint=legacy rpool/nixos/var/log
+zfs create -o mountpoint=none rpool/nixos/var/lib
 zfs create -o mountpoint=legacy rpool/nixos/config
 zfs create -o mountpoint=legacy rpool/nixos/persist
 zfs create -o mountpoint=legacy rpool/nixos/nix
+
+zfs create -s -V 50G rpool/docker
+mkfs.ext4 /dev/zvol/rpool/docker
+tune2fs -o journal_data_writeback /dev/zvol/rpool/docker 
 
 zfs create -o mountpoint=none bpool/nixos
 zfs create -o mountpoint=legacy bpool/nixos/root
@@ -173,12 +178,12 @@ git clone https://github.com/notthebee/nix-config.git "${MNT}"/etc/nixos
 
 Put the private key into place (required for secret management)
 ```bash
-mkdir /mnt/home/notthebee/.ssh
+mkdir ${MNT}/home/notthebee/.ssh
 exit
-scp ~/.ssh/id_ed25519 nixos_installation_ip:/mnt/home/
+scp ~/.ssh/id_ed25519 nixos_installation_ip:/${MNT}/home/.ssh/id_ed25519
 ssh nixos@installation-media
-chmod 700 /mnt/home/notthebee
-chmod 600 /mnt/home/notthebee/id_ed25519
+chmod 700 ${MNT}/home/notthebee/.ssh
+chmod 600 $MNT}/home/notthebee/.ssh/id_ed25519
 ```
 
 Install the system
@@ -191,6 +196,7 @@ nixos-install \
 
 Unmount the filesystems
 ```bash
+umount "${MNT}"/boot/efis/"${i##*/}"-part1
 umount -Rl "${MNT}"
 zpool export -a
 ```

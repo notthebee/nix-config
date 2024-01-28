@@ -7,7 +7,7 @@ in {
 
   imports = [
     ./dns.nix
-    ./networks.nix
+    ../../../networksLocal.nix
   ];
 
   boot.kernel.sysctl = {
