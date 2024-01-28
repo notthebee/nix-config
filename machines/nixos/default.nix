@@ -81,5 +81,6 @@
     lsof
     fatrace
     git-crypt
+    bfg-repo-cleaner
   ];
 }
