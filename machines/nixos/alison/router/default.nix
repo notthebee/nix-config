@@ -94,6 +94,15 @@ in {
     firewall = {
       enable = true;
       allowPing = true;
+      extraStopCommands = ''
+        iptables -P INPUT ACCEPT
+        iptables -P FORWARD ACCEPT
+        iptables -P OUTPUT ACCEPT
+        iptables -t nat -F
+        iptables -t mangle -F
+        iptables -F
+        iptables -X
+      '';
       extraCommands =
         let
           dropPortNoLog = port:
@@ -155,7 +164,6 @@ in {
           (lib.concatMapStrings allowPortOnlyPrivately
           [
             67 # DHCP
-            69 # TFTP
             546 # DHCPv6
             547 # DHCPv6
             9100 # prometheus
@@ -184,7 +192,6 @@ in {
             ip46tables -A INPUT -i ${externalInterface} -j DROP
             ''
           ];
-          allowedTCPPorts = [];
           allowedUDPPorts = [];
         };
 
@@ -248,14 +255,14 @@ in {
 
           rebind-timer = 2000;
           renew-timer = 1000;
-          valid-lifetime = 4000;
+          valid-lifetime = 43200;
 
           subnet4 = 
             lib.lists.forEach (lib.attrsets.mapAttrsToList (name: value: name) config.networks) (x:
             {
               pools = [
               {
-                pool = toString ((lib.strings.removeSuffix ".1" (lib.attrsets.getAttrFromPath [x "cidr"] config.networks)) + ".100") + " - " + ((lib.strings.removeSuffix ".1" (lib.attrsets.getAttrFromPath [x "cidr"] config.networks)) + ".100");
+                pool = toString ((lib.strings.removeSuffix ".1" (lib.attrsets.getAttrFromPath [x "cidr"] config.networks)) + ".100") + " - " + ((lib.strings.removeSuffix ".1" (lib.attrsets.getAttrFromPath [x "cidr"] config.networks)) + ".255");
               }
               ];
               option-data = [
