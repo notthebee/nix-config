@@ -47,13 +47,14 @@
               nur,
               ... }@inputs:
     let 
-      machines = import ./machines.nix;
+      networksExternal = import ./machines/networksExternal.nix;
+      networksLocal = import ./machines/networksLocal.nix;
     in {
 
     darwinConfigurations."meredith" = nix-darwin.lib.darwinSystem {
       system = "aarch64-darwin";
       specialArgs = {
-        inherit inputs machines;
+        inherit inputs networksLocal networksExternal;
       };
       modules = [
         agenix.darwinModules.default
@@ -64,7 +65,7 @@
 
     deploy.nodes = {
       emily = {
-        hostname = machines.emily.address;
+        hostname = (self.lib.lists.findSingle (x: x.hostname == "emily") "none" "multiple" networksLocal.networks.lan.reservations);
         profiles.system = {
           sshUser = "notthebee";
           user = "root";
@@ -74,7 +75,7 @@
         };
       };
       spencer = {
-        hostname = machines.spencer.address;
+        hostname = networksExternal.spencer.address;
         profiles.system = {
           sshUser = "notthebee";
           user = "root";
@@ -89,8 +90,8 @@
       spencer = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = {
-          inherit inputs machines;
-          vars = import ./machines/nixos/spencer/vars.nix;
+          inherit inputs networksLocal networksExternal;
+          vars = import ./machines/nixos/vars.nix;
         };
         modules = [
           # Base configuration and modules
@@ -110,7 +111,44 @@
             home-manager.nixosModules.home-manager
             {
               home-manager.useGlobalPkgs = false; # makes hm use nixos's pkgs value
-                home-manager.extraSpecialArgs = { inherit inputs machines; }; # allows access to flake inputs in hm modules
+                home-manager.extraSpecialArgs = { inherit inputs networksLocal networksExternal; }; # allows access to flake inputs in hm modules
+                home-manager.users.notthebee.imports = [ 
+                agenix.homeManagerModules.default
+                nix-index-database.hmModules.nix-index
+                ./users/notthebee/dots.nix 
+                ];
+              home-manager.backupFileExtension = "bak";
+            }
+        ];
+      };
+
+      alison = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        specialArgs = {
+          inherit inputs networksLocal networksExternal;
+          vars = import ./machines/nixos/vars.nix;
+        };
+        modules = [
+          # Base configuration and modules
+            ./modules/tg-notify
+
+            ./modules/router
+            # Import the machine config + secrets
+            ./modules/podman
+            ./modules/motd
+            ./modules/zfs-root
+            ./modules/email
+            ./machines/nixos
+            ./machines/nixos/alison
+            ./secrets
+            agenix.nixosModules.default
+
+            # User-specific configurations
+            ./users/notthebee
+            home-manager.nixosModules.home-manager
+            {
+              home-manager.useGlobalPkgs = false; # makes hm use nixos's pkgs value
+                home-manager.extraSpecialArgs = { inherit inputs networksLocal networksExternal; };
                 home-manager.users.notthebee.imports = [ 
                 agenix.homeManagerModules.default
                 nix-index-database.hmModules.nix-index
@@ -124,8 +162,8 @@
       emily = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = {
-          inherit inputs machines;
-          vars = import ./machines/nixos/emily/vars.nix;
+          inherit inputs networksLocal networksExternal;
+          vars = import ./machines/nixos/vars.nix;
         };
         modules = [
             # Base configuration and modules
@@ -165,7 +203,7 @@
             home-manager.nixosModules.home-manager
             {
               home-manager.useGlobalPkgs = false; 
-                home-manager.extraSpecialArgs = { inherit inputs machines; }; 
+                home-manager.extraSpecialArgs = { inherit inputs networksLocal networksExternal; };
                 home-manager.users.notthebee.imports = [ 
                   agenix.homeManagerModules.default
                   nix-index-database.hmModules.nix-index
