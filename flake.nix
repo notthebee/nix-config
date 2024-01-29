@@ -134,6 +134,8 @@
 
             ./modules/router
             # Import the machine config + secrets
+            ./modules/podman
+            ./modules/motd
             ./modules/zfs-root
             ./modules/email
             ./machines/nixos
