@@ -1,1 +1,2 @@
-machines.nix filter=git-crypt diff=git-crypt
+machines/networksExternal.nix filter=git-crypt diff=git-crypt
+machines/networksLocal.nix filter=git-crypt diff=git-crypt

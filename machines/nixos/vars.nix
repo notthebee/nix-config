@@ -5,5 +5,4 @@
   cacheArray = "/mnt/cache";
   mainArray = "/mnt/user";
   serviceConfigRoot = "/persist/opt/services";
-  lanNetwork = "192.168.2.0/24";
-}
+  }

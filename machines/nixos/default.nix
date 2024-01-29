@@ -4,10 +4,6 @@
 
   system.stateVersion = "22.11";
 
-  # Enable NetworkManager for wireless networking,
-  # You can configure networking with "nmtui" command.
-  networking.useDHCP = true;
-  networking.networkmanager.enable = false;
   nixpkgs = {
     overlays = [
         inputs.nur.overlay
@@ -17,8 +13,6 @@
       allowUnfreePredicate = (_: true);
     };
   };
-
-
 
   users.users = {
     root = {
@@ -66,11 +60,6 @@
       wheelNeedsPassword = lib.mkDefault false;
     };
   };
-  
-  networking.firewall.allowPing = true;
-
-  system.autoUpgrade.enable = true; 
-
   environment.systemPackages = with pkgs; [
     wget
     iperf3
@@ -91,5 +80,7 @@
     moreutils
     lsof
     fatrace
+    git-crypt
+    bfg-repo-cleaner
   ];
 }

@@ -10,21 +10,12 @@
     };
   age.secrets.telegramApiKey = lib.mkDefault {
     file = ./telegramApiKey.age;
-    owner = "notthebee";
-    group = "share";
-    mode = "660";
     };
   age.secrets.telegramChannelId = lib.mkDefault {
     file = ./telegramChannelId.age;
-    owner = "notthebee";
-    group = "share";
-    mode = "660";
     };
   age.secrets.smtpPassword = lib.mkDefault {
     file = ./smtpPassword.age;
-    owner = "notthebee";
-    group = "notthebee";
-    mode = "770";
   };
   age.secrets.wireguardCredentials = lib.mkDefault {
       file = ./wireguardCredentials.age;
