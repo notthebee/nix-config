@@ -179,7 +179,14 @@ in {
             9100 # From RT AP
           ])
           (dropPortIcmpLog)
-          ''
+            (lib.concatMapStrings (x: "${x}\n")
+            (lib.lists.flatten (lib.lists.forEach (lib.attrsets.mapAttrsToList (name: value: name) config.networks) (x: 
+            lib.lists.forEach [ "udp" "tcp" ] (y:
+            ''
+            iptables -t nat -A PREROUTING -i ${lib.attrsets.getAttrFromPath [x "interface"] config.networks} -p ${y} ! --source ${lib.attrsets.getAttrFromPath [x "cidr"] config.networks} ! --destination ${lib.attrsets.getAttrFromPath [x "cidr"] config.networks} --dport 53 -j DNAT --to ${lib.attrsets.getAttrFromPath [x "cidr"] config.networks}
+            ''
+            )))))
+            ''
             # allow from trusted interfaces
             ip46tables -A FORWARD -m state --state NEW -i ${config.networks.lan.interface} -o ${externalInterface} -j ACCEPT
             ip46tables -A FORWARD -m state --state NEW -i ${config.networks.guest.interface} -o ${externalInterface} -j ACCEPT
