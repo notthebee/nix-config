@@ -18,8 +18,8 @@ in {
   networking = {
     hostName = "alison";
     domain = "alison.goose.party";
-    nameservers = [ 
-      "127.0.0.1" 
+    nameservers = [
+      "127.0.0.1"
     ];
     hosts = lib.mkForce {
       "127.0.0.1" = [ "localhost" ];
@@ -180,7 +180,7 @@ in {
           ])
           (dropPortIcmpLog)
             (lib.concatMapStrings (x: "${x}\n")
-            (lib.lists.flatten (lib.lists.forEach (lib.attrsets.mapAttrsToList (name: value: name) config.networks) (x: 
+            (lib.lists.flatten (lib.lists.forEach (lib.attrsets.mapAttrsToList (name: value: name) config.networks) (x:
             lib.lists.forEach [ "udp" "tcp" ] (y:
             ''
             iptables -t nat -A PREROUTING -i ${lib.attrsets.getAttrFromPath [x "interface"] config.networks} -p ${y} ! --source ${lib.attrsets.getAttrFromPath [x "cidr"] config.networks} ! --destination ${lib.attrsets.getAttrFromPath [x "cidr"] config.networks} --dport 53 -j DNAT --to ${lib.attrsets.getAttrFromPath [x "cidr"] config.networks}
@@ -224,10 +224,12 @@ in {
       enable = true;
       settings = {
         server = [ "127.0.0.1#10053" ];
-        address = [ 
-          (lib.concatStrings [ 
-            (lib.concatMapStrings (x: "/" + x) [ vars.domainName (lib.strings.removeSuffix ".1" config.networks.lan.cidr) ])
-            ".20"
+        address = [
+          (lib.concatStrings [
+            (lib.concatMapStrings (x: "/" + x) [
+              vars.domainName
+              (lib.lists.findFirst (x: x.hostname == "emily") "127.0.0.1" config.networks.lan.reservations).ip-address
+            ])
           ])
         ];
       };
@@ -264,7 +266,7 @@ in {
           renew-timer = 1000;
           valid-lifetime = 43200;
 
-          subnet4 = 
+          subnet4 =
             lib.lists.forEach (lib.attrsets.mapAttrsToList (name: value: name) config.networks) (x:
             {
               pools = [
@@ -290,7 +292,7 @@ in {
         lib.concatStrings (lib.lists.forEach (lib.attrsets.mapAttrsToList (name: value: name) config.networks) (x:
         (lib.concatMapStrings (x: "${x}\n") [
         (lib.concatStrings [
-        "interface " 
+        "interface "
         (lib.attrsets.getAttrFromPath [x "interface"] config.networks)
         ]
         )
