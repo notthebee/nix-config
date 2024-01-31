@@ -104,6 +104,8 @@ networking = {
           ip46tables -A FORWARD -m state --state NEW -i ${config.networks.lan.interface} -o ${externalInterface} -j ACCEPT
           ip46tables -A FORWARD -m state --state NEW -i ${config.networks.guest.interface} -o ${externalInterface} -j ACCEPT
           ip46tables -A FORWARD -m state --state NEW -i ${config.networks.app.interface} -o ${externalInterface} -j ACCEPT
+          # only allow the Internet access for the IOT network when updating firmware
+          #ip46tables -A FORWARD -m state --state NEW -i ${config.networks.iot.interface} -o ${externalInterface} -j ACCEPT
           # allow traffic with existing state
           ip46tables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
           ip46tables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
