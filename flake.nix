@@ -129,19 +129,21 @@
           vars = import ./machines/nixos/vars.nix;
         };
         modules = [
-          # Base configuration and modules
+            # Base configuration and modules
             ./modules/tg-notify
-
             ./modules/router
-            # Import the machine config + secrets
             ./modules/podman
             ./modules/motd
             ./modules/zfs-root
             ./modules/email
+
             ./machines/nixos
             ./machines/nixos/alison
             ./secrets
             agenix.nixosModules.default
+
+            ./services/traefik
+            ./services/smarthome
 
             # User-specific configurations
             ./users/notthebee

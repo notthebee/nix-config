@@ -23,7 +23,7 @@
         shell = pkgs.fish;
         uid = 1000;
         isNormalUser = true;
-        passwordFile = config.age.secrets.hashedUserPassword.path;
+        hashedPasswordFile = config.age.secrets.hashedUserPassword.path;
         extraGroups = [ "wheel" "users" "video" "podman" ];
         group = "notthebee";
         openssh.authorizedKeys.keys = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKGUGMUo1dRl9xoDlMxQGb8dNSY+6xiEpbZWAu6FAbWw moe@notthebe.ee" ];
