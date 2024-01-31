@@ -1,4 +1,4 @@
-{ ... }:
+{ lib, config, pkgs, vars, internalInterfaces, externalInterface, ... }:
 {
 networking = {
   firewall = {
@@ -89,6 +89,9 @@ networking = {
           9100 # From RT AP
         ])
         (dropPortIcmpLog)
+          ''
+          # Force all DNS requests to be redirected to the router
+          ''
           (lib.concatMapStrings (x: "${x}\n")
           (lib.lists.flatten (lib.lists.forEach (lib.attrsets.mapAttrsToList (name: value: name) config.networks) (x:
           lib.lists.forEach [ "udp" "tcp" ] (y:

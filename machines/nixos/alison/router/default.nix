@@ -5,6 +5,11 @@ let
   internalIPs = lib.mapAttrsToList (_: val: lib.strings.removeSuffix ".1" val.cidr + ".0/24") config.networks;
 in {
 
+  _module.args = {
+    externalInterface = externalInterface;
+    internalInterfaces = internalInterfaces;
+    internalIPs = internalIPs;
+  };
   imports = [
     ./dns.nix
     ./firewall.nix
@@ -18,7 +23,7 @@ in {
 
   networking = {
     hostName = "alison";
-    domain = "alison.goose.party";
+    domain = "${config.networking.hostName}.${vars.domainName}";
     nameservers = [
       "127.0.0.1"
     ];
@@ -109,20 +114,6 @@ in {
         enable = true;
         addresses = true;
         workstation = true;
-      };
-    };
-    dnsmasq = {
-      enable = true;
-      settings = {
-        server = [ "127.0.0.1#10053" ];
-        address = [
-          (lib.concatStrings [
-            (lib.concatMapStrings (x: "/" + x) [
-              vars.domainName
-              (lib.lists.findFirst (x: x.hostname == "emily") "127.0.0.1" config.networks.lan.reservations).ip-address
-            ])
-          ])
-        ];
       };
     };
     kea = {
