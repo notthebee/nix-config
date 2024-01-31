@@ -14,15 +14,15 @@
         server = [ "127.0.0.1#10053" ];
         address = let
           ownAddress = config.networks.lan.cidr;
+          subdomains = [ "home" "ccu" "grafana" "prometheus" "deconz" "mqtt" ];
         in
-        [
+        lib.lists.forEach subdomains (x:
           (lib.concatStrings [
            (lib.concatMapStrings (x: "/" + x) [
-            ("home." + vars.domainName)
+            ("${x}." + vars.domainName)
             ownAddress
            ])
-          ])
-        ];
+          ]));
       };
     };
   };
