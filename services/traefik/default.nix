@@ -42,7 +42,7 @@ in
           "-l=homepage.group=Services"
           "-l=homepage.name=Traefik"
           "-l=homepage.icon=traefik.svg"
-          "-l=homepage.href=https://traefik.${vars.domainName}"
+          "-l=homepage.href=https://proxy.${vars.domainName}"
           "-l=homepage.description=Reverse proxy"
           "-l=homepage.widget.type=traefik"
           "-l=homepage.widget.url=http://traefik:8080"
