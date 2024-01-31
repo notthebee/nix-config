@@ -4,31 +4,7 @@ Configuration files for my NixOS and nix-darwin machines.
 
 Very much a work in progress.
 
-## emily (Home server)
-<img width="857" alt="neofetch" src="https://github.com/notthebee/nix-config/assets/30384331/becfe931-55e9-4eb8-a73b-138ce3be10cd">
-
-### Services
-* Traefik
-* Sonarr
-* Radarr
-* Gluetun
-* Deluge
-* InvoiceNinja
-* Jellyfin
-* Paperless-NGX
-* Vaultwarden
-* Grafana
-* Prometheus w/ Node Exporter
-
-### Storage
-* ZFS boot drive with an ephemeral root ("/" is rolled back to an empty snapshot every boot)
-* RAID-Z1 array of 4x 2TB SSD
-* MergerFS array of 3x 16TB HDDs formatted in XFS
-* MergerFS tiered storage set up
-
-
 ### Installation
-<details><summary>Installation process</summary><p>
 Adapted from [ne9z's "NixOS Root on ZFS"](https://openzfs.github.io/openzfs-docs/Getting%20Started/NixOS/Root%20on%20ZFS.html)
 
 Elevate privileges, prepare the drive variable and the mountpoint
@@ -205,9 +181,3 @@ Reboot
 ```bash
 reboot
 ```
-</p></details>
-
-## meredith (Mac)
-<img width="796" alt="Screenshot 2023-07-16 at 18 00 16" src="https://github.com/notthebee/nix-config/assets/30384331/65c3cdb2-9d56-497f-bf10-51aa1b65b488">
-
-Managed using `nix-darwin` and `home-manager`. Impure packages and apps are managed by `homebrew` and `mas`
