@@ -185,45 +185,81 @@ in
           endif
           endfunction
           '';
-    maps = {
-      normal."sf" = {
-        silent = true;
+    keymaps = [
+      {
+        mode = "n";
+        key = "sf";
         action = "<cmd>CocCommand explorer<cr>";
-      };
-      normal."p" = {
-        silent = true;
-        action = "p`]<Esc>";
-      };
-      normal."<A-CR>" = {
-        silent = true;
-        action = "O<Esc>";
-        remap = true;
-    };
-      normal."<CR>" = {
-        silent = true;
-        action = "o<Esc>";
-        remap = true;
+        options = {
+          silent = true;
         };
-      normal.";r" = {
-        silent = true;
+      }
+      {
+        mode = "n";
+        key = "p";
+        action = "p`]<Esc>";
+        options = {
+          silent = true;
+        };
+      }
+      {
+        mode = "n";
+        key = "<A-CR>";
+        action = "O<Esc>";
+        options = {
+          silent = true;
+          remap = true;
+        };
+      }
+      {
+        mode = "n";
+        key = "<CR>";
+        action = "o<Esc>";
+        options = {
+          silent = true;
+          remap = true;
+        };
+      }
+      {
+        mode = "n";
+        key = ";r";
         action = ":call CheckForExplorer()<CR> <cmd>lua require('telescope.builtin').live_grep()<cr>";
-      };
-      normal.";f" = {
-        silent = true;
+        options = {
+          silent = true;
+        };
+      }
+      {
+        mode = "n";
+        key = ";f";
         action = ":call CheckForExplorer()<CR> <cmd>lua require('telescope.builtin').find_files()<cr>";
-      };
-      normal.";b" = {
-        silent = true;
+        options = {
+          silent = true;
+        };
+      }
+      {
+        mode = "n";
+        key = ";b";
         action = ":call CheckForExplorer()<CR> <cmd>lua require('telescope.builtin').file_browser()<cr>";
-      };
-      normal."\\" = {
-        silent = true;
+        options = {
+          silent = true;
+        };
+      }
+      {
+        mode = "n";
+        key = "\\";
         action = ":call CheckForExplorer()<CR> <cmd>Telescope buffers<cr>";
-      };
-      normal.";;" = {
-        silent = true;
+        options = {
+          silent = true;
+        };
+      }
+      {
+        mode = "n";
+        key = ";;";
         action = ":call CheckForExplorer()<CR> <cmd>Telescope help_tags<cr>";
-      };
-    };
+        options = {
+          silent = true;
+        };
+      }
+    ];
   };
 }
