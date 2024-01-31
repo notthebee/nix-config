@@ -1,6 +1,6 @@
 { inputs, lib, config, vars, pkgs, ... }:
 {
-  boot.kernelModules = [ "i915" ];
+  boot.kernelModules = [ "i915" "cp210x" ];
   hardware.cpu.intel.updateMicrocode = true;
   hardware.enableRedistributableFirmware = true;
   boot.zfs.forceImportRoot = true;
@@ -37,6 +37,17 @@
   virtualisation.docker.storageDriver = "overlay2";
 
   system.autoUpgrade.enable = true; 
+
+  users = {
+  groups.share = {
+    gid = 993;
+  };
+  users.share = {
+    uid = 994;
+    isSystemUser = true;
+    group = "share";
+  };
+  };
 
   environment.systemPackages = with pkgs; [
     pciutils
