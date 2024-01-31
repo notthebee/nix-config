@@ -5,11 +5,10 @@ directories = [
 ];
   in
 {
-
   systemd.tmpfiles.rules = map (x: "d ${x} 0775 share share - -") directories;
   virtualisation.oci-containers = {
     containers = {
-      scrutiny = {
+      homeassistant = {
         image = "homeassistant/home-assistant:stable";
         autoStart = true;
         extraOptions = [
@@ -22,8 +21,8 @@ directories = [
         ];
         environment = {
           TZ = vars.timeZone;
-          PUID = "1000";
-          GUID = "1000";
+          PUID = "994";
+          GUID = "993";
         };
       };
     };

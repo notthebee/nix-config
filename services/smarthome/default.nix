@@ -2,7 +2,7 @@
 imports = 
 [
   ./homeassistant.nix
-  #./ccu.nix
+  ./ccu.nix
   #./deconz.nix
   #./mosquitto.nix
 ];
