@@ -38,6 +38,11 @@
 
   system.autoUpgrade.enable = true; 
 
+  services.duckdns = {
+    enable = true;
+    domainFile = config.age.secrets.duckDNSDomain.path;
+    tokenFile = config.age.secrets.duckDNSToken.path;
+  };
   users = {
   groups.share = {
     gid = 993;

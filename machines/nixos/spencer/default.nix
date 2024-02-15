@@ -13,6 +13,10 @@
     size = 2048;
   } ];
 
+  imports = [
+    ./wireguard.nix
+  ];
+
   networking = {
     hostName = "spencer";
     nameservers = [ "1.1.1.1" "9.9.9.9" ];

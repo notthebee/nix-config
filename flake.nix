@@ -136,6 +136,7 @@
             ./modules/motd
             ./modules/zfs-root
             ./modules/email
+            ./modules/duckdns
 
             ./machines/nixos
             ./machines/nixos/alison

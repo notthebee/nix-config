@@ -1,4 +1,5 @@
-{ config, vars, ... }: let
+{ config, lib, vars, networksLocal, ... }: let
+internalIP = (lib.lists.findSingle (x: x.hostname == "${config.networking.hostName}") { ip-address = "${networksLocal.networks.lan.cidr}"; } 0 networksLocal.networks.lan.reservations).ip-address;
 directories = [
 "${vars.serviceConfigRoot}/traefik"
 ];
@@ -48,8 +49,8 @@ in
           "-l=homepage.widget.url=http://traefik:8080"
         ];
         ports = [
-          "443:443"
-          "80:80"
+          "${internalIP}:443:443"
+          "${internalIP}:80:80"
         ];
         environmentFiles = [
           config.age.secrets.cloudflareDnsApiCredentials.path

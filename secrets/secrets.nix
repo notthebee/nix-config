@@ -18,9 +18,12 @@ in {
   "resticBackblazeEnv.age".publicKeys = allKeys;
   "resticPassword.age".publicKeys = allKeys;
   "wireguardPrivateKey.age".publicKeys = allKeys;
+  "wireguardPrivateKeyAlison.age".publicKeys = allKeys;
   "bwSessionFish.age".publicKeys = allKeys;
   "icloudDrive.age".publicKeys = allKeys;
   "icloudDriveUsername.age".publicKeys = allKeys;
   "pingvinCloudflared.age".publicKeys = allKeys;
   "jellyfinApiKey.age".publicKeys = allKeys;
+  "duckDNSDomain.age".publicKeys = allKeys;
+  "duckDNSToken.age".publicKeys = allKeys;
 }

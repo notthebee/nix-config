@@ -30,6 +30,13 @@ in
             example = "enp4s0";
             type = types.str;
           };
+          trusted = mkOption {
+            type = types.bool;
+            default = false;
+            description = ''
+            Whether the network should be trusted. Trusted networks can access all ports and hosts on the local network regardless of the firewall rules
+            '';
+          };
           reservations = mkOption {
             type = types.listOf types.attrs;
             default = [];

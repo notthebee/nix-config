@@ -47,6 +47,9 @@
   age.secrets.wireguardPrivateKey = lib.mkDefault {
       file = ./wireguardPrivateKey.age;
     };
+  age.secrets.wireguardPrivateKeyAlison = lib.mkDefault {
+      file = ./wireguardPrivateKeyAlison.age;
+    };
   age.secrets.bwSessionFish = lib.mkDefault {
       file = ./bwSessionFish.age;
     };
@@ -61,5 +64,11 @@
       };
   age.secrets.jellyfinApiKey = lib.mkDefault {
       file = ./jellyfinApiKey.age;
+      };
+  age.secrets.duckDNSDomain = lib.mkDefault {
+      file = ./duckDNSDomain.age;
+      };
+  age.secrets.duckDNSToken = lib.mkDefault {
+      file = ./duckDNSToken.age;
       };
 }

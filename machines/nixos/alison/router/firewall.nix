@@ -1,120 +1,64 @@
 { lib, config, pkgs, vars, internalInterfaces, externalInterface, ... }:
 {
-networking = {
-  firewall = {
-    enable = true;
-    allowPing = true;
-    extraStopCommands = ''
-      iptables -P INPUT ACCEPT
-      iptables -P FORWARD ACCEPT
-      iptables -P OUTPUT ACCEPT
-      iptables -t nat -F
-      iptables -t mangle -F
-      iptables -F
-      iptables -X
-    '';
-    extraCommands =
-      let
-        dropPortNoLog = port:
+  imports = [
+    ../../../networksLocal.nix
+  ];
+
+  networking = {
+    firewall = {
+      enable = true;
+      allowPing = true;
+
+      trustedInterfaces = (lib.mapAttrsToList (_: val: val.interface) (lib.attrsets.filterAttrs (n: v: v.trusted) config.networks));
+      interfaces."podman+".allowedUDPPorts = [ 53 ];
+      # These ports will be opened *publicly*, via WAN
+      allowedTCPPorts = lib.mkForce [];
+      allowedUDPPorts = lib.mkForce [];
+      interfaces."guest".allowedUDPPorts = [ 53 ];
+      interfaces."guest".allowedTCPPorts = [ 53 ];
+      # Necessary to flush all non nixos-* tables
+      extraStopCommands = ''
+      iptables-save | ${pkgs.gawk}/bin/awk '/^[*]/ { print $1 } 
+                     /^:[A-Z]+ [^-]/ { print $1 " ACCEPT" ; }
+                     /COMMIT/ { print $0; }' | iptables-restore
+
+      ip6tables-save | ${pkgs.gawk}/bin/awk '/^[*]/ { print $1 } 
+                     /^:[A-Z]+ [^-]/ { print $1 " ACCEPT" ; }
+                     /COMMIT/ { print $0; }' | ip6tables-restore
+
+      ${pkgs.podman}/bin/podman network reload -a
+      '';
+
+      extraCommands = 
+        lib.concatStrings [ 
         ''
-        ip46tables -A nixos-fw -p tcp \
-        --dport ${toString port} -j nixos-fw-refuse
-        ip46tables -A nixos-fw -p udp \
-        --dport ${toString port} -j nixos-fw-refuse
-        '';
-
-        dropPortIcmpLog =
-          ''
-          iptables -A nixos-fw -p icmp \
-          -j LOG --log-prefix "iptables[icmp]: "
-          ip6tables -A nixos-fw -p ipv6-icmp \
-          -j LOG --log-prefix "iptables[icmp-v6]: "
-          '';
-
-          refusePortOnInterface = port: interface:
-          ''
-          ip46tables -A nixos-fw -i ${interface} -p tcp \
-          --dport ${toString port} -j nixos-fw-log-refuse
-          ip46tables -A nixos-fw -i ${interface} -p udp \
-          --dport ${toString port} -j nixos-fw-log-refuse
-          '';
-          acceptPortOnInterface = port: interface:
-          ''
-          ip46tables -A nixos-fw -i ${interface} -p tcp \
-          --dport ${toString port} -j nixos-fw-accept
-          ip46tables -A nixos-fw -i ${interface} -p udp \
-          --dport ${toString port} -j nixos-fw-accept
-          '';
-        # IPv6 flat forwarding. For ipv4, see nat.forwardPorts
-        forwardPortToHost = port: interface: proto: host:
+        # Force all clients to use the router DNS
         ''
-        ip6tables -A FORWARD -i ${interface} \
-        -p ${proto} -d ${host} \
-        --dport ${toString port} -j ACCEPT
-        ip6tables -A nixos-fw -i ${interface} \
-        -p ${proto} -d ${host} \
-        --dport ${toString port} -j ACCEPT
-        '';
-
-        privatelyAcceptPort = port:
-        lib.concatMapStrings
-        (interface: acceptPortOnInterface port interface)
-        internalInterfaces;
-
-        publiclyRejectPort = port:
-        refusePortOnInterface port externalInterface;
-
-        allowPortOnlyPrivately = port:
+        (lib.concatMapStrings (x: "${x}\n") (lib.lists.flatten (lib.lists.forEach (lib.attrsets.mapAttrsToList (name: value: name) config.networks) (x:
+        lib.lists.forEach [ "udp" "tcp" ] (y:
         ''
-        ${privatelyAcceptPort port}
-        ${publiclyRejectPort port}
-        '';
-      in
-      lib.concatStrings [
-        (lib.concatMapStrings allowPortOnlyPrivately
-        [
-          67 # DHCP
-          546 # DHCPv6
-          547 # DHCPv6
-          9100 # prometheus
-          5201 # iperf
-          53 # DNS
-        ])
-        (lib.concatMapStrings dropPortNoLog
-        [
-          23 # Common from public internet
-          143 # Common from public internet
-          139 # From RT AP
-          515 # From RT AP
-          9100 # From RT AP
-        ])
-        (dropPortIcmpLog)
-          ''
-          # Force all DNS requests to be redirected to the router
-          ''
-          (lib.concatMapStrings (x: "${x}\n")
-          (lib.lists.flatten (lib.lists.forEach (lib.attrsets.mapAttrsToList (name: value: name) config.networks) (x:
-          lib.lists.forEach [ "udp" "tcp" ] (y:
-          ''
-          iptables -t nat -A PREROUTING -i ${lib.attrsets.getAttrFromPath [x "interface"] config.networks} -p ${y} ! --source ${lib.attrsets.getAttrFromPath [x "cidr"] config.networks} ! --destination ${lib.attrsets.getAttrFromPath [x "cidr"] config.networks} --dport 53 -j DNAT --to ${lib.attrsets.getAttrFromPath [x "cidr"] config.networks}
-          ''
-          )))))
-          ''
-          # allow from trusted interfaces
-          ip46tables -A FORWARD -m state --state NEW -i ${config.networks.lan.interface} -o ${externalInterface} -j ACCEPT
-          ip46tables -A FORWARD -m state --state NEW -i ${config.networks.guest.interface} -o ${externalInterface} -j ACCEPT
-          ip46tables -A FORWARD -m state --state NEW -i ${config.networks.app.interface} -o ${externalInterface} -j ACCEPT
-          # only allow the Internet access for the IOT network when updating firmware
-          #ip46tables -A FORWARD -m state --state NEW -i ${config.networks.iot.interface} -o ${externalInterface} -j ACCEPT
-          # allow traffic with existing state
-          ip46tables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-          ip46tables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-          # block forwarding from external interface
-          ip46tables -A FORWARD -i ${externalInterface} -j DROP
-          ip46tables -A INPUT -i ${externalInterface} -j DROP
-          ''
+        iptables -t nat -A PREROUTING -i ${lib.attrsets.getAttrFromPath [x "interface"] config.networks} -p ${y} ! --source ${lib.attrsets.getAttrFromPath [x "cidr"] config.networks} ! --destination ${lib.attrsets.getAttrFromPath [x "cidr"] config.networks} --dport 53 -j DNAT --to ${lib.attrsets.getAttrFromPath [x "cidr"] config.networks}
+        ''
+        )))))
+        ''
+        # Block IOT devices from connecting to the internet
+        ip46tables -A FORWARD -i ${config.networks.iot.interface} -o ${externalInterface} -j nixos-fw-log-refuse 
+
+        # Isolate the guest network from the rest of the subnets
+        ip46tables -A FORWARD -i ${config.networks.guest.interface} ! -o ${externalInterface} -j nixos-fw-refuse
+
+        # allow traffic with existing state
+        ip46tables -A FORWARD -m state --state ESTABLISHED,RELATED -j nixos-fw-accept
+        ip46tables -A INPUT -m state --state ESTABLISHED,RELATED -j nixos-fw-accept
+
+        ip46tables -A INPUT -i ${externalInterface} -p udp --dport 51820 -j nixos-fw-accept
+
+        # block forwarding and inputs from external interface
+        ip46tables -A FORWARD -i ${externalInterface} -j nixos-fw-log-refuse
+        ip46tables -A INPUT -i ${externalInterface} -j nixos-fw-log-refuse
+
+        ''
         ];
-        allowedUDPPorts = [];
-      };
-};
+    };
+  };
 }
