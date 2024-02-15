@@ -13,6 +13,7 @@ in {
   imports = [
     ./dns.nix
     ./firewall.nix
+    ./wireguard.nix
     ../../../networksLocal.nix
   ];
 
@@ -121,7 +122,7 @@ in {
         enable = true;
         settings = {
           interfaces-config = {
-          interfaces = internalInterfaces;
+          interfaces = (lib.lists.remove "wg0" internalInterfaces);
           };
           lease-database = {
             name = "/var/lib/kea/dhcp4.leases";
@@ -149,7 +150,7 @@ in {
           valid-lifetime = 43200;
 
           subnet4 =
-            lib.lists.forEach (lib.attrsets.mapAttrsToList (name: value: name) config.networks) (x:
+            lib.lists.forEach (lib.lists.remove "wireguard" (lib.attrsets.mapAttrsToList (name: value: name) config.networks)) (x:
             {
               pools = [
               {
@@ -171,7 +172,7 @@ in {
       radvd = {
         enable = true;
         config =
-        lib.concatStrings (lib.lists.forEach (lib.attrsets.mapAttrsToList (name: value: name) config.networks) (x:
+        lib.concatStrings (lib.lists.forEach (lib.lists.remove "wireguard" (lib.attrsets.mapAttrsToList (name: value: name) config.networks)) (x:
         (lib.concatMapStrings (x: "${x}\n") [
         (lib.concatStrings [
         "interface "

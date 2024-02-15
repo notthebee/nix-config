@@ -14,7 +14,10 @@ directories = [
       ccu = {
         image = "ghcr.io/jens-maus/raspberrymatic:latest";
         autoStart = true;
+        hostname = "ccu";
+        dependsOn = [ "homeassistant" ];
         extraOptions = [
+        "--network=container:homeassistant"
         "-l=traefik.enable=true"
         "-l=traefik.http.routers.ccu.rule=Host(`ccu.${vars.domainName}`)"
         "-l=traefik.http.services.ccu.loadbalancer.server.port=80"
@@ -24,7 +27,6 @@ directories = [
         volumes = [
           "${vars.serviceConfigRoot}/ccu:/usr/local:rw"
           "/run/current-system/kernel-modules:/lib/modules:ro"
-          "/run/udev/control:/run/udev/control"
         ];
         environment = {
           APP_NAME = "CCU";
