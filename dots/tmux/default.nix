@@ -9,7 +9,7 @@
     extraConfig = ''
       set -g default-terminal "xterm-256color"
       set -ag terminal-overrides ",xterm-256color:RGB"
-      set-option -g default-shell /run/current-system/sw/bin/fish
+      set-option -g default-shell ${pkgs.zsh}/bin/zsh
       set -g status-keys vi
 
 

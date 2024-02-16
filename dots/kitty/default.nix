@@ -7,7 +7,7 @@
       "cmd+t" = "no_op";
     };
     shellIntegration = {
-      enableFishIntegration = true;
+      enableZshIntegration = true;
     };
     extraConfig = ''
       macos_titlebar_color #2E3440

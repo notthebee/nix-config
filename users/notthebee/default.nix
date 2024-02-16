@@ -20,7 +20,7 @@
   users = {
     users = {
       notthebee = {
-        shell = pkgs.fish;
+        shell = pkgs.zsh;
         uid = 1000;
         isNormalUser = true;
         hashedPasswordFile = config.age.secrets.hashedUserPassword.path;
@@ -36,6 +36,6 @@
     };
   };
 
-  programs.fish.enable = true;
+  programs.zsh.enable = true;
 
 }
