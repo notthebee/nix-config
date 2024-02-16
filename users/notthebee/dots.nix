@@ -19,7 +19,7 @@ in
   home = home;
 
   imports = [
-      ../../dots/fish/default.nix
+      ../../dots/zsh/default.nix
       ../../dots/nvim/default.nix
       ../../dots/neofetch/default.nix
       ./packages.nix
@@ -28,7 +28,7 @@ in
   programs.nix-index =
   {
     enable = true;
-    enableFishIntegration = true;
+    enableZshIntegration = true;
   };
 
 
