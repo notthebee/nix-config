@@ -53,15 +53,6 @@
       no_quarantine = true;
     };
 
-    masApps = {
-      "hidden-bar" = 1452453066;
-      "bitwarden" = 1352778147;
-      "amorphousdiskmark" = 1168254295;
-      "wireguard" = 1451685025;
-      "parcel" = 639968404;
-    };
-
-
     casks = [
       "discord"
       "notion"
@@ -98,13 +89,13 @@
     nmap
     jq
     yq
-    bitwarden-cli
     ripgrep
     sqlite
     pwgen
     gnupg
     inputs.agenix.packages."${system}".default 
     direnv
+    bitwarden-cli
     yt-dlp
     ffmpeg
     php
