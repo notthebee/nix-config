@@ -15,6 +15,7 @@
       { name = "zsh-users/zsh-autosuggestions"; }
       { name = "zsh-users/zsh-syntax-highlighting"; }
       { name = "zsh-users/zsh-completions"; }
+      { name = "zsh-users/zsh-history-substring-search"; }
       { name = "unixorn/warhol.plugin.zsh"; }
       { name = "notthebee/prompt"; tags = [ as:theme ]; }
     ];
@@ -63,6 +64,9 @@
       if [ $(whoami) = "beethenot" ]; then
         alias brew="pushd / && sudo -Hu notthebee brew $argv & popd"
       fi
+      source $ZPLUG_HOME/repos/unixorn/warhol.plugin.zsh/warhol.plugin.zsh
+      bindkey '^[[A' history-substring-search-up
+      bindkey '^[[B' history-substring-search-down
       '';
   };
   }
