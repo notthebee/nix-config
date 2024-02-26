@@ -188,8 +188,9 @@
 
             # Services and applications
             ./services/invoiceninja
+            ./services/timetagger
             ./services/paperless-ngx
-            ./services/icloud-drive
+            #./services/icloud-drive
             ./services/traefik
             ./services/deluge
             ./services/arr

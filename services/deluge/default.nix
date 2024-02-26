@@ -1,7 +1,7 @@
 { config, vars, ... }:
-let
-directories = [
+let directories = [
 "${vars.serviceConfigRoot}/deluge"
+"${vars.serviceConfigRoot}/sabnzbd"
 "${vars.serviceConfigRoot}/radarr"
 "${vars.serviceConfigRoot}/prowlarr"
 "${vars.serviceConfigRoot}/recyclarr"
@@ -39,6 +39,30 @@ directories = [
           GUID = "993";
         };
       };
+      sabnzbd = {
+        image = "lscr.io/linuxserver/sabnzbd:latest";
+        autoStart = true;
+        dependsOn = [
+          "gluetun"
+        ];
+        extraOptions = [
+        "--network=container:gluetun"
+        "-l=homepage.group=Arr"
+        "-l=homepage.name=SABnzbd"
+        "-l=homepage.icon=sabnzbd.svg"
+        "-l=homepage.href=https://nzb.${vars.domainName}"
+        "-l=homepage.description=Usenet client"
+        ];
+        volumes = [
+          "${vars.mainArray}/Media/Downloads:/data/completed"
+          "${vars.serviceConfigRoot}/sabnzbd:/config"
+        ];
+        environment = {
+          TZ = vars.timeZone;
+          PUID = "994";
+          GUID = "993";
+        };
+      };
       gluetun = {
         image = "qmcgaw/gluetun:latest";
         autoStart = true;
@@ -46,7 +70,11 @@ directories = [
         "--cap-add=NET_ADMIN"
         "-l=traefik.enable=true"
         "-l=traefik.http.routers.deluge.rule=Host(`deluge.${vars.domainName}`)"
+        "-l=traefik.http.routers.deluge.service=deluge"
+        "-l=traefik.http.routers.sabnzbd.rule=Host(`nzb.${vars.domainName}`)"
+        "-l=traefik.http.routers.sabnzbd.service=sabnzbd"
         "-l=traefik.http.services.deluge.loadbalancer.server.port=8112"
+        "-l=traefik.http.services.sabnzbd.loadbalancer.server.port=8080"
         "--device=/dev/net/tun:/dev/net/tun"
         "-l=homepage.group=Arr"
         "-l=homepage.name=Gluetun"
