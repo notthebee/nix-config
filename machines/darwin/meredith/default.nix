@@ -33,9 +33,6 @@ in
         "obs"
     ];
 
-    masApps = {
-      "microsoft-outlook" = 985367838;
-    };
   };
 
   environment.shellInit = ''
@@ -69,6 +66,7 @@ in
       colima
       docker
       utm
+      httpie
   ];
 
   }
