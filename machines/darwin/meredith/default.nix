@@ -25,12 +25,13 @@ in
       ];
     casks = [
       "google-chrome"
-        "slack"
-        "zoom"
-        "mattermost"
-        "viscosity"
-        "sequel-ace"
-        "obs"
+      "slack"
+      "zoom"
+      "mattermost"
+      "viscosity"
+      "sequel-ace"
+      "obs"
+      "keka"
     ];
 
   };

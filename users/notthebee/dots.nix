@@ -23,19 +23,13 @@ in
       ../../dots/nvim/default.nix
       ../../dots/neofetch/default.nix
       ./packages.nix
+      ./git.nix
   ];
 
   programs.nix-index =
   {
     enable = true;
     enableZshIntegration = true;
-  };
-
-
-  programs.git = {
-    enable = true;
-    userName  = "Wolfgang";
-    userEmail = "mail@weirdrescue.pw";
   };
 
   programs.home-manager.enable = true;

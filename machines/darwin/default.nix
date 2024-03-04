@@ -76,6 +76,11 @@
 
   system.stateVersion = 4;
 
+  nixpkgs.config.permittedInsecurePackages = [
+    "schildichat-web-1.11.30-sc.2"
+    "electron-25.9.0"
+  ];
+
   environment.systemPackages = with pkgs; [
     wget
     git-crypt
@@ -100,6 +105,8 @@
     ffmpeg
     php
     chromedriver
+    mosh
+    schildichat-desktop
   ];
 
 }
