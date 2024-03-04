@@ -7,7 +7,18 @@
     file = ../../secrets/bwSessionFish.age;
   };
 
-  programs.zsh = {
+  programs = {
+    zoxide = {
+      enable = true;
+      enableZshIntegration = true;
+    };
+    
+    direnv = {
+      enable = true;
+      enableZshIntegration = true;
+    };
+
+    zsh = {
     enable = true;
     zplug = {
       enable = true;
@@ -47,9 +58,7 @@
         path=("$HOME/.nix-profile/bin" "/run/wrappers/bin" "/etc/profiles/per-user/$USER/bin" "/nix/var/nix/profiles/default/bin" "/run/current-system/sw/bin" "/opt/homebrew/bin" $path)
       fi
       
-      if [ $(whoami) = "beethenot" ]; then
-        export BW_SESSION=$(${pkgs.coreutils}/bin/cat ${config.age.secrets.bwSessionFish.path})
-      fi
+      export BW_SESSION=$(${pkgs.coreutils}/bin/cat ${config.age.secrets.bwSessionFish.path})
       export EDITOR=nvim || export EDITOR=vim
       export LANG=en_US.UTF-8
       export LC_CTYPE=en_US.UTF-8
@@ -61,12 +70,10 @@
         ulimit -n 2048
       fi 
 
-      if [ $(whoami) = "beethenot" ]; then
-        alias brew="pushd / && sudo -Hu notthebee brew $argv & popd"
-      fi
       source $ZPLUG_HOME/repos/unixorn/warhol.plugin.zsh/warhol.plugin.zsh
       bindkey '^[[A' history-substring-search-up
       bindkey '^[[B' history-substring-search-down
       '';
+      };
   };
   }

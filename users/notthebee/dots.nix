@@ -22,8 +22,8 @@ in
       ../../dots/zsh/default.nix
       ../../dots/nvim/default.nix
       ../../dots/neofetch/default.nix
-      ./packages.nix
       ./git.nix
+      ./packages.nix
   ];
 
   programs.nix-index =
