@@ -23,6 +23,7 @@
           inputs.nix-index-database.hmModules.nix-index
           inputs.agenix.homeManagerModules.default
           ../../users/notthebee/dots.nix
+          ../../users/notthebee/age.nix
           ../../dots/tmux
           ../../dots/firefox
           ../../dots/kitty

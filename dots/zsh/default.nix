@@ -3,8 +3,8 @@
     grc
   ];
 
-  age.secrets.bwSessionFish = {
-    file = ../../secrets/bwSessionFish.age;
+  age.secrets.bwSession = {
+    file = ../../secrets/bwSession.age;
   };
 
   programs = {
@@ -58,7 +58,7 @@
         path=("$HOME/.nix-profile/bin" "/run/wrappers/bin" "/etc/profiles/per-user/$USER/bin" "/nix/var/nix/profiles/default/bin" "/run/current-system/sw/bin" "/opt/homebrew/bin" $path)
       fi
       
-      export BW_SESSION=$(${pkgs.coreutils}/bin/cat ${config.age.secrets.bwSessionFish.path})
+      export BW_SESSION=$(${pkgs.coreutils}/bin/cat ${config.age.secrets.bwSession.path})
       export EDITOR=nvim || export EDITOR=vim
       export LANG=en_US.UTF-8
       export LC_CTYPE=en_US.UTF-8

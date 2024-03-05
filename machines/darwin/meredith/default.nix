@@ -15,7 +15,10 @@
     caskArgs = {
       no_quarantine = true;
     };
-
+    brews = [
+      "ansible"
+      "ansible-lint"
+    ];
     casks = [
       "notion"
       "telegram"
@@ -24,6 +27,8 @@
       "grid"
       "bambu-studio"
       "monitorcontrol"
+      "google-chrome"
+      "schildichat"
     ];
   };
   environment.systemPackages = with pkgs; [
@@ -35,8 +40,6 @@
       pyyaml
       ]))
       ansible-language-server
-      ansible
-      ansible-lint
       vault
       yq
       git-lfs

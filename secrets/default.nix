@@ -50,8 +50,8 @@
   age.secrets.wireguardPrivateKeyAlison = lib.mkDefault {
       file = ./wireguardPrivateKeyAlison.age;
     };
-  age.secrets.bwSessionFish = lib.mkDefault {
-      file = ./bwSessionFish.age;
+  age.secrets.bwSession = lib.mkDefault {
+      file = ./bwSession.age;
     };
   age.secrets.icloudDrive = lib.mkDefault {
       file = ./icloudDrive.age;
