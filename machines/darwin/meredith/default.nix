@@ -29,6 +29,7 @@
       "monitorcontrol"
       "google-chrome"
       "schildichat"
+      "monitorcontrol"
     ];
   };
   environment.systemPackages = with pkgs; [
@@ -56,6 +57,7 @@
       golint
       colima
       docker
+      docker-compose
       utm
       wget
       git-crypt
@@ -84,6 +86,8 @@
       httpie
       slack
       mattermost
+      sentry-cli
+      vscode
   ];
 
   services.nix-daemon.enable = lib.mkForce true;
