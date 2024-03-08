@@ -84,4 +84,5 @@
     bfg-repo-cleaner
     deploy-rs
   ];
-}
+
+  }
