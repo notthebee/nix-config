@@ -1,45 +1,37 @@
 { inputs, pkgs, lib, ... }:
-let
-  ourPythonPackagesForAnsible = pkgs.python311Packages.override
-    (oldAttrs: {
-      overrides = pkgs.lib.composeManyExtensions [
-        (oldAttrs.overrides or (_: _: { }))
-        (pfinal: pprev: {
-          ansible = pprev.ansible.overridePythonAttrs (old: {
-            propagatedBuildInputs = (old.propagatedBuildInputs or [ ]) ++ [ pfinal.boto pfinal.boto3 pfinal.pyyaml ];
-            makeWrapperArgs = (old.makeWrapperArgs or []) ++ [ "--prefix PYTHONPATH : $PYTHONPATH" ];
-          });
-        })
-      ];
-    });
-  ourAnsible =
-    (ourPythonPackagesForAnsible.toPythonApplication ourPythonPackagesForAnsible.ansible);
-in
 {
-
-  imports = [ ./system.nix ];
-  homebrew = {
-    brews = [
-      "ansible"
-      "ansible-lint"
-      ];
-    casks = [
-      "google-chrome"
-        "slack"
-        "zoom"
-        "mattermost"
-        "viscosity"
-        "sequel-ace"
-        "obs"
-    ];
-
-  };
-
   environment.shellInit = ''
     ulimit -n 2048
     '';
 
-
+  homebrew = {
+    enable = true;
+    onActivation = {
+      autoUpdate = true;
+      cleanup = "zap";
+      upgrade = true;
+    };
+    brewPrefix = "/opt/homebrew/bin";
+    caskArgs = {
+      no_quarantine = true;
+    };
+    brews = [
+      "ansible"
+      "ansible-lint"
+    ];
+    casks = [
+      "notion"
+      "telegram"
+      "signal"
+      "karabiner-elements"
+      "grid"
+      "bambu-studio"
+      "monitorcontrol"
+      "google-chrome"
+      "schildichat"
+      "monitorcontrol"
+    ];
+  };
   environment.systemPackages = with pkgs; [
       (python311.withPackages(ps: with ps; [ 
       pip 
@@ -65,8 +57,40 @@ in
       golint
       colima
       docker
+      docker-compose
       utm
+      wget
+      git-crypt
+      iperf3
+      deploy-rs
+      eza
+      neofetch
+      tmux
+      rsync
+      ncdu
+      nmap
+      jq
+      yq
+      ripgrep
+      sqlite
+      pwgen
+      gnupg
+      inputs.agenix.packages."${system}".default 
+      bitwarden-cli
+      yt-dlp
+      ffmpeg
+      chromedriver
+      mosh
+      discord
+      spotify
       httpie
+      slack
+      mattermost
+      sentry-cli
+      vscode
   ];
 
+  services.nix-daemon.enable = lib.mkForce true;
+
+  system.stateVersion = 4;
   }

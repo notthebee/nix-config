@@ -38,7 +38,7 @@
         ShowStatusBar = true;
       };
       dock = {
-# Quick Note on the bottom right hot corner
+      # Quick Note on the bottom right hot corner
         wvous-br-corner = 14;
         tilesize = 50;
       };
@@ -49,7 +49,7 @@
       };
     };
     activationScripts.postUserActivation.text = ''
-# Following line should allow us to avoid a logout/login cycle
+      # Following line should allow us to avoid a logout/login cycle
       /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
       launchctl stop com.apple.Dock.agent
       launchctl start com.apple.Dock.agent
