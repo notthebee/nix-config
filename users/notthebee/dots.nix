@@ -22,6 +22,7 @@ in
       ../../dots/zsh/default.nix
       ../../dots/nvim/default.nix
       ../../dots/neofetch/default.nix
+      ./git.nix
       ./packages.nix
   ];
 
@@ -29,13 +30,6 @@ in
   {
     enable = true;
     enableZshIntegration = true;
-  };
-
-
-  programs.git = {
-    enable = true;
-    userName  = "Wolfgang";
-    userEmail = "mail@weirdrescue.pw";
   };
 
   programs.home-manager.enable = true;
