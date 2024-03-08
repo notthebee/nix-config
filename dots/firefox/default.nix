@@ -20,17 +20,10 @@ in {
           ublock-origin
           bitwarden
           multi-account-containers
-          privacy-redirect
           clearurls
           torrent-control
           return-youtube-dislikes
-          vimium
         ];
-        };
-        "94fhoo6r.default" = {
-          id = 1;
-          name = "DefaultOld";
-          isDefault = false;
         };
       };
     };
