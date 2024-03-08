@@ -65,7 +65,7 @@
 
     deploy.nodes = {
       emily = {
-        hostname = "192.168.2.230";
+        hostname = (nixpkgs.lib.lists.findSingle (x: x.hostname == "emily") "none" "multiple" networksLocal.networks.lan.reservations).ip-address;
         profiles.system = {
           sshUser = "notthebee";
           user = "root";
