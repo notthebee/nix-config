@@ -190,7 +190,6 @@
             ./services/invoiceninja
             ./services/timetagger
             ./services/paperless-ngx
-            #./services/icloud-drive
             ./services/traefik
             ./services/deluge
             ./services/arr
@@ -199,7 +198,6 @@
             ./services/monitoring
             ./services/kiwix
             ./services/pingvin-share
-            #./services/scrutiny
             ./services/homepage
 
             # User-specific configurations

@@ -47,9 +47,6 @@
     # Cycle back in the suggestions menu using Shift+Tab
     bindkey '^[[Z' reverse-menu-complete
 
-    # Doesn't bind by default on some hosts, for some reason...
-    bindkey '^F' autosuggest-accept
-
     # Make Ctrl+W remove one path segment instead of the whole path
     WORDCHARS=''${WORDCHARS/\/}
 
