@@ -82,5 +82,6 @@
     fatrace
     git-crypt
     bfg-repo-cleaner
+    deploy-rs
   ];
 }

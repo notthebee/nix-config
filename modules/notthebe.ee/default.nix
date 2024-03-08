@@ -42,8 +42,8 @@ services.nginx = {
   '';
 
   virtualHosts."notthebe.ee" = {
-    addSSL = true;
     enableACME = true;
+    forceSSL = true;
     root = "/var/www/notthebe.ee";
 };
 };

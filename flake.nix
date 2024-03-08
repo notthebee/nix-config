@@ -65,13 +65,23 @@
 
     deploy.nodes = {
       emily = {
-        hostname = (self.lib.lists.findSingle (x: x.hostname == "emily") "none" "multiple" networksLocal.networks.lan.reservations);
+        hostname = "192.168.2.230";
         profiles.system = {
           sshUser = "notthebee";
           user = "root";
           sshOpts = [ "-p" "69" ];
           remoteBuild = true;
           path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.emily;
+        };
+      };
+    alison = {
+        hostname = networksLocal.networks.lan.cidr;
+        profiles.system = {
+          sshUser = "notthebee";
+          user = "root";
+          sshOpts = [ "-p" "69" ];
+          remoteBuild = true;
+          path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.alison;
         };
       };
       spencer = {
@@ -96,7 +106,6 @@
         modules = [
           # Base configuration and modules
             ./modules/email
-            ./modules/wireguard
             ./modules/tg-notify
             ./modules/notthebe.ee
 
@@ -171,7 +180,6 @@
         modules = [
             # Base configuration and modules
             ./modules/aspm-tuning
-            #./modules/hddtemp-monitor
             ./modules/zfs-root
             ./modules/email
             ./modules/tg-notify

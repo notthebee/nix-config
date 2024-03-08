@@ -73,6 +73,11 @@
       source $ZPLUG_HOME/repos/unixorn/warhol.plugin.zsh/warhol.plugin.zsh
       bindkey '^[[A' history-substring-search-up
       bindkey '^[[B' history-substring-search-down
+
+      if command -v motd &> /dev/null
+      then
+        motd
+      fi
       '';
       };
   };
