@@ -2,7 +2,10 @@
 {
   nix.settings.trusted-users = [ "notthebee" ];
 
-  age.identityPaths = ["/home/notthebee/.ssh/id_ed25519"];
+  age.identityPaths = [
+    "/home/notthebee/.ssh/notthebee"
+    "/home/notthebee/.ssh/id_ed25519"
+  ];
 
   age.secrets.hashedUserPassword = {
     file = ../../secrets/hashedUserPassword.age;
@@ -35,7 +38,5 @@
       };
     };
   };
-
   programs.zsh.enable = true;
-
 }

@@ -19,7 +19,7 @@ in {
   "resticPassword.age".publicKeys = allKeys;
   "wireguardPrivateKey.age".publicKeys = allKeys;
   "wireguardPrivateKeyAlison.age".publicKeys = allKeys;
-  "bwSessionFish.age".publicKeys = allKeys;
+  "bwSession.age".publicKeys = allKeys;
   "icloudDrive.age".publicKeys = allKeys;
   "icloudDriveUsername.age".publicKeys = allKeys;
   "pingvinCloudflared.age".publicKeys = allKeys;
