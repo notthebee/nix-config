@@ -38,7 +38,7 @@ in {
       from = config.email.fromAddress;
       user = config.email.smtpUsername;
       tls = true;
-      passwordeval = "cat ${config.email.smtpPasswordPath}";
+      passwordeval = "${pkgs.coreutils}/bin/cat ${config.email.smtpPasswordPath}";
     };
   };
 

@@ -78,6 +78,7 @@
       then
         motd
       fi
+      bindkey -e
       '';
       };
   };
