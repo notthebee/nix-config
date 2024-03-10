@@ -4,7 +4,7 @@ Configuration files for my NixOS and nix-darwin machines.
 
 Very much a work in progress.
 
-### Installation
+## Installation runbook (NixOS)
 
 Create a root password in the TTY, and then ssh into the server
 ```bash
@@ -26,6 +26,15 @@ mkdir -p ~/.config/nix
 echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
 ```
 
+Partition and mount the drives using [disko](https://github.com/nix-community/disko)
+```bash
+curl https://raw.githubusercontent.com/notthebee/nix-config/main/disko/zfs-root/default.nix \
+    -o /tmp/disko.nix
+sed -i "s|to-be-filled-during-installation|$DISK|" /tmp/disko.nix
+nix --experimental-features "nix-command flakes" run github:nix-community/disko \
+    -- --mode disko /tmp/disko.nix
+```
+
 Install git and git-crypt
 ```bash
 nix-env -f '<nixpkgs>' -iA git
@@ -34,25 +43,25 @@ nix-env -f '<nixpkgs>' -iA git-crypt
 
 Clone this repository
 ```bash
-mkdir -p /tmp/nixos
-git clone https://github.com/notthebee/nix-config.git /tmp/nixos
-```
-
-Partition and mount the drives using [disko](https://github.com/nix-community/disko)
-```bash
-nix --experimental-features "nix-command flakes" run github:nix-community/disko \
-    -- --mode disko /tmp/nixos/disko/zfs-root/default.nix
+mkdir -p /mnt/etc/nixos
+git clone https://github.com/notthebee/nix-config.git /mnt/etc/nixos
 ```
 
 Put the private and GPG key into place (required for secret management)
 ```bash
 mkdir -p /mnt/home/notthebee/.ssh
 exit
-scp ~/.ssh/id_ed25519 nixos_installation_ip:/mnt/home/notthebee/.ssh/id_ed25519
-scp ~/.ssh/git-crypt-nix nixos_installation_ip:/mnt/home/notthebee/.ssh/git-crypt-nix
-ssh root@installation-media
-chmod 700 ${MNT}/home/notthebee/.ssh
-chmod 600 $MNT}/home/notthebee/.ssh/*
+scp ~/.ssh/id_ed25519 root@<NIXOS-IP>:/mnt/home/notthebee/.ssh/id_ed25519
+scp ~/.ssh/git-crypt-nix root@<NIXOS-IP>:/mnt/home/notthebee/.ssh/git-crypt-nix
+ssh root@<NIXOS-IP>
+chmod 700 /mnt/home/notthebee/.ssh
+chmod 600 /mnt/home/notthebee/.ssh/*
+```
+
+Unlock the git-crypt vault
+```bash
+cd /mnt/etc/nixos
+git-crypt unlock /mnt/home/notthebee/git-crypt-nix
 ```
 
 Install the system
@@ -60,7 +69,7 @@ Install the system
 nixos-install \
 --root "/mnt" \
 --no-root-passwd \
---flake "git+file://${MNT}/etc/nixos#emily"
+--flake "git+file:///mnt/etc/nixos#hostname" # alison, emily, etc.
 ```
 
 Unmount the filesystems
