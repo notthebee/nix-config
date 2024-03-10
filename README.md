@@ -6,18 +6,16 @@ Very much a work in progress.
 
 ## Installation runbook (NixOS)
 
-Create a root password in the TTY, and then ssh into the server
+Create a root password using the TTY
 ```bash
 sudo su
 passwd
-exit
-ssh root@<NIXOS-IP>
-```
 
-Elevate privileges and set the boot drive variable
+From your host, copy the public SSH key to the server
 ```bash
-sudo su
-DISK='/dev/disk/by-id/ata-Samsung_SSD_870_EVO_250GB_S6PENL0T902873K'
+ssh-add ~/.ssh/notthebee
+ssh-copy-id ~/.ssh/notthebee root@<NIXOS-IP>
+ssh root@<NIXOS-IP>
 ```
 
 Enable flakes
@@ -28,6 +26,8 @@ echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
 
 Partition and mount the drives using [disko](https://github.com/nix-community/disko)
 ```bash
+DISK='/dev/disk/by-id/ata-Samsung_SSD_870_EVO_250GB_S6PENL0T902873K'
+
 curl https://raw.githubusercontent.com/notthebee/nix-config/main/disko/zfs-root/default.nix \
     -o /tmp/disko.nix
 sed -i "s|to-be-filled-during-installation|$DISK|" /tmp/disko.nix
@@ -51,8 +51,8 @@ Put the private and GPG key into place (required for secret management)
 ```bash
 mkdir -p /mnt/home/notthebee/.ssh
 exit
-scp ~/.ssh/id_ed25519 root@<NIXOS-IP>:/mnt/home/notthebee/.ssh/id_ed25519
-scp ~/.ssh/git-crypt-nix root@<NIXOS-IP>:/mnt/home/notthebee/.ssh/git-crypt-nix
+scp ~/.ssh/id_ed25519 root@<NIXOS-IP>:/mnt/home/notthebee/.ssh
+scp ~/.ssh/git-crypt-nix root@<NIXOS-IP>:/mnt/home/notthebee/.ssh
 ssh root@<NIXOS-IP>
 chmod 700 /mnt/home/notthebee/.ssh
 chmod 600 /mnt/home/notthebee/.ssh/*
@@ -61,7 +61,7 @@ chmod 600 /mnt/home/notthebee/.ssh/*
 Unlock the git-crypt vault
 ```bash
 cd /mnt/etc/nixos
-git-crypt unlock /mnt/home/notthebee/git-crypt-nix
+git-crypt unlock /mnt/home/notthebee/.ssh/git-crypt-nix
 ```
 
 Install the system
