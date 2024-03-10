@@ -10,6 +10,7 @@ Create a root password using the TTY
 ```bash
 sudo su
 passwd
+```
 
 From your host, copy the public SSH key to the server
 ```bash
