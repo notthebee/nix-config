@@ -40,7 +40,7 @@
 
   services.duckdns = {
     enable = true;
-    domainFile = config.age.secrets.duckDNSDomain.path;
+    domainsFile = config.age.secrets.duckDNSDomain.path;
     tokenFile = config.age.secrets.duckDNSToken.path;
   };
   users = {
