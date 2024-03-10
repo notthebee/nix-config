@@ -4,6 +4,23 @@
 
   system.stateVersion = "22.11";
 
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 30d";
+  };
+
+  system.autoUpgrade = {
+    enable = true;
+    flake = inputs.self.outPath;
+    flags = [
+      "--update-input"
+    ];
+    dates = "06:00";
+    randomizedDelaySec = "45min";
+  };
+
+
   nixpkgs = {
     overlays = [
         inputs.nur.overlay
