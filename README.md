@@ -14,7 +14,6 @@ exit
 ssh root@<NIXOS-IP>
 ```
 
-```bash
 Elevate privileges and set the boot drive variable
 ```bash
 sudo su
