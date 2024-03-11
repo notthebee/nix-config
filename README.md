@@ -15,7 +15,7 @@ passwd
 From your host, copy the public SSH key to the server
 ```bash
 ssh-add ~/.ssh/notthebee
-ssh-copy-id ~/.ssh/notthebee root@<NIXOS-IP>
+ssh-copy-id -i ~/.ssh/notthebee root@<NIXOS-IP>
 ssh root@<NIXOS-IP>
 ```
 

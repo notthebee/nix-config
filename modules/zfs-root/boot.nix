@@ -112,8 +112,7 @@ in {
         loader = {
           efi = {
             canTouchEfiVariables = (if cfg.removableEfi then false else true);
-            efiSysMountPoint = ("/boot/efis/" + (head cfg.bootDevices)
-              + cfg.partitionScheme.efiBoot);
+            efiSysMountPoint = "/boot/esp";
           };
           generationsDir.copyKernels = true;
           grub = {
@@ -126,7 +125,7 @@ in {
             zfsSupport = true;
             extraInstallCommands = (toString (map (diskName: ''
               set -x
-              ${pkgs.coreutils-full}/bin/cp -r ${config.boot.loader.efi.efiSysMountPoint}/EFI /boot/efis/${diskName}${cfg.partitionScheme.efiBoot}
+              ${pkgs.coreutils-full}/bin/cp -r ${config.boot.loader.efi.efiSysMountPoint}/EFI /boot/esp
               set +x
             '') (tail cfg.bootDevices)));
           };
