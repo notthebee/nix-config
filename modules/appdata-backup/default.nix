@@ -30,7 +30,7 @@
         OnCalendar = "Mon..Sat *-*-* 05:00:00";
         Persistent = true;
       };
-      repository = "rest:http://localhost:8000/appdata-local";
+      repository = "rest:http://localhost:8000/appdata-local-${config.networking.hostname}";
       initialize = true;
       passwordFile = config.age.secrets.resticPassword.path;
       pruneOpts = [
@@ -41,13 +41,15 @@
         "recyclarr/repositories"
       ];
       paths = [
-        "${vars.serviceConfigRoot}"
+        "/tmp/appdata-local-${config.networking.hostname}.tar.gz"
       ];
       backupPrepareCommand = ''
       systemctl stop podman-*
+      tar -czvf /persist /tmp/appdata-${config.networking.hostname}.tar.gz
       ${pkgs.restic}/bin/restic -r "${config.services.restic.backups.appdata-local.repository}" -p ${config.age.secrets.resticPassword.path} unlock
       '';
       backupCleanupCommand = ''
+      rm -rf /tmp/appdata*
       systemctl start --all "podman-*"
       if [[ $SERVICE_RESULT =~ "success" ]]; then
         message=$(journalctl -xeu restic-backups-appdata-local | grep Files: | tail -1 | sed 's/^.*Files/Files/g')
@@ -101,13 +103,15 @@
         "recyclarr/repositories"
       ];
       paths = [
-        "${vars.serviceConfigRoot}"
+        "/tmp/appdata-local-${config.networking.hostname}.tar.gz"
       ];
       backupPrepareCommand = ''
       systemctl stop podman-*
+      tar -czvf /persist /tmp/appdata-local-${config.networking.hostname}.tar.gz
       ${pkgs.restic}/bin/restic -r "${config.services.restic.backups.appdata-backblaze.repository}" -p ${config.age.secrets.resticPassword.path} unlock
       '';
       backupCleanupCommand = ''
+      rm -rf /tmp/appdata*.tar.gz
       systemctl start --all "podman-*"
       if [[ $SERVICE_RESULT =~ "success" ]]; then
         message=$(journalctl -xeu restic-backups-appdata-backblaze | grep Files: | tail -1 | sed 's/^.*Files/Files/g')
