@@ -77,6 +77,17 @@
           path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.emily;
         };
       };
+      aria = {
+        hostname = (nixpkgs.lib.lists.findSingle (x: x.hostname == "aria") "none" "multiple" networksLocal.networks.tailscale.reservations).ip-address;
+        profiles.system = {
+          sshUser = "notthebee";
+          user = "root";
+          sshOpts = [ "-p" "69" ];
+          remoteBuild = true;
+          path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.aria;
+        };
+      };
+
     alison = {
         hostname = networksLocal.networks.lan.cidr;
         profiles.system = {
@@ -226,6 +237,47 @@
             }
         ];
       };
+      aria = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        specialArgs = {
+          inherit inputs networksLocal networksExternal;
+          vars = import ./machines/nixos/vars.nix;
+        };
+        modules = [
+            # Base configuration and modules
+            ./modules/aspm-tuning
+            ./modules/zfs-root
+            ./modules/email
+            ./modules/tg-notify
+            ./modules/podman
+            ./modules/motd
+
+            # Import the machine config + secrets
+            ./machines/nixos
+            ./machines/nixos/aria
+            ./secrets
+            agenix.nixosModules.default
+
+            # Services and applications
+            ./services/traefik
+            ./services/monitoring
+
+            # User-specific configurations
+            ./users/notthebee
+            home-manager.nixosModules.home-manager
+            {
+              home-manager.useGlobalPkgs = false; 
+                home-manager.extraSpecialArgs = { inherit inputs networksLocal networksExternal; };
+                home-manager.users.notthebee.imports = [ 
+                  agenix.homeManagerModules.default
+                  nix-index-database.hmModules.nix-index
+                  ./users/notthebee/dots.nix 
+                ];
+              home-manager.backupFileExtension = "bak";
+            }
+        ];
+      };
+
     };
   };
 }
