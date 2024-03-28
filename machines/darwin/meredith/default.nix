@@ -30,6 +30,7 @@
       "google-chrome"
       "schildichat"
       "monitorcontrol"
+      "handbrake"
     ];
   };
   environment.systemPackages = with pkgs; [

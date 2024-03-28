@@ -30,7 +30,7 @@
         OnCalendar = "Mon..Sat *-*-* 05:00:00";
         Persistent = true;
       };
-      repository = "rest:http://localhost:8000/appdata-local-${config.networking.hostname}";
+      repository = "rest:http://localhost:8000/appdata-local-${config.networking.hostName}";
       initialize = true;
       passwordFile = config.age.secrets.resticPassword.path;
       pruneOpts = [
@@ -41,11 +41,11 @@
         "recyclarr/repositories"
       ];
       paths = [
-        "/tmp/appdata-local-${config.networking.hostname}.tar.gz"
+        "/tmp/appdata-local-${config.networking.hostName}.tar.gz"
       ];
       backupPrepareCommand = ''
       systemctl stop podman-*
-      tar -czvf /persist /tmp/appdata-${config.networking.hostname}.tar.gz
+      tar -czvf /persist /tmp/appdata-${config.networking.hostName}.tar.gz
       ${pkgs.restic}/bin/restic -r "${config.services.restic.backups.appdata-local.repository}" -p ${config.age.secrets.resticPassword.path} unlock
       '';
       backupCleanupCommand = ''
@@ -103,11 +103,11 @@
         "recyclarr/repositories"
       ];
       paths = [
-        "/tmp/appdata-local-${config.networking.hostname}.tar.gz"
+        "/tmp/appdata-local-${config.networking.hostName}.tar.gz"
       ];
       backupPrepareCommand = ''
       systemctl stop podman-*
-      tar -czvf /persist /tmp/appdata-local-${config.networking.hostname}.tar.gz
+      tar -czvf /persist /tmp/appdata-local-${config.networking.hostName}.tar.gz
       ${pkgs.restic}/bin/restic -r "${config.services.restic.backups.appdata-backblaze.repository}" -p ${config.age.secrets.resticPassword.path} unlock
       '';
       backupCleanupCommand = ''
