@@ -62,7 +62,6 @@
     '';
   };
 
-
   fileSystems."/nix" =
   { device = "rpool/nixos/nix";
     fsType = "zfs";
@@ -82,6 +81,12 @@
 
   fileSystems."/home" =
   { device = "rpool/nixos/home";
+    fsType = "zfs";
+    neededForBoot = true;
+  };
+
+  fileSystems."/mnt/user" =
+  { device = "rpool/nixos/data";
     fsType = "zfs";
     neededForBoot = true;
   };
@@ -113,7 +118,12 @@
   };
 
   fileSystems."/mnt/data3" =
-  { device = "/dev/disk/by-label/Data2";
+  { device = "/dev/disk/by-label/Data3";
+    fsType = "xfs";
+  };
+
+  fileSystems."/mnt/data4" =
+  { device = "/dev/disk/by-label/Data4";
     fsType = "xfs";
   };
 

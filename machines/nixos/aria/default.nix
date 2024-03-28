@@ -11,7 +11,7 @@
     boot = {
       devNodes = "/dev/disk/by-id/";
       # TODO
-      bootDevices = [  "ata-Samsung_SSD_870_EVO_250GB_S6PENL0T902873K" ];
+      bootDevices = [  "ata-SAMSUNG_MZ7LN256HAJQ-00000_S3TWNX0N158949" ];
       immutable = false;
       availableKernelModules = [  "uhci_hcd" "ehci_pci" "ahci" "sd_mod" "sr_mod" ];
       removableEfi = true;
@@ -45,29 +45,12 @@
       ExecStart = "${pkgs.hd-idle}/bin/hd-idle -i 900";
     };
   };
-
   networking = {
   useDHCP = true;
   networkmanager.enable = false;
   firewall = {
   allowPing = true;
-  allowedTCPPorts = [ 5201 ];
   };
-  nameservers = [ "192.168.178.1" ];
-  defaultGateway = "192.168.178.1";
-  interfaces = {
-    enp1s0f0.ipv4 = {
-    addresses = [{
-      address = "192.168.178.230";
-      prefixLength = 24;
-    }];
-    routes = [{
-      address = "192.168.178.0";
-      prefixLength = 24;
-      via = "192.168.178.1";
-    }];
-  };
-    };
 };
 
   virtualisation.docker.storageDriver = "overlay2";
