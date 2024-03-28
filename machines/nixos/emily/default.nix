@@ -110,10 +110,4 @@
     intel-gpu-tools
   ];
   
-  services.duckdns = {
-    enable = true;
-    domainsFile = config.age.secrets.duckDNSDomain.path;
-    tokenFile = config.age.secrets.duckDNSToken.path;
-  };
-
   }
