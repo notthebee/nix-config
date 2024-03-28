@@ -241,7 +241,7 @@
         system = "x86_64-linux";
         specialArgs = {
           inherit inputs networksLocal networksExternal;
-          vars = import ./machines/nixos/vars.nix;
+          vars = import ./machines/nixos/aria/vars.nix;
         };
         modules = [
             # Base configuration and modules
