@@ -79,7 +79,7 @@
       };
       aria = {
         #hostname = (nixpkgs.lib.lists.findSingle (x: x.hostname == "aria") "none" "multiple" networksLocal.networks.tailscale.reservations).ip-address
-        hostname = 192.168.178.70;
+        hostname = "192.168.178.70";
         profiles.system = {
           sshUser = "notthebee";
           user = "root";

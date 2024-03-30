@@ -14,7 +14,12 @@
     wants = [ "network-pre.target" "tailscale.service" ];
     wantedBy = [ "multi-user.target" ];
 
-    serviceConfig.Type = "oneshot";
+    serviceConfig = {
+      Type = "oneshot";
+      LoadCredential = [
+        "TAILSCALE_AUTH_KEY:${config.age.secrets.tailscaleAuthKey.path}"
+        ];
+    };
 
     script = with pkgs; ''
 
@@ -31,7 +36,7 @@
         exit 0
       fi
 
-      ${tailscale}/bin/tailscale up --advertise-exit-node --auth-key ${config.age.secrets.tailscaleAuthKey.path}
+      ${tailscale}/bin/tailscale up --reset --auth-key "$TAILSCALE_AUTH_KEY"
     '';
   };
 }
