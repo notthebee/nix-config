@@ -6,7 +6,7 @@
   hardware.opengl.enable = true;
   hardware.opengl.driSupport = true;
   boot.zfs.forceImportRoot = true;
-  #motd.networkInterfaces = lib.lists.singleton "enp1s0f0";
+  motd.networkInterfaces = lib.lists.singleton "enp1s0";
   zfs-root = {
     boot = {
       devNodes = "/dev/disk/by-id/";
