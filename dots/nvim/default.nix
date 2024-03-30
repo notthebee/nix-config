@@ -49,11 +49,6 @@ in
           ];
         };
       };
-      startup = {
-        enable = true;
-        #theme = "startify";
-        #customHeader = "startify#pad(split(system('figlet -f larry3d neovim'), '\n'))";
-      };
       indent-blankline = {
         enable = true;
         exclude.filetypes = [
