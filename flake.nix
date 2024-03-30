@@ -78,7 +78,8 @@
         };
       };
       aria = {
-        hostname = (nixpkgs.lib.lists.findSingle (x: x.hostname == "aria") "none" "multiple" networksLocal.networks.tailscale.reservations).ip-address;
+        #hostname = (nixpkgs.lib.lists.findSingle (x: x.hostname == "aria") "none" "multiple" networksLocal.networks.tailscale.reservations).ip-address
+        hostname = 192.168.178.70;
         profiles.system = {
           sshUser = "notthebee";
           user = "root";
@@ -166,8 +167,8 @@
             ./secrets
             agenix.nixosModules.default
 
-            ./services/traefik
-            ./services/smarthome
+            ./containers/traefik
+            ./containers/smarthome
 
             # User-specific configurations
             ./users/notthebee
@@ -201,6 +202,7 @@
             ./modules/mover
             ./modules/motd
             ./modules/appdata-backup
+            ./modules/tailscale
 
             # Import the machine config + secrets
             ./machines/nixos
@@ -209,18 +211,18 @@
             agenix.nixosModules.default
 
             # Services and applications
-            ./services/invoiceninja
-            ./services/timetagger
-            ./services/paperless-ngx
-            ./services/traefik
-            ./services/deluge
-            ./services/arr
-            ./services/jellyfin
-            ./services/vaultwarden
-            ./services/monitoring
-            ./services/kiwix
-            ./services/pingvin-share
-            ./services/homepage
+            ./containers/invoiceninja
+            ./containers/timetagger
+            ./containers/paperless-ngx
+            ./containers/traefik
+            ./containers/deluge
+            ./containers/arr
+            ./containers/jellyfin
+            ./containers/vaultwarden
+            ./containers/monitoring
+            ./containers/kiwix
+            ./containers/pingvin-share
+            ./containers/homepage
 
             # User-specific configurations
             ./users/notthebee
@@ -251,6 +253,7 @@
             ./modules/tg-notify
             ./modules/podman
             ./modules/motd
+            ./modules/tailscale
 
             # Import the machine config + secrets
             ./machines/nixos
@@ -259,8 +262,8 @@
             agenix.nixosModules.default
 
             # Services and applications
-            ./services/traefik
-            ./services/monitoring
+            ./containers/traefik
+            ./containers/monitoring
 
             # User-specific configurations
             ./users/notthebee
