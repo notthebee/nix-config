@@ -107,16 +107,6 @@
     fsType = "ext4";
   };
 
-  fileSystems."/mnt/data1" =
-  { device = "/dev/disk/by-label/Data1";
-    fsType = "xfs";
-  };
-
-  fileSystems."/mnt/data2" =
-  { device = "/dev/disk/by-label/Data2";
-    fsType = "xfs";
-  };
-
   fileSystems."/mnt/data3" =
   { device = "/dev/disk/by-label/Data3";
     fsType = "xfs";
@@ -135,10 +125,11 @@
   fileSystems.${vars.slowArray} = 
   { device = "/mnt/data*";
     options = [
+      "category.create=ff"
       "defaults"
       "allow_other"
       "moveonenospc=1"
-      "minfreespace=1000G"
+      "minfreespace=50G"
       "func.getattr=newest"
       "fsname=mergerfs_slow"
       "uid=994"

@@ -33,6 +33,7 @@
 
   imports = [
     ./filesystems
+    ./backup
     ./shares ];
 
   powerManagement.powertop.enable = true;
@@ -51,23 +52,8 @@
   networkmanager.enable = false;
   firewall = {
   allowPing = true;
-  allowedTCPPorts = [ 5201 ];
+  trustedInterfaces = [ "enp1s0f0" ];
   };
-  nameservers = [ "192.168.2.1" ];
-  defaultGateway = "192.168.2.1";
-  interfaces = {
-    enp1s0f0.ipv4 = {
-    addresses = [{
-      address = "192.168.2.230";
-      prefixLength = 24;
-    }];
-    routes = [{
-      address = "192.168.2.0";
-      prefixLength = 24;
-      via = "192.168.2.1";
-    }];
-  };
-    };
 };
 
   virtualisation.docker.storageDriver = "overlay2";

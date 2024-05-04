@@ -37,6 +37,13 @@ in
             Whether the network should be trusted. Trusted networks can access all ports and hosts on the local network regardless of the firewall rules
             '';
           };
+          dhcp = mkOption {
+            type = types.bool;
+            default = true;
+            description = ''
+            Whether to run a DHCP server on the network
+            '';
+          };
           reservations = mkOption {
             type = types.listOf types.attrs;
             default = [];

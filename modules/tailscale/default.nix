@@ -4,6 +4,7 @@
   environment.systemPackages = [ pkgs.tailscale ];
 
   networking.firewall.allowedUDPPorts = [ config.services.tailscale.port ];
+  networking.firewall.trustedInterfaces = [ "tailscale0" ];
 
   services.tailscale.enable = true;
 
@@ -17,7 +18,7 @@
     serviceConfig = {
       Type = "oneshot";
       LoadCredential = [
-        "TAILSCALE_AUTH_KEY:${config.age.secrets.tailscaleAuthKey.path}"
+        "TAILSCALE_AUTH_KEY_FILE:${config.age.secrets.tailscaleAuthKey.path}"
         ];
     };
 
@@ -36,7 +37,8 @@
         exit 0
       fi
 
-      ${tailscale}/bin/tailscale up --reset --auth-key "$TAILSCALE_AUTH_KEY"
+      export TAILSCALE_AUTH_KEY=$(${pkgs.systemd}/bin/systemd-creds cat TAILSCALE_AUTH_KEY_FILE)
+      ${tailscale}/bin/tailscale up --auth-key "$TAILSCALE_AUTH_KEY"
     '';
   };
 }

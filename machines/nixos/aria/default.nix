@@ -1,4 +1,4 @@
-{ inputs, lib, config, vars, pkgs, ... }:
+{ inputs, lib, config, vars, networksExternal, pkgs, ... }:
 {
   #boot.kernelModules = [ "nct6775" ];
   hardware.cpu.intel.updateMicrocode = true;
@@ -6,7 +6,7 @@
   hardware.opengl.enable = true;
   hardware.opengl.driSupport = true;
   boot.zfs.forceImportRoot = true;
-  motd.networkInterfaces = lib.lists.singleton "enp1s0";
+  motd.networkInterfaces = lib.lists.singleton networksExternal.aria.interface;
   zfs-root = {
     boot = {
       devNodes = "/dev/disk/by-id/";
@@ -33,6 +33,8 @@
 
   imports = [
     ./filesystems
+    ./syncthing
+    ./backup
     ./shares ];
 
   powerManagement.powertop.enable = true;

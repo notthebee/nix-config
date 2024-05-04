@@ -21,7 +21,9 @@
     ];
     casks = [
       "notion"
+      "warp"
       "telegram"
+      "libreoffice"
       "signal"
       "karabiner-elements"
       "grid"
@@ -31,6 +33,7 @@
       "schildichat"
       "monitorcontrol"
       "handbrake"
+      "tailscale"
     ];
   };
   environment.systemPackages = with pkgs; [
@@ -89,6 +92,10 @@
       mattermost
       sentry-cli
       vscode
+      (pulumi.withPackages(ps: with ps; [ 
+        pulumi-language-nodejs
+      ]))
+      google-cloud-sdk
   ];
 
   services.nix-daemon.enable = lib.mkForce true;

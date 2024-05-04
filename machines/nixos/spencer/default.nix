@@ -13,6 +13,7 @@
   } ];
 
   imports = [
+    ./matrix.nix
     ./wireguard.nix
     (modulesPath + "/profiles/qemu-guest.nix")
   ];

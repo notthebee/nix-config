@@ -26,4 +26,8 @@ in {
   "jellyfinApiKey.age".publicKeys = allKeys;
   "duckDNSDomain.age".publicKeys = allKeys;
   "duckDNSToken.age".publicKeys = allKeys;
+  "borgBackupSSHKey.age".publicKeys = allKeys;
+  "borgBackupKey.age".publicKeys = allKeys;
+  "ariaImmichDatabase.age".publicKeys = allKeys;
+  "matrixRegistrationSecret.age".publicKeys = allKeys;
 }

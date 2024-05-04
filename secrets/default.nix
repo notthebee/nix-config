@@ -33,7 +33,7 @@
       file = ./sonarrApiKey.age;
     };
   age.secrets.tailscaleAuthKey = lib.mkDefault {
-      file = ./sonarrApiKey.age;
+      file = ./tailscaleAuthKey.age;
     };
   age.secrets.paperless = lib.mkDefault {
       file = ./paperless.age;
@@ -71,4 +71,13 @@
   age.secrets.duckDNSToken = lib.mkDefault {
       file = ./duckDNSToken.age;
       };
-}
+  age.secrets.borgBackupKey = lib.mkDefault {
+      file = ./borgBackupKey.age;
+      };
+  age.secrets.borgBackupSSHKey = lib.mkDefault {
+      file = ./borgBackupSSHKey.age;
+      };
+  age.secrets.ariaImmichDatabase = lib.mkDefault {
+      file = ./ariaImmichDatabase.age;
+      };
+  }
