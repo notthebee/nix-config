@@ -74,7 +74,7 @@ else
 fi
 
 text="
-$emoji <b>$title</b>
+$emoji <b>$title on $(${pkgs.systemd}/bin/hostnamectl hostname)</b>
 $status
 $(date)
 

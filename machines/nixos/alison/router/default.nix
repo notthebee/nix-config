@@ -32,6 +32,10 @@ in {
       "127.0.0.1" = [ "localhost" ];
       "::1" = [ "localhost" ];
     };
+    bridges = {
+      br0.interfaces = [ "enp1s0" "eno1" ];
+      br1.interfaces = [ "enp4s0" "guest" ];
+    };
     vlans = {
       iot = {
         interface = "${config.networks.lan.interface}";
@@ -85,7 +89,6 @@ in {
       internalIPs = internalIPs;
       internalInterfaces = internalInterfaces;
     };
-
     enableIPv6 = true;
 
     dhcpcd = {
@@ -122,7 +125,7 @@ in {
         enable = true;
         settings = {
           interfaces-config = {
-          interfaces = (lib.lists.remove "wg0" internalInterfaces);
+          interfaces = (lib.mapAttrsToList (_: val: val.interface) (lib.attrsets.filterAttrs (n: v: v.dhcp) config.networks)) ++ [ "guest" ];
           };
           lease-database = {
             name = "/var/lib/kea/dhcp4.leases";
@@ -150,7 +153,7 @@ in {
           valid-lifetime = 43200;
 
           subnet4 =
-            lib.lists.forEach (lib.lists.remove "wireguard" (lib.attrsets.mapAttrsToList (name: value: name) config.networks)) (x:
+            lib.lists.forEach (lib.attrsets.mapAttrsToList (name: value: name) (lib.attrsets.filterAttrs (n: v: v.dhcp) config.networks)) (x:
             {
               pools = [
               {
@@ -158,6 +161,11 @@ in {
               }
               ];
               option-data = [
+              {
+                name = "domain-name-servers";
+                data = (lib.attrsets.getAttrFromPath [x "cidr"] config.networks);
+                always-send = true;
+              }
               {
                 name = "routers";
                 data = (lib.attrsets.getAttrFromPath [x "cidr"] config.networks);
@@ -172,7 +180,7 @@ in {
       radvd = {
         enable = true;
         config =
-        lib.concatStrings (lib.lists.forEach (lib.lists.remove "wireguard" (lib.attrsets.mapAttrsToList (name: value: name) config.networks)) (x:
+        lib.concatStrings (lib.lists.forEach (lib.attrsets.mapAttrsToList (name: value: name) (lib.attrsets.filterAttrs (n: v: v.dhcp) config.networks)) (x:
         (lib.concatMapStrings (x: "${x}\n") [
         (lib.concatStrings [
         "interface "

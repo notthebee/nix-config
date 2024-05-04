@@ -9,6 +9,8 @@
     dates = "weekly";
     options = "--delete-older-than 30d";
   };
+  nix.optimise.automatic = true;
+  nix.optimise.dates = [ "03:45" ];
 
   system.autoUpgrade = {
     enable = true;
@@ -19,6 +21,8 @@
     dates = "06:00";
     randomizedDelaySec = "45min";
   };
+
+
 
 
   nixpkgs = {

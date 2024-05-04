@@ -27,11 +27,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nixpkgs-firefox-darwin = {
-      url = "github:bandithedoge/nixpkgs-firefox-darwin";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     nur.url = "github:nix-community/nur";
 
     deploy-rs.url = "github:serokell/deploy-rs";
@@ -44,7 +39,6 @@
               recyclarr-configs, 
               nixvim, 
               nix-index-database, 
-              nixpkgs-firefox-darwin,
               agenix, 
               deploy-rs,
               nur,
@@ -68,7 +62,7 @@
 
     deploy.nodes = {
       emily = {
-        hostname = (nixpkgs.lib.lists.findSingle (x: x.hostname == "emily") "none" "multiple" networksLocal.networks.lan.reservations).ip-address;
+        hostname = "emily";
         profiles.system = {
           sshUser = "notthebee";
           user = "root";
@@ -78,8 +72,7 @@
         };
       };
       aria = {
-        #hostname = (nixpkgs.lib.lists.findSingle (x: x.hostname == "aria") "none" "multiple" networksLocal.networks.tailscale.reservations).ip-address
-        hostname = "192.168.178.70";
+        hostname = "aria";
         profiles.system = {
           sshUser = "notthebee";
           user = "root";
@@ -201,7 +194,6 @@
             ./modules/podman
             ./modules/mover
             ./modules/motd
-            ./modules/appdata-backup
             ./modules/tailscale
 
             # Import the machine config + secrets
@@ -220,7 +212,6 @@
             ./containers/jellyfin
             ./containers/vaultwarden
             ./containers/monitoring
-            ./containers/kiwix
             ./containers/pingvin-share
             ./containers/homepage
 
@@ -263,6 +254,7 @@
 
             # Services and applications
             ./containers/traefik
+            ./containers/immich
             ./containers/monitoring
 
             # User-specific configurations

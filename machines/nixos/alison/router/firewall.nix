@@ -14,8 +14,10 @@
       # These ports will be opened *publicly*, via WAN
       allowedTCPPorts = lib.mkForce [];
       allowedUDPPorts = lib.mkForce [];
-      interfaces."guest".allowedUDPPorts = [ 53 ];
-      interfaces."guest".allowedTCPPorts = [ 53 ];
+      interfaces."${config.networks.guest.interface}" = {
+        allowedUDPPorts = [ 53 ];
+        allowedTCPPorts = [ 53 ];
+      };
       # Necessary to flush all non nixos-* tables
       extraStopCommands = ''
       iptables-save | ${pkgs.gawk}/bin/awk '/^[*]/ { print $1 } 
@@ -45,13 +47,20 @@
         ip46tables -A FORWARD -i ${config.networks.iot.interface} -o ${externalInterface} -j nixos-fw-log-refuse 
 
         # Isolate the guest network from the rest of the subnets
-        ip46tables -A FORWARD -i ${config.networks.guest.interface} ! -o ${externalInterface} -j nixos-fw-refuse
 
+        ''
+        (lib.concatMapStrings (x: "${x}\n") (lib.lists.forEach (lib.attrsets.mapAttrsToList (name: value: name) (lib.attrsets.filterAttrs (n: v: n != "guest") config.networks)) (x:
+        ''
+        ip46tables -A FORWARD -i ${config.networks.guest.interface} -o ${lib.attrsets.getAttrFromPath [x "interface"] config.networks}  -j nixos-fw-refuse
+        ''
+        )))
+        ''
         # allow traffic with existing state
         ip46tables -A FORWARD -m state --state ESTABLISHED,RELATED -j nixos-fw-accept
         ip46tables -A INPUT -m state --state ESTABLISHED,RELATED -j nixos-fw-accept
 
-        ip46tables -A INPUT -i ${externalInterface} -p udp --dport 51820 -j nixos-fw-accept
+        # allow Wireguard
+        ip46tables -A INPUT -i ${externalInterface} -p udp --dport ${toString config.networking.wireguard.interfaces."${config.networks.wireguard.interface}".listenPort} -j nixos-fw-accept
 
         # block forwarding and inputs from external interface
         ip46tables -A FORWARD -i ${externalInterface} -j nixos-fw-log-refuse

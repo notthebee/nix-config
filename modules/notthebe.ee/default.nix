@@ -1,3 +1,16 @@
+{ pkgs, lib, config, ... }:
+let
+  domain = "notthebe.ee";
+  fqdn = "chat.${domain}";
+  baseUrl = "https://${fqdn}";
+  serverConfig."m.server" = "${fqdn}:443";
+  clientConfig."m.homeserver".base_url = baseUrl;
+  mkWellKnown = data: ''
+    default_type application/json;
+    add_header Access-Control-Allow-Origin *;
+    return 200 '${builtins.toJSON data}';
+  '';
+in
 {
 systemd.tmpfiles.rules = ["d /var/www/notthebe.ee 0775 deploy deploy - -"];
 
@@ -41,11 +54,35 @@ services.nginx = {
     proxy_cookie_path / "/; secure; HttpOnly; SameSite=strict";
   '';
 
-  virtualHosts."notthebe.ee" = {
+  virtualHosts."${domain}" = {
     enableACME = true;
     forceSSL = true;
     root = "/var/www/notthebe.ee";
-};
+    # This section is not needed if the server_name of matrix-synapse is equal to
+    # the domain (i.e. example.org from @foo:example.org) and the federation port
+    # is 8448.
+    # Further reference can be found in the docs about delegation under
+    # https://element-hq.github.io/synapse/latest/delegate.html
+    locations."= /.well-known/matrix/server".extraConfig = lib.concatStrings [
+      (mkWellKnown serverConfig)
+        ''
+        add_header X-Frame-Options DENY;
+        add_header X-Content-Type-Options nosniff;
+        add_header X-XSS-Protection "1; mode=block";
+        ''
+    ];
+    # This is usually needed for homeserver discovery (from e.g. other Matrix clients).
+    # Further reference can be found in the upstream docs at
+    # https://spec.matrix.org/latest/client-server-api/#getwell-knownmatrixclient
+    locations."= /.well-known/matrix/client".extraConfig = lib.concatStrings [
+      (mkWellKnown clientConfig)
+        ''
+        add_header X-Frame-Options DENY;
+        add_header X-Content-Type-Options nosniff;
+        add_header X-XSS-Protection "1; mode=block";
+        ''
+    ];
+  };
 };
 
 users.groups = {
@@ -64,6 +101,6 @@ networking.firewall.allowedTCPPorts = [ 80 443 ];
 
 security.acme = {
   acceptTerms = true;
-  certs."notthebe.ee".email = "moe@notthebe.ee";
+  certs."${domain}".email = "moe@notthebe.ee";
 };
 }

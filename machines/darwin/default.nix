@@ -14,7 +14,6 @@
       extraSpecialArgs = { inherit inputs; }; # allows access to flake inputs in hm modules
       users.notthebee = { config, pkgs, ... }: {
         nixpkgs.overlays = [ 
-        inputs.nixpkgs-firefox-darwin.overlay 
         inputs.nur.overlay
         ];
         home.homeDirectory = lib.mkForce "/Users/notthebee";
@@ -25,7 +24,6 @@
           ../../users/notthebee/dots.nix
           ../../users/notthebee/age.nix
           ../../dots/tmux
-          ../../dots/firefox
           ../../dots/kitty
         ];
       };
