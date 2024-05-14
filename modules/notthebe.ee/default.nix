@@ -12,7 +12,10 @@ let
   '';
 in
 {
-systemd.tmpfiles.rules = ["d /var/www/notthebe.ee 0775 deploy deploy - -"];
+systemd.tmpfiles.rules = [
+"d /var/www 0755 deploy deploy - -"
+"d /var/www/notthebe.ee 0755 deploy deploy - -"
+];
 
 services.nginx = {
 
