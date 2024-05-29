@@ -117,6 +117,16 @@
     fsType = "xfs";
   };
 
+  fileSystems."/mnt/data2" =
+  { device = "/dev/disk/by-label/Data2";
+    fsType = "xfs";
+  };
+
+  fileSystems."/mnt/data1" =
+  { device = "/dev/disk/by-label/Data1";
+    fsType = "xfs";
+  };
+
   fileSystems."/mnt/parity1" =
   { device = "/dev/disk/by-label/Parity1";
     fsType = "xfs";

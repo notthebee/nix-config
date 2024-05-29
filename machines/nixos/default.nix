@@ -10,7 +10,7 @@
     options = "--delete-older-than 30d";
   };
   nix.optimise.automatic = true;
-  nix.optimise.dates = [ "03:45" ];
+  nix.optimise.dates = ["weekly"];
 
   system.autoUpgrade = {
     enable = true;

@@ -46,7 +46,7 @@
      "/dev/disk/by-label/Parity1"
     ];
     pwmPaths = [
-    "/sys/class/hwmon/hwmon0/pwm2"
+    "/sys/class/hwmon/hwmon0/pwm3"
     ];
     extraArgs = [
       "--pwm-start-value=100"

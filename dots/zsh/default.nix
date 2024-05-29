@@ -47,6 +47,7 @@
     # Cycle back in the suggestions menu using Shift+Tab
     bindkey '^[[Z' reverse-menu-complete
 
+    bindkey '^B' autosuggest-toggle
     # Make Ctrl+W remove one path segment instead of the whole path
     WORDCHARS=''${WORDCHARS/\/}
 

@@ -34,6 +34,8 @@
       "monitorcontrol"
       "handbrake"
       "tailscale"
+      "bambu-studio"
+      "thunderbird"
     ];
   };
   environment.systemPackages = with pkgs; [
@@ -95,6 +97,7 @@
       vscode
       google-cloud-sdk
       pinentry.curses
+      coconutbattery
   ];
 
   services.nix-daemon.enable = lib.mkForce true;

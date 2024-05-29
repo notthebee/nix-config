@@ -8,7 +8,7 @@
         widget:
           type: glances
           url: http://host.containers.internal:61208
-          metric: sensor:Composite
+          metric: sensor:Tctl
     - Storage:
         widget:
           type: glances
@@ -24,7 +24,5 @@
 - Arr: []
 
 - Media: []
-
-- Monitoring: []
 
 - Services: []
