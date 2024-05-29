@@ -38,13 +38,23 @@
 
   powerManagement.powertop.enable = true;
 
-  systemd.services.hd-idle = {
-    description = "HD spin down daemon";
-    wantedBy = [ "multi-user.target" ];
-    serviceConfig = {
-      Type = "simple";
-      ExecStart = "${pkgs.hd-idle}/bin/hd-idle -i 900";
-    };
+  services.hddfancontrol = {
+    enable = true;
+    disks = [
+     "/dev/disk/by-label/Data1"
+     "/dev/disk/by-label/Data2"
+     "/dev/disk/by-label/Parity1"
+    ];
+    pwmPaths = [
+    "/sys/class/hwmon/hwmon0/pwm3"
+    ];
+    extraArgs = [
+      "--pwm-start-value=100"
+      "--pwm-stop-value=50"
+      "--smartctl"
+      "-i 30"
+      "--spin-down-time=900"
+    ];
   };
 
   networking = {

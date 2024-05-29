@@ -47,6 +47,7 @@
     # Cycle back in the suggestions menu using Shift+Tab
     bindkey '^[[Z' reverse-menu-complete
 
+    bindkey '^B' autosuggest-toggle
     # Make Ctrl+W remove one path segment instead of the whole path
     WORDCHARS=''${WORDCHARS/\/}
 
@@ -56,9 +57,10 @@
 
       if [ $(uname) = "Darwin" ]; then 
         path=("$HOME/.nix-profile/bin" "/run/wrappers/bin" "/etc/profiles/per-user/$USER/bin" "/nix/var/nix/profiles/default/bin" "/run/current-system/sw/bin" "/opt/homebrew/bin" $path)
+        export BW_SESSION=$(${pkgs.coreutils}/bin/cat ${config.age.secrets.bwSession.path})
+        export DOCKER_HOST="unix://$HOME/.colima/default/docker.sock" 
       fi
       
-      export BW_SESSION=$(${pkgs.coreutils}/bin/cat ${config.age.secrets.bwSession.path})
       export EDITOR=nvim || export EDITOR=vim
       export LANG=en_US.UTF-8
       export LC_CTYPE=en_US.UTF-8

@@ -8,34 +8,17 @@
     restic
   ];
 
-  systemd.services.restic-backups-appdata-local.serviceConfig.TimeoutStopSec = 300;
-  systemd.services.restic-backups-appdata-backblaze.serviceConfig.TimeoutStopSec = 300;
-
   services.borgbackup.jobs.parents-backup = {
     doInit = false;
     paths = [
       "${vars.mainArray}/YoutubeArchive"
-        "${vars.cacheArray}/Documents"
+      "${vars.cacheArray}/Documents"
     ];
     encryption = {
       mode = "repokey-blake2";
       passCommand = "cat ${config.age.secrets.borgBackupKey.path}";
     };
-    preHook = ''
-      realBorg="$(${pkgs.which}/bin/which borg)"
-
-      borg(){
-        returnCode=0
-          "$realBorg" "$@" || returnCode=$?
-
-          if [[ $returnCode -eq 1 ]]; then
-            return 0
-          else
-            return $returnCode
-              fi
-      }
-    '';
-    extraArgs = "--verbose";
+    extraArgs = "--verbose --progress";
     environment.BORG_RSH = "ssh -o 'StrictHostKeyChecking=no' -i ${config.age.secrets.borgBackupSSHKey.path}";
     environment.BORG_RELOCATED_REPO_ACCESS_IS_OK = "yes";
     repo = "ssh://share@aria:69${vars.slowArray}/YouTube";

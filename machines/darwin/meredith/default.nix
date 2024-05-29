@@ -18,6 +18,7 @@
     brews = [
       "ansible"
       "ansible-lint"
+      "pulumi"
     ];
     casks = [
       "notion"
@@ -27,13 +28,14 @@
       "signal"
       "karabiner-elements"
       "grid"
-      "bambu-studio"
       "monitorcontrol"
       "google-chrome"
       "schildichat"
       "monitorcontrol"
       "handbrake"
       "tailscale"
+      "bambu-studio"
+      "thunderbird"
     ];
   };
   environment.systemPackages = with pkgs; [
@@ -86,16 +88,16 @@
       chromedriver
       mosh
       discord
+      git-filter-repo
       spotify
       httpie
       slack
       mattermost
       sentry-cli
       vscode
-      (pulumi.withPackages(ps: with ps; [ 
-        pulumi-language-nodejs
-      ]))
       google-cloud-sdk
+      pinentry.curses
+      coconutbattery
   ];
 
   services.nix-daemon.enable = lib.mkForce true;

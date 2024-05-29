@@ -6,6 +6,8 @@ snapraid = {
     "/mnt/parity1/snapraid.parity"
   ];
   contentFiles = [
+    "/mnt/data1/snapraid.content"
+    "/mnt/data2/snapraid.content"
     "/mnt/data3/snapraid.content"
     "/mnt/data4/snapraid.content"
   ];
