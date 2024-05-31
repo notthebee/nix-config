@@ -11,6 +11,7 @@
     file = ../../secrets/hashedUserPassword.age;
   };
 
+
   email = {
     fromAddress = "moe@notthebe.ee";
     toAddress = "server_announcements@mailbox.org";
@@ -39,4 +40,5 @@
     };
   };
   programs.zsh.enable = true;
-}
+
+  }
