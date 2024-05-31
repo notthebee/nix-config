@@ -97,7 +97,6 @@
       vscode
       google-cloud-sdk
       pinentry.curses
-      coconutbattery
   ];
 
   services.nix-daemon.enable = lib.mkForce true;
