@@ -40,7 +40,7 @@ in {
       options = [ "bind" "X-mount.mkdir" "noatime" ];
     };
   }) cfg.bindmounts ++ map (esp: {
-    "/boot/efis/${esp}" = {
+    "/boot/esp" = {
       device = "${config.zfs-root.boot.devNodes}/${esp}";
       fsType = "vfat";
       options = [
