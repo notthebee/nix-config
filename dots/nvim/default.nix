@@ -11,7 +11,6 @@ in
     figlet
     nodejs
     ripgrep
-    rnix-lsp
   ];
 
   programs.neovim = {
@@ -71,7 +70,7 @@ in
     extraPlugins = with pkgs.vimPlugins; [
       ansible-vim
       coc-nvim
-      suda-vim
+      vim-suda
     ];
     options = {
       number = true;

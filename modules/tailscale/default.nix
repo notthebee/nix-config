@@ -6,7 +6,12 @@
   networking.firewall.allowedUDPPorts = [ config.services.tailscale.port ];
   networking.firewall.trustedInterfaces = [ "tailscale0" ];
 
-  services.tailscale.enable = true;
+  services.tailscale = {
+    extraUpFlags = [
+      "--hostname ${config.networking.hostName}-tailscale"
+    ];
+    enable = true;
+  };
 
   systemd.services.tailscale-autoconnect = {
     description = "Automatic connection to Tailscale";
@@ -38,7 +43,7 @@
       fi
 
       export TAILSCALE_AUTH_KEY=$(${pkgs.systemd}/bin/systemd-creds cat TAILSCALE_AUTH_KEY_FILE)
-      ${tailscale}/bin/tailscale up --auth-key "$TAILSCALE_AUTH_KEY"
+      ${tailscale}/bin/tailscale up --auth-key "$TAILSCALE_AUTH_KEY" --hostname ${config.networking.hostName}-tailscale --
     '';
   };
 }

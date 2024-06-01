@@ -94,7 +94,6 @@
     gotools
     gopls
     go-outline
-    gocode
     gopkgs
     gocode-gomod
     godef

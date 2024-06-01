@@ -1,12 +1,16 @@
 {
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/release-23.11";
+    secrets = {
+    url = "git+file:secrets"; # the submodule is in the ./subproject dir
+    flake = false;
+    };
+    nixpkgs.url = "github:nixos/nixpkgs/release-24.05";
     nixvim = {
-      url = "github:pta2002/nixvim/nixos-23.11";
+      url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     home-manager = {
-      url = "github:nix-community/home-manager/release-23.11";
+      url = "github:nix-community/home-manager/release-24.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     agenix = {
@@ -68,6 +72,7 @@
           user = "root";
           sshOpts = [ "-p" "69" ];
           remoteBuild = true;
+          skipChecks = true;
           path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.emily;
         };
       };
