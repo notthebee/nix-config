@@ -1,13 +1,11 @@
 { inputs, pkgs, lib, ... }:
 {
-
   nixpkgs = {
     config = {
       allowUnfree = true;
       allowUnfreePredicate = (_: true);
     };
   };
-
   imports = [ <home-manager/nix-darwin> ];
   home-manager = {
     useGlobalPkgs = false; # makes hm use nixos's pkgs value

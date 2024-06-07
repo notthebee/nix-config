@@ -104,6 +104,7 @@
           user = "root";
           sshOpts = [ "-p" "69" ];
           remoteBuild = true;
+          skipChecks = true;
           path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.spencer;
         };
       };

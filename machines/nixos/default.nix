@@ -3,7 +3,7 @@
   # load module config to top-level configuration
 
   system.stateVersion = "22.11";
-
+  
   nix.gc = {
     automatic = true;
     dates = "weekly";

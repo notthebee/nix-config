@@ -97,6 +97,7 @@
       vscode
       google-cloud-sdk
       pinentry.curses
+      nixos-rebuild
   ];
 
   services.nix-daemon.enable = lib.mkForce true;
