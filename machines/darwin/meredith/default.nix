@@ -22,7 +22,6 @@
     ];
     casks = [
       "notion"
-      "warp"
       "telegram"
       "libreoffice"
       "signal"
@@ -30,16 +29,14 @@
       "grid"
       "monitorcontrol"
       "google-chrome"
-      "schildichat"
-      "monitorcontrol"
       "handbrake"
       "tailscale"
       "bambu-studio"
-      "thunderbird"
+      "element"
     ];
   };
   environment.systemPackages = with pkgs; [
-      (python311.withPackages(ps: with ps; [ 
+      (python311Full.withPackages(ps: with ps; [ 
       pip 
       jmespath
       requests
