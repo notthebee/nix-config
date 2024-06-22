@@ -264,9 +264,3 @@ fi
 # 2    0b10    L1 only
 # 3    0b11    L1 and L0s
 
-
-ASPM_SETTING=2
-ENDPOINT="01:00.0"
-enable_aspm_byte $ENDPOINT
-ENDPOINT="00:01.0"
-enable_aspm_byte $ENDPOINT
