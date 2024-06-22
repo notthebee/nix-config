@@ -6,7 +6,7 @@
     };
     nixpkgs.url = "github:nixos/nixpkgs/release-24.05";
     nixvim = {
-      url = "github:nix-community/nixvim";
+      url = "github:nix-community/nixvim/nixos-24.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     home-manager = {
