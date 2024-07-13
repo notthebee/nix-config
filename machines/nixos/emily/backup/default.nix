@@ -52,11 +52,12 @@
         initialize = true;
         passwordFile = config.age.secrets.resticPassword.path;
         pruneOpts = [
-          "--keep-last 20"
+          "--keep-last 5"
         ];
         exclude = [
           "recyclarr/repo"
             "recyclarr/repositories"
+            "pingvin/backend/uploads"
         ];
         paths = [
           "/tmp/appdata-local-${config.networking.hostName}.tar"
@@ -114,16 +115,18 @@
         initialize = true;
         passwordFile = config.age.secrets.resticPassword.path;
         pruneOpts = [
-          "--keep-last 10"
+          "--keep-last 5"
         ];
         exclude = [
           "recyclarr/repo"
-            "recyclarr/repositories"
+          "recyclarr/repositories"
+          "pingvin/backend/uploads"
         ];
         paths = [
           "/tmp/appdata-backblaze-${config.networking.hostName}.tar"
         ];
         backupPrepareCommand = ''
+          ${pkgs.restic}/bin/restic forget --prune --no-cache --keep-last 5
           ${pkgs.systemd}/bin/systemctl stop podman-*
           ${pkgs.gnutar}/bin/tar -cf /tmp/appdata-backblaze-${config.networking.hostName}.tar /persist 
           ${pkgs.restic}/bin/restic -r "${config.services.restic.backups.appdata-backblaze.repository}" -p ${config.age.secrets.resticPassword.path} unlock

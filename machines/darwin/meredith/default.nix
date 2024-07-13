@@ -42,6 +42,7 @@
       requests
       setuptools
       pyyaml
+      pyopenssl
       ]))
       ansible-language-server
       vault
@@ -65,12 +66,10 @@
       wget
       git-crypt
       iperf3
-      deploy-rs
       eza
       neofetch
       tmux
       rsync
-      ncdu
       nmap
       jq
       yq
@@ -95,6 +94,9 @@
       google-cloud-sdk
       pinentry.curses
       nixos-rebuild
+      deploy-rs
+      nixpkgs-fmt
+      nil
   ];
 
   services.nix-daemon.enable = lib.mkForce true;

@@ -33,7 +33,6 @@
 
     nur.url = "github:nix-community/nur";
 
-    deploy-rs.url = "github:serokell/deploy-rs";
   };
 
   outputs = { self, 
@@ -44,7 +43,6 @@
               nixvim, 
               nix-index-database, 
               agenix, 
-              deploy-rs,
               nur,
               ... }@inputs:
     let 
@@ -61,54 +59,9 @@
         agenix.darwinModules.default
         ./machines/darwin
         ./machines/darwin/meredith
+        ./modules/deploy-nix
         ];
       };
-
-    deploy.nodes = {
-      emily = {
-        hostname = "emily";
-        profiles.system = {
-          sshUser = "notthebee";
-          user = "root";
-          sshOpts = [ "-p" "69" ];
-          remoteBuild = true;
-          skipChecks = true;
-          path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.emily;
-        };
-      };
-      aria = {
-        hostname = "aria";
-        profiles.system = {
-          sshUser = "notthebee";
-          user = "root";
-          sshOpts = [ "-p" "69" ];
-          remoteBuild = true;
-          path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.aria;
-        };
-      };
-
-    alison = {
-        hostname = networksLocal.networks.lan.cidr;
-        profiles.system = {
-          sshUser = "notthebee";
-          user = "root";
-          sshOpts = [ "-p" "69" ];
-          remoteBuild = true;
-          path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.alison;
-        };
-      };
-      spencer = {
-        hostname = networksExternal.spencer.address;
-        profiles.system = {
-          sshUser = "notthebee";
-          user = "root";
-          sshOpts = [ "-p" "69" ];
-          remoteBuild = true;
-          skipChecks = true;
-          path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.spencer;
-        };
-      };
-    };
 
     nixosConfigurations = {
       spencer = nixpkgs.lib.nixosSystem {

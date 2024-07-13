@@ -35,6 +35,10 @@ in
       telescope = {
         enable = true;
       };
+      alpha = {
+        enable = true;
+        theme = "startify";
+      };
       fugitive = {
         enable = true;
       };
@@ -111,6 +115,25 @@ in
 
     autoCmd = [
     {
+      event = [ "InsertEnter" ];
+      pattern = [ "*" ];
+      command = "match EOLWS // | match EOLWSInsert /\\s\\+\\%#\\@<!$\\| \\+\\ze\\t/";
+    }
+    {
+      event = [ "InsertLeave" ];
+      pattern = [ "*" ];
+      command = "match EOLWS // | match EOLWSInsert /\\s\\+\\%#\\@<!$\\| \\+\\ze\\t/";
+    }
+    {
+      event = [ 
+        "WinEnter"
+        "BufWinEnter"
+        "WinNew"
+      ];
+      pattern = [ "*" ];
+      command = "match EOLWS /\\s\\+$\\| \\+\\ze\t/";
+    }
+    {
       event = [ "WinEnter" ];
       pattern = [ "*" ];
       command = "set cul";
@@ -163,6 +186,7 @@ in
       coc_global_extensions = [
         "coc-explorer"
         "@yaegassy/coc-ansible"
+        "@yaegassy/coc-nginx"
       ];
       suda_smart_edit = 1;
       "suda#nopass" = 1;
@@ -185,6 +209,46 @@ in
         mode = "n";
         key = "sf";
         action = "<cmd>CocCommand explorer<cr>";
+        options = {
+          silent = true;
+        };
+      }
+      {
+        mode = "n";
+        key = "<A-,>";
+        action = "<Cmd>BufferPrevious<CR>";
+        options = {
+          silent = true;
+        };
+      }
+      {
+        mode = "n";
+        key = "<A-.>";
+        action = "<Cmd>BufferNext<CR>";
+        options = {
+          silent = true;
+        };
+      }
+      {
+        mode = "n";
+        key = "<A-.>";
+        action = "<Cmd>BufferNext<CR>";
+        options = {
+          silent = true;
+        };
+      }
+      {
+        mode = "n";
+        key = "<A-c>";
+        action = "<Cmd>BufferClose<CR>";
+        options = {
+          silent = true;
+        };
+      }
+      {
+        mode = "n";
+        key = "<A-s-c>";
+        action = "<Cmd>BufferRestore<CR>";
         options = {
           silent = true;
         };

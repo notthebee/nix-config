@@ -125,14 +125,6 @@ if __name__ == "__main__":
         [(c, c.stat()) for c in cache_path.glob("**/*") if c.is_file()],
         key=lambda p: p[1].st_atime,
     )
-    for c_id, (c_path, c_stat) in enumerate(candidates):
-        for excluded_path in excluded_paths:
-            if excluded_path in f"{c_path}":
-                syslog.syslog(
-                    syslog.LOG_DEBUG,
-                    f"Skipping {c_path} since it is excluded by {excluded_path}.",
-                )
-                continue
 
     if usage_percentage <= target:
         syslog.syslog(
@@ -152,6 +144,16 @@ if __name__ == "__main__":
     for c_id, (c_path, c_stat) in enumerate(candidates):
 
         syslog.syslog(syslog.LOG_DEBUG, f"{c_path}")
+
+        for excluded_path in excluded_paths:
+            if excluded_path in f"{c_path}":
+                syslog.syslog(
+                    syslog.LOG_DEBUG,
+                    f"Skipping {c_path} since it is excluded by {excluded_path}.",
+                )
+                continue
+
+
 
         if not c_path.exists():
             # Since rsync moves also other hard links it might be that

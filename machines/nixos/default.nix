@@ -26,9 +26,6 @@
 
 
   nixpkgs = {
-    overlays = [
-        inputs.nur.overlay
-    ];
     config = {
       allowUnfree = true;
       allowUnfreePredicate = (_: true);
@@ -45,6 +42,7 @@
     enable = lib.mkDefault true;
     settings = {
     PasswordAuthentication = lib.mkDefault false; 
+    LoginGraceTime = 0;
     PermitRootLogin = "no";
     };
     ports = [ 69 ];
@@ -103,7 +101,6 @@
     fatrace
     git-crypt
     bfg-repo-cleaner
-    deploy-rs
   ];
 
   }
