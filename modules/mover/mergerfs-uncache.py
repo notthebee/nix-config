@@ -2,12 +2,16 @@
 import argparse
 import shutil
 import subprocess
+import os
 import socket
 import syslog
 import time
+import datetime
 import urllib.request
 from pathlib import Path
 from typing import List
+import asyncio
+import aiofiles
 
 if __name__ == "__main__":
     """
@@ -34,6 +38,29 @@ if __name__ == "__main__":
         dest="source",
         type=Path,
         help="Source path (i.e. cache pool root path.",
+    )
+    parser.add_argument(
+        "-u",
+        "--uid",
+        dest="uid",
+        default="",
+        type=str,
+        help="Username to assign ownership of the folders to",
+    )
+    parser.add_argument(
+        "-g",
+        "--gid",
+        dest="gid",
+        default="",
+        type=str,
+        help="Group name to assign ownership of the folders to",
+    )
+    parser.add_argument(
+        "--atime",
+        dest="atime",
+        type=int,
+        default=0,
+        help="TODO: Only move files older than N days"
     )
     parser.add_argument(
         "-d",
@@ -106,6 +133,18 @@ if __name__ == "__main__":
     ###################
     # Start the process
     ###################
+    uid = args.uid
+    gid = args.gid
+    def fix_permissions(uid, gid, cache_path, slow_path):
+        if len(uid) > 0 and len(gid) > 0:
+            syslog.syslog(
+                    syslog.LOG_INFO, f"Fixing permissions on {cache_path}..."
+                    )
+            subprocess.run(["/run/wrappers/bin/sudo", "/run/current-system/sw/bin/chown", "-R", f"{uid}:{gid}", f"{cache_path}"])
+            syslog.syslog(
+                    syslog.LOG_INFO, f"Fixing permissions on {slow_path}..."
+                    )
+            subprocess.run(["/run/wrappers/bin/sudo", "/run/current-system/sw/bin/chown", "-R", f"{uid}:{gid}", f"{slow_path}"])
 
     if args.hc_url != "":
         try:
@@ -138,72 +177,66 @@ if __name__ == "__main__":
                 syslog.syslog(syslog.LOG_ERR, f"Failed to open {args.hc_url}.")
         exit(0)
 
-    t_start = time.monotonic()
-    syslog.syslog(syslog.LOG_INFO, "Processing candidates...")
-    cache_used = cache_stats.used
-    for c_id, (c_path, c_stat) in enumerate(candidates):
+    semaphore = asyncio.Semaphore(1000)
 
-        syslog.syslog(syslog.LOG_DEBUG, f"{c_path}")
+    fix_permissions(uid, gid, cache_path, slow_path)
+    async def move_file(c_path, cache_path, slow_path):
+        async with semaphore:
+            try:
+                async with aiofiles.open(c_path, 'rb'):
+                    src = Path(cache_path) / Path(c_path.relative_to(cache_path))
+                    dest = Path(slow_path) / Path(c_path.relative_to(cache_path))
+                    
+                    os.chmod(os.path.dirname(src), mode=0o775)
+                    os.makedirs(os.path.dirname(dest), exist_ok=True, mode=0o775)
 
-        for excluded_path in excluded_paths:
-            if excluded_path in f"{c_path}":
-                syslog.syslog(
-                    syslog.LOG_DEBUG,
-                    f"Skipping {c_path} since it is excluded by {excluded_path}.",
-                )
+
+                    syslog.syslog(syslog.LOG_DEBUG, f"Moving from {src} to {dest}")
+                    if os.path.exists(c_path):
+                        shutil.move(src, dest)
+                        return os.path.getsize(c_path)
+                    else:
+                        syslog.syslog(syslog.LOG_WARNING, f"{c_path} does not exist when trying to move.")
+                        return 0
+            except Exception as e:
+                syslog.syslog(syslog.LOG_WARNING, f"Failed to move {c_path}: {e}")
+                return 0
+
+    async def process_files(candidates, excluded_paths, cache_path, slow_path, target, last_id, time_limit):
+        cache_used = sum(c_stat.st_size for _, c_stat in candidates)
+        cache_stats = shutil.disk_usage(cache_path)
+        t_start = time.monotonic()
+
+        tasks = []
+        for c_id, (c_path, c_stat) in enumerate(candidates):
+            if any(excluded_path in str(c_path) for excluded_path in excluded_paths):
+                syslog.syslog(syslog.LOG_DEBUG, f"Skipping {c_path} since it is excluded.")
                 continue
 
+            if not os.path.exists(c_path):
+                syslog.syslog(syslog.LOG_WARNING, f"{c_path} does not exist.")
+                continue
+
+            tasks.append(move_file(c_path, cache_path, slow_path))
+
+            cache_used -= c_stat.st_size
+
+            # Evaluate early breaking conditions
+            if last_id >= 0 and c_id >= last_id - 1:
+                syslog.syslog(syslog.LOG_INFO, f"Maximum number of moved files reached ({last_id}).")
+                break
+            if time_limit >= 0 and time.monotonic() - t_start > time_limit:
+                syslog.syslog(syslog.LOG_INFO, f"Time limit reached ({time_limit} seconds).")
+                break
+            if (100 * cache_used / cache_stats.total) <= target:
+                syslog.syslog(syslog.LOG_INFO, f"Target of maximum used capacity reached ({target}).")
+                break
 
 
-        if not c_path.exists():
-            # Since rsync moves also other hard links it might be that
-            # some files are not existing anymore. However, invoking rsync
-            # for each file (instead of directories) does not preserve
-            # hard links.
-            syslog.syslog(syslog.LOG_WARNING, f"{c_path} does not exist.")
-            continue
+        await asyncio.gather(*tasks)
 
-        # Rsync options
-        # -a, --archive               archive mode; equals -rlptgoD (no -H,-A,-X)
-        # -x, --one-file-system       don't cross filesystem boundaries
-        # -q, --quiet                 suppress non-error messages
-        # -H, --hard-links            preserve hard links
-        # -A, --acls                  preserve ACLs (implies --perms)
-        # -X, --xattrs                preserve extended attributes
-        # -W, --whole-file            copy files whole (without delta-xfer algorithm)
-        # -E, --executability         preserve the file's executability
-        # -S, --sparse                turn sequences of nulls into sparse blocks
-        # -R, --relative              use relative path names
-        # --preallocate               allocate dest files before writing them
-        # --remove-source-files       sender removes synchronized files (non-dirs)
-        subprocess.call(
-            [
-                "rsync",
-                "-axqHAXWESR",
-                "--preallocate",
-                "--remove-source-files",
-                f"{cache_path}/./{c_path.relative_to(cache_path)}",
-                f"{slow_path}/",
-            ]
-        )
-        cache_used -= c_stat.st_size
-
-        # Evaluate early breaking conditions
-        if last_id >= 0 and c_id >= last_id - 1:
-            syslog.syslog(
-                syslog.LOG_INFO, f"Maximum number of moved files reached ({last_id})."
-            )
-            break
-        if time_limit >= 0 and time.monotonic() - t_start > time_limit:
-            syslog.syslog(
-                syslog.LOG_INFO, f"Time limit reached ({time_limit} seconds)."
-            )
-            break
-        if (100 * cache_used / cache_stats.total) <= target:
-            syslog.syslog(
-                syslog.LOG_INFO, f"Target of maximum used capacity reached ({target})."
-            )
-            break
+    syslog.syslog(syslog.LOG_INFO, f"Starting to move files")
+    asyncio.run(process_files(candidates, excluded_paths, cache_path, slow_path, target, last_id, time_limit))
 
     cache_stats = shutil.disk_usage(cache_path)
     usage_percentage = 100 * cache_stats.used / cache_stats.total
@@ -212,6 +245,7 @@ if __name__ == "__main__":
         f"Process completed in {round(time.monotonic() - t_start)} seconds. Current usage percentage is {usage_percentage:.2f}%.",
     )
 
+    fix_permissions(uid, gid, cache_path, slow_path)
     if args.hc_url != "":
         try:
             urllib.request.urlopen(args.hc_url, timeout=3)

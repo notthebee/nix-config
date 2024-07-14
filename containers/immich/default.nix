@@ -1,32 +1,32 @@
 { config, vars, ... }:
 let
-directories = [
-  "${vars.serviceConfigRoot}/immich"
-  "${vars.serviceConfigRoot}/immich/postgresql"
-  "${vars.serviceConfigRoot}/immich/postgresql/data"
-  "${vars.serviceConfigRoot}/immich/config"
-  "${vars.serviceConfigRoot}/immich/machine-learning"
-  "${vars.mainArray}/Photos"
-  "${vars.mainArray}/Photos/Immich"
-];
+  directories = [
+    "${vars.serviceConfigRoot}/immich"
+    "${vars.serviceConfigRoot}/immich/postgresql"
+    "${vars.serviceConfigRoot}/immich/postgresql/data"
+    "${vars.serviceConfigRoot}/immich/config"
+    "${vars.serviceConfigRoot}/immich/machine-learning"
+    "${vars.mainArray}/Photos"
+    "${vars.mainArray}/Photos/Immich"
+  ];
 in
 {
   systemd.tmpfiles.rules = map (x: "d ${x} 0775 share share - -") directories;
   systemd.services = {
     podman-immich = {
-    requires = [ 
-    "podman-immich-redis.service" 
-    "podman-immich-postgres.service" 
-    ];
-    after = [ 
-    "podman-immich-redis.service" 
-    "podman-immich-postgres.service" 
-    ];
-  };
+      requires = [
+        "podman-immich-redis.service"
+        "podman-immich-postgres.service"
+      ];
+      after = [
+        "podman-immich-redis.service"
+        "podman-immich-postgres.service"
+      ];
+    };
     podman-immich-postgres = {
-    requires = [ "podman-immich-redis.service" ];
-    after = [ "podman-immich-redis.service" ];
-  };
+      requires = [ "podman-immich-redis.service" ];
+      after = [ "podman-immich-redis.service" ];
+    };
   };
 
   virtualisation.oci-containers.containers = {
@@ -49,9 +49,9 @@ in
         DB_DATABASE_NAME = "immich";
         REDIS_HOSTNAME = "immich-redis";
       };
-      extraOptions = [ 
-      "--network=container:immich-redis"
-      "--gpus=all" 
+      extraOptions = [
+        "--network=container:immich-redis"
+        "--device=/dev/dri:/dev/dri"
       ];
     };
 

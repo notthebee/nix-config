@@ -1,28 +1,24 @@
 { config, vars, ... }:
-{
-# grafana configuration
-networking.firewall.allowedTCPPorts = [ 
-  9100
+let
+  directories = [
+    "${vars.serviceConfigRoot}/grafana"
   ];
-
-
-  services.prometheus = {
-    enable = true;
-    port = 9001;
-    scrapeConfigs = [
-      {
-        job_name = "emily";
-        static_configs = [{
-          targets = [ "127.0.0.1:${toString config.services.prometheus.exporters.node.port}" ];
-        }];
-      }
-    ];
-    exporters = {
-      node = {
-        enable = true;
-        port = 9100;
+in
+{
+  systemd.tmpfiles.rules = map (x: "d ${x} 0775 472 0 - -") directories;
+  virtualisation.oci-containers = {
+    containers = {
+      grafana = {
+        image = "grafana/grafana";
+        autoStart = true;
+        extraOptions = [
+          "-l=traefik.enable=true"
+          "-l=traefik.http.routers.grafana.rule=Host(`grafana.alison.${vars.domainName}`)"
+        ];
+        volumes = [
+          "${vars.serviceConfigRoot}/grafana:/var/lib/grafana"
+        ];
       };
     };
   };
 }
-

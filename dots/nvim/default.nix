@@ -1,9 +1,10 @@
 { inputs, lib, config, pkgs, ... }:
 let
-coc = import ./coc.nix;
+  coc = import ./coc.nix;
 in
 {
-  imports = [ inputs.nixvim.homeManagerModules.nixvim
+  imports = [
+    inputs.nixvim.homeManagerModules.nixvim
   ];
 
 
@@ -21,13 +22,19 @@ in
 
   xdg.configFile = {
     "nvim/coc-settings.json" = {
-      source = builtins.toFile "coc-settings.json" (builtins.toJSON (coc { homeDir = config.xdg.configHome; }));
+      source = pkgs.writeText "coc-settings.json" (builtins.toJSON (coc { homeDir = config.xdg.configHome; pkgs = pkgs; }));
     };
   };
 
   programs.nixvim = {
     enable = true;
-    colorschemes.nord.enable = true;
+    colorschemes.nord = {
+      enable = true;
+      settings = {
+        borders = true;
+        contrast = true;
+      };
+    };
     plugins = {
       project-nvim = {
         enable = true;
@@ -54,9 +61,11 @@ in
       };
       indent-blankline = {
         enable = true;
-        exclude.filetypes = [
-          "startify"
-        ];
+        settings = {
+          exclude.filetypes = [
+            "startify"
+          ];
+        };
       };
       barbar = {
         enable = true;
@@ -76,7 +85,7 @@ in
       coc-nvim
       vim-suda
     ];
-    options = {
+    opts = {
       number = true;
       syntax = "enable";
       fileencodings = "utf-8,sjis,euc-jp,latin";
@@ -84,7 +93,7 @@ in
       title = true;
       autoindent = true;
       background = "dark";
-      backup  = false;
+      backup = false;
       hlsearch = true;
       showcmd = true;
       cmdheight = 1;
@@ -114,35 +123,35 @@ in
     };
 
     autoCmd = [
-    {
-      event = [ "InsertEnter" ];
-      pattern = [ "*" ];
-      command = "match EOLWS // | match EOLWSInsert /\\s\\+\\%#\\@<!$\\| \\+\\ze\\t/";
-    }
-    {
-      event = [ "InsertLeave" ];
-      pattern = [ "*" ];
-      command = "match EOLWS // | match EOLWSInsert /\\s\\+\\%#\\@<!$\\| \\+\\ze\\t/";
-    }
-    {
-      event = [ 
-        "WinEnter"
-        "BufWinEnter"
-        "WinNew"
-      ];
-      pattern = [ "*" ];
-      command = "match EOLWS /\\s\\+$\\| \\+\\ze\t/";
-    }
-    {
-      event = [ "WinEnter" ];
-      pattern = [ "*" ];
-      command = "set cul";
-    }
-    {
-      event = [ "WinLeave" ];
-      pattern = [ "*" ];
-      command = "set nocul";
-    }
+      {
+        event = [ "InsertEnter" ];
+        pattern = [ "*" ];
+        command = "match EOLWS // | match EOLWSInsert /\\s\\+\\%#\\@<!$\\| \\+\\ze\\t/";
+      }
+      {
+        event = [ "InsertLeave" ];
+        pattern = [ "*" ];
+        command = "match EOLWS // | match EOLWSInsert /\\s\\+\\%#\\@<!$\\| \\+\\ze\\t/";
+      }
+      {
+        event = [
+          "WinEnter"
+          "BufWinEnter"
+          "WinNew"
+        ];
+        pattern = [ "*" ];
+        command = "match EOLWS /\\s\\+$\\| \\+\\ze\t/";
+      }
+      {
+        event = [ "WinEnter" ];
+        pattern = [ "*" ];
+        command = "set cul";
+      }
+      {
+        event = [ "WinLeave" ];
+        pattern = [ "*" ];
+        command = "set nocul";
+      }
     ];
     highlight = {
       BufferCurrent = {
@@ -187,13 +196,14 @@ in
         "coc-explorer"
         "@yaegassy/coc-ansible"
         "@yaegassy/coc-nginx"
+        "coc-nil"
       ];
       suda_smart_edit = 1;
       "suda#nopass" = 1;
     };
     extraConfigLua = ''
       vim.api.nvim_set_hl(0, "MatchParen", { bg="#4c566a", fg="#88c0d0" })
-      '';
+    '';
     extraConfigVim = ''
       inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
       set undofile
@@ -203,7 +213,7 @@ in
         CocCommand explorer --toggle
           endif
           endfunction
-          '';
+    '';
     keymaps = [
       {
         mode = "n";
@@ -215,7 +225,7 @@ in
       }
       {
         mode = "n";
-        key = "<A-,>";
+        key = ";j";
         action = "<Cmd>BufferPrevious<CR>";
         options = {
           silent = true;
@@ -223,7 +233,7 @@ in
       }
       {
         mode = "n";
-        key = "<A-.>";
+        key = ";k";
         action = "<Cmd>BufferNext<CR>";
         options = {
           silent = true;
@@ -231,15 +241,7 @@ in
       }
       {
         mode = "n";
-        key = "<A-.>";
-        action = "<Cmd>BufferNext<CR>";
-        options = {
-          silent = true;
-        };
-      }
-      {
-        mode = "n";
-        key = "<A-c>";
+        key = ";x";
         action = "<Cmd>BufferClose<CR>";
         options = {
           silent = true;
@@ -247,7 +249,7 @@ in
       }
       {
         mode = "n";
-        key = "<A-s-c>";
+        key = ";xx";
         action = "<Cmd>BufferRestore<CR>";
         options = {
           silent = true;
@@ -305,16 +307,8 @@ in
       }
       {
         mode = "n";
-        key = "\\";
-        action = ":call CheckForExplorer()<CR> <cmd>Telescope buffers<cr>";
-        options = {
-          silent = true;
-        };
-      }
-      {
-        mode = "n";
         key = ";;";
-        action = ":call CheckForExplorer()<CR> <cmd>Telescope help_tags<cr>";
+        action = ":call CheckForExplorer()<CR> <cmd>Telescope buffers<cr>";
         options = {
           silent = true;
         };

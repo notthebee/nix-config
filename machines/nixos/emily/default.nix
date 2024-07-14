@@ -10,12 +10,12 @@
   zfs-root = {
     boot = {
       devNodes = "/dev/disk/by-id/";
-      bootDevices = [  "ata-Samsung_SSD_870_EVO_250GB_S6PENL0T902873K" ];
+      bootDevices = [ "ata-Samsung_SSD_870_EVO_250GB_S6PENL0T902873K" ];
       immutable = false;
-      availableKernelModules = [  "uhci_hcd" "ehci_pci" "ahci" "sd_mod" "sr_mod" ];
+      availableKernelModules = [ "uhci_hcd" "ehci_pci" "ahci" "sd_mod" "sr_mod" ];
 
       removableEfi = true;
-      kernelParams = [ 
+      kernelParams = [
         "pcie_aspm=force"
         "consoleblank=60"
         "acpi_enforce_resources=lax"
@@ -34,8 +34,9 @@
 
   imports = [
     ./filesystems
-      ./backup
-      ./shares ];
+    ./backup
+    ./shares
+  ];
 
   powerManagement.powertop.enable = true;
 
@@ -52,10 +53,10 @@
     ];
     extraArgs = [
       "--pwm-start-value=100"
-        "--pwm-stop-value=50"
-        "--smartctl"
-        "-i 30"
-        "--spin-down-time=900"
+      "--pwm-stop-value=50"
+      "--smartctl"
+      "-i 30"
+      "--spin-down-time=900"
     ];
   };
 
@@ -70,7 +71,7 @@
 
   virtualisation.docker.storageDriver = "overlay2";
 
-  system.autoUpgrade.enable = true; 
+  system.autoUpgrade.enable = true;
 
   mover = {
     cacheArray = vars.cacheArray;
@@ -78,33 +79,35 @@
     percentageFree = 60;
     excludedPaths = [
       "YoutubeCurrent"
+      "Downloads.tmp"
       "Media/Kiwix"
       "Documents"
       "TimeMachine"
       ".DS_Store"
+      ".cache"
     ];
   };
 
   environment.systemPackages = with pkgs; [
     pciutils
-      glances
-      hdparm
-      hd-idle
-      hddtemp
-      smartmontools
-      go
-      gotools
-      gopls
-      go-outline
-      gopkgs
-      gocode-gomod
-      godef
-      golint
-      powertop
-      cpufrequtils
-      gnumake
-      gcc
-      intel-gpu-tools
+    glances
+    hdparm
+    hd-idle
+    hddtemp
+    smartmontools
+    go
+    gotools
+    gopls
+    go-outline
+    gopkgs
+    gocode-gomod
+    godef
+    golint
+    powertop
+    cpufrequtils
+    gnumake
+    gcc
+    intel-gpu-tools
   ];
 
 }

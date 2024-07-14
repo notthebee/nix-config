@@ -1,8 +1,8 @@
 {
   inputs = {
     secrets = {
-    url = "git+file:secrets"; # the submodule is in the ./subproject dir
-    flake = false;
+      url = "git+file:secrets";
+      flake = false;
     };
     nixpkgs.url = "github:nixos/nixpkgs/release-24.05";
     nixvim = {
@@ -35,43 +35,46 @@
 
   };
 
-  outputs = { self, 
-              nixpkgs, 
-              nix-darwin, 
-              home-manager, 
-              recyclarr-configs, 
-              nixvim, 
-              nix-index-database, 
-              agenix, 
-              nur,
-              ... }@inputs:
-    let 
+  outputs =
+    { self
+    , nixpkgs
+    , nix-darwin
+    , home-manager
+    , recyclarr-configs
+    , nixvim
+    , nix-index-database
+    , agenix
+    , nur
+    , ...
+    }@inputs:
+    let
       networksExternal = import ./machines/networksExternal.nix;
       networksLocal = import ./machines/networksLocal.nix;
-    in {
+    in
+    {
 
-    darwinConfigurations."meredith" = nix-darwin.lib.darwinSystem {
-      system = "aarch64-darwin";
-      specialArgs = {
-        inherit inputs networksLocal networksExternal;
-      };
-      modules = [
-        agenix.darwinModules.default
-        ./machines/darwin
-        ./machines/darwin/meredith
-        ./modules/deploy-nix
+      darwinConfigurations."meredith" = nix-darwin.lib.darwinSystem {
+        system = "aarch64-darwin";
+        specialArgs = {
+          inherit inputs networksLocal networksExternal;
+        };
+        modules = [
+          agenix.darwinModules.default
+          ./machines/darwin
+          ./machines/darwin/meredith
+          ./modules/deploy-nix
         ];
       };
 
-    nixosConfigurations = {
-      spencer = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        specialArgs = {
-          inherit inputs networksLocal networksExternal;
-          vars = import ./machines/nixos/vars.nix;
-        };
-        modules = [
-          # Base configuration and modules
+      nixosConfigurations = {
+        spencer = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          specialArgs = {
+            inherit inputs networksLocal networksExternal;
+            vars = import ./machines/nixos/vars.nix;
+          };
+          modules = [
+            # Base configuration and modules
             ./modules/email
             ./modules/tg-notify
             ./modules/notthebe.ee
@@ -87,24 +90,24 @@
             home-manager.nixosModules.home-manager
             {
               home-manager.useGlobalPkgs = false; # makes hm use nixos's pkgs value
-                home-manager.extraSpecialArgs = { inherit inputs networksLocal networksExternal; }; # allows access to flake inputs in hm modules
-                home-manager.users.notthebee.imports = [ 
+              home-manager.extraSpecialArgs = { inherit inputs networksLocal networksExternal; }; # allows access to flake inputs in hm modules
+              home-manager.users.notthebee.imports = [
                 agenix.homeManagerModules.default
                 nix-index-database.hmModules.nix-index
-                ./users/notthebee/dots.nix 
-                ];
+                ./users/notthebee/dots.nix
+              ];
               home-manager.backupFileExtension = "bak";
             }
-        ];
-      };
-
-      alison = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        specialArgs = {
-          inherit inputs networksLocal networksExternal;
-          vars = import ./machines/nixos/vars.nix;
+          ];
         };
-        modules = [
+
+        alison = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          specialArgs = {
+            inherit inputs networksLocal networksExternal;
+            vars = import ./machines/nixos/vars.nix;
+          };
+          modules = [
             # Base configuration and modules
             ./modules/tg-notify
             ./modules/router
@@ -121,30 +124,31 @@
 
             ./containers/traefik
             ./containers/smarthome
+            ./containers/monitoring
 
             # User-specific configurations
             ./users/notthebee
             home-manager.nixosModules.home-manager
             {
               home-manager.useGlobalPkgs = false; # makes hm use nixos's pkgs value
-                home-manager.extraSpecialArgs = { inherit inputs networksLocal networksExternal; };
-                home-manager.users.notthebee.imports = [ 
+              home-manager.extraSpecialArgs = { inherit inputs networksLocal networksExternal; };
+              home-manager.users.notthebee.imports = [
                 agenix.homeManagerModules.default
                 nix-index-database.hmModules.nix-index
-                ./users/notthebee/dots.nix 
-                ];
+                ./users/notthebee/dots.nix
+              ];
               home-manager.backupFileExtension = "bak";
             }
-        ];
-      };
-
-      emily = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        specialArgs = {
-          inherit inputs networksLocal networksExternal;
-          vars = import ./machines/nixos/vars.nix;
+          ];
         };
-        modules = [
+
+        emily = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          specialArgs = {
+            inherit inputs networksLocal networksExternal;
+            vars = import ./machines/nixos/vars.nix;
+          };
+          modules = [
             # Base configuration and modules
             ./modules/aspm-tuning
             ./modules/zfs-root
@@ -170,7 +174,6 @@
             ./containers/arr
             ./containers/jellyfin
             ./containers/vaultwarden
-            ./containers/monitoring
             ./containers/pingvin-share
             ./containers/homepage
 
@@ -178,24 +181,24 @@
             ./users/notthebee
             home-manager.nixosModules.home-manager
             {
-              home-manager.useGlobalPkgs = false; 
-                home-manager.extraSpecialArgs = { inherit inputs networksLocal networksExternal; };
-                home-manager.users.notthebee.imports = [ 
-                  agenix.homeManagerModules.default
-                  nix-index-database.hmModules.nix-index
-                  ./users/notthebee/dots.nix 
-                ];
+              home-manager.useGlobalPkgs = false;
+              home-manager.extraSpecialArgs = { inherit inputs networksLocal networksExternal; };
+              home-manager.users.notthebee.imports = [
+                agenix.homeManagerModules.default
+                nix-index-database.hmModules.nix-index
+                ./users/notthebee/dots.nix
+              ];
               home-manager.backupFileExtension = "bak";
             }
-        ];
-      };
-      aria = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        specialArgs = {
-          inherit inputs networksLocal networksExternal;
-          vars = import ./machines/nixos/aria/vars.nix;
+          ];
         };
-        modules = [
+        aria = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          specialArgs = {
+            inherit inputs networksLocal networksExternal;
+            vars = import ./machines/nixos/aria/vars.nix;
+          };
+          modules = [
             # Base configuration and modules
             ./modules/aspm-tuning
             ./modules/zfs-root
@@ -214,24 +217,23 @@
             # Services and applications
             ./containers/traefik
             ./containers/immich
-            ./containers/monitoring
 
             # User-specific configurations
             ./users/notthebee
             home-manager.nixosModules.home-manager
             {
-              home-manager.useGlobalPkgs = false; 
-                home-manager.extraSpecialArgs = { inherit inputs networksLocal networksExternal; };
-                home-manager.users.notthebee.imports = [ 
-                  agenix.homeManagerModules.default
-                  nix-index-database.hmModules.nix-index
-                  ./users/notthebee/dots.nix 
-                ];
+              home-manager.useGlobalPkgs = false;
+              home-manager.extraSpecialArgs = { inherit inputs networksLocal networksExternal; };
+              home-manager.users.notthebee.imports = [
+                agenix.homeManagerModules.default
+                nix-index-database.hmModules.nix-index
+                ./users/notthebee/dots.nix
+              ];
               home-manager.backupFileExtension = "bak";
             }
-        ];
-      };
+          ];
+        };
 
+      };
     };
-  };
 }
