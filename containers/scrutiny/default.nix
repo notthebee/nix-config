@@ -1,12 +1,12 @@
 { config, vars, ... }:
 let
-directories = [
-"${vars.serviceConfigRoot}/scrutiny"
-"${vars.serviceConfigRoot}/scrutiny/cron.d"
-"${vars.serviceConfigRoot}/scrutiny/config"
-"${vars.serviceConfigRoot}/scrutiny/influxdb"
-];
-  in
+  directories = [
+    "${vars.serviceConfigRoot}/scrutiny"
+    "${vars.serviceConfigRoot}/scrutiny/cron.d"
+    "${vars.serviceConfigRoot}/scrutiny/config"
+    "${vars.serviceConfigRoot}/scrutiny/influxdb"
+  ];
+in
 {
 
   systemd.tmpfiles.rules = map (x: "d ${x} 0775 share share - -") directories;
@@ -21,25 +21,26 @@ directories = [
         image = "ghcr.io/analogj/scrutiny:v0.7.2-omnibus";
         autoStart = true;
         extraOptions = [
-        "-l=traefik.enable=true"
-        "-l=traefik.http.routers.scrutiny.rule=Host(`scrutiny.${vars.domainName}`)"
-        "-l=traefik.http.services.scrutiny.loadbalancer.server.port=8080"
-        "-l=homepage.group=Monitoring"
-        "-l=homepage.name=Scrutiny"
-        "-l=homepage.icon=scrutiny-light.png"
-        "-l=homepage.href=https://scrutiny.${vars.domainName}"
-        "-l=homepage.description=S.M.A.R.T. monitoring"
-        "-l=homepage.widget.type=scrutiny"
-        "-l=homepage.widget.url=http://scrutiny:8080"
-        "--cap-add=SYS_RAWIO"
-        "--device=/dev/sda:/dev/sda"
-        "--device=/dev/sdb:/dev/sdb"
-        "--device=/dev/sdc:/dev/sdc"
-        "--device=/dev/sdd:/dev/sdd"
-        "--device=/dev/sde:/dev/sde"
-        "--device=/dev/sdf:/dev/sdf"
-        "--device=/dev/sdg:/dev/sdg"
-        "--device=/dev/sdh:/dev/sdh"
+          "--pull=newer"
+          "-l=traefik.enable=true"
+          "-l=traefik.http.routers.scrutiny.rule=Host(`scrutiny.${vars.domainName}`)"
+          "-l=traefik.http.services.scrutiny.loadbalancer.server.port=8080"
+          "-l=homepage.group=Monitoring"
+          "-l=homepage.name=Scrutiny"
+          "-l=homepage.icon=scrutiny-light.png"
+          "-l=homepage.href=https://scrutiny.${vars.domainName}"
+          "-l=homepage.description=S.M.A.R.T. monitoring"
+          "-l=homepage.widget.type=scrutiny"
+          "-l=homepage.widget.url=http://scrutiny:8080"
+          "--cap-add=SYS_RAWIO"
+          "--device=/dev/sda:/dev/sda"
+          "--device=/dev/sdb:/dev/sdb"
+          "--device=/dev/sdc:/dev/sdc"
+          "--device=/dev/sdd:/dev/sdd"
+          "--device=/dev/sde:/dev/sde"
+          "--device=/dev/sdf:/dev/sdf"
+          "--device=/dev/sdg:/dev/sdg"
+          "--device=/dev/sdh:/dev/sdh"
         ];
         volumes = [
           "/run/udev:/run/udev:ro"
@@ -55,5 +56,5 @@ directories = [
         };
       };
     };
-};
+  };
 }

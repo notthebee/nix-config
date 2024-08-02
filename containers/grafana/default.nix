@@ -12,8 +12,9 @@ in
         image = "grafana/grafana";
         autoStart = true;
         extraOptions = [
+          "--pull=newer"
           "-l=traefik.enable=true"
-          "-l=traefik.http.routers.grafana.rule=Host(`grafana.alison.${vars.domainName}`)"
+          "-l=traefik.http.routers.grafana.rule=Host(`grafana.${vars.domainName}`)"
         ];
         volumes = [
           "${vars.serviceConfigRoot}/grafana:/var/lib/grafana"

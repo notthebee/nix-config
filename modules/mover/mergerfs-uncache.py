@@ -234,16 +234,15 @@ if __name__ == "__main__":
 
 
         await asyncio.gather(*tasks)
+        syslog.syslog(
+                syslog.LOG_INFO,
+                f"Process completed in {round(time.monotonic() - t_start)} seconds. Current usage percentage is {usage_percentage:.2f}%.",
+            )
+
+
 
     syslog.syslog(syslog.LOG_INFO, f"Starting to move files")
     asyncio.run(process_files(candidates, excluded_paths, cache_path, slow_path, target, last_id, time_limit))
-
-    cache_stats = shutil.disk_usage(cache_path)
-    usage_percentage = 100 * cache_stats.used / cache_stats.total
-    syslog.syslog(
-        syslog.LOG_INFO,
-        f"Process completed in {round(time.monotonic() - t_start)} seconds. Current usage percentage is {usage_percentage:.2f}%.",
-    )
 
     fix_permissions(uid, gid, cache_path, slow_path)
     if args.hc_url != "":

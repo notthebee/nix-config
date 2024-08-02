@@ -1,10 +1,10 @@
 { config, vars, ... }:
 let
-directories = [
-"${vars.serviceConfigRoot}/jellyfin"
-"${vars.mainArray}/Media/TV"
-"${vars.mainArray}/Media/Movies"
-];
+  directories = [
+    "${vars.serviceConfigRoot}/jellyfin"
+    "${vars.mainArray}/Media/TV"
+    "${vars.mainArray}/Media/Movies"
+  ];
 in
 {
   systemd.tmpfiles.rules = map (x: "d ${x} 0775 share share - -") directories;
@@ -14,6 +14,7 @@ in
         image = "lscr.io/linuxserver/jellyfin";
         autoStart = true;
         extraOptions = [
+          "--pull=newer"
           "--device=/dev/dri:/dev/dri"
           "-l=traefik.enable=true"
           "-l=traefik.http.routers.jellyfin.rule=Host(`jellyfin.${vars.domainName}`)"
@@ -41,5 +42,5 @@ in
         };
       };
     };
-};
+  };
 }

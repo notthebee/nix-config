@@ -50,6 +50,7 @@ in
         REDIS_HOSTNAME = "immich-redis";
       };
       extraOptions = [
+        "--pull=newer"
         "--network=container:immich-redis"
         "--device=/dev/dri:/dev/dri"
       ];
@@ -59,6 +60,7 @@ in
       autoStart = true;
       image = "redis";
       extraOptions = [
+        "--pull=newer"
         "-l=traefik.enable=true"
         "-l=traefik.http.routers.immich.rule=Host(`photos.${vars.domainName}`)"
         "-l=traefik.http.routers.immich.service=immich"
@@ -77,7 +79,10 @@ in
         POSTGRES_USER = "immich";
         POSTGRES_DB = "immich";
       };
-      extraOptions = [ "--network=container:immich-redis" ];
+      extraOptions = [
+        "--pull=newer"
+        "--network=container:immich-redis"
+      ];
     };
   };
 }

@@ -1,16 +1,16 @@
 { config, vars, ... }:
 let
-directories = [
-"${vars.serviceConfigRoot}/invoiceninja"
-"${vars.serviceConfigRoot}/invoiceninja/config"
-"${vars.serviceConfigRoot}/invoiceninja/mariadb"
-];
-  in
+  directories = [
+    "${vars.serviceConfigRoot}/invoiceninja"
+    "${vars.serviceConfigRoot}/invoiceninja/config"
+    "${vars.serviceConfigRoot}/invoiceninja/mariadb"
+  ];
+in
 {
-systemd.services.podman-invoiceninja-db = {
-  requires = [ "podman-invoiceninja.service" ];
-  after = [ "podman-invoiceninja.service" ];
-};
+  systemd.services.podman-invoiceninja-db = {
+    requires = [ "podman-invoiceninja.service" ];
+    after = [ "podman-invoiceninja.service" ];
+  };
   systemd.tmpfiles.rules = map (x: "d ${x} 0775 share share - -") directories;
 
   virtualisation.oci-containers = {
@@ -19,6 +19,7 @@ systemd.services.podman-invoiceninja-db = {
         image = "maihai/invoiceninja_v5";
         autoStart = true;
         extraOptions = [
+          "--pull=newer"
           "-l=traefik.enable=true"
           "-l=traefik.http.routers.invoiceninja.rule=Host(`invoice.${vars.domainName}`)"
           "-l=homepage.group=Services"
@@ -52,12 +53,13 @@ systemd.services.podman-invoiceninja-db = {
 
       };
       invoiceninja-db = {
-        image = "mariadb";     
+        image = "mariadb";
         autoStart = true;
         volumes = [
           "${vars.serviceConfigRoot}/invoiceninja/mariadb:/var/lib/mysql"
         ];
         extraOptions = [
+          "--pull=newer"
           "--network=container:invoiceninja"
         ];
         environmentFiles = [
@@ -70,5 +72,5 @@ systemd.services.podman-invoiceninja-db = {
         };
       };
     };
-};
+  };
 }

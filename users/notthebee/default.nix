@@ -1,11 +1,6 @@
-{ config, pkgs, lib, ... }: 
+{ config, pkgs, lib, ... }:
 {
   nix.settings.trusted-users = [ "notthebee" ];
-
-  age.identityPaths = [
-    "/home/notthebee/.ssh/notthebee"
-    "/home/notthebee/.ssh/id_ed25519"
-  ];
 
   age.secrets.hashedUserPassword = {
     file = ../../secrets/hashedUserPassword.age;
@@ -35,10 +30,10 @@
     };
     groups = {
       notthebee = {
-        gid= 1000;
+        gid = 1000;
       };
     };
   };
   programs.zsh.enable = true;
 
-  }
+}

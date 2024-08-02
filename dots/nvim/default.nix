@@ -81,6 +81,7 @@ in
       };
     };
     extraPlugins = with pkgs.vimPlugins; [
+      llm-nvim
       ansible-vim
       coc-nvim
       vim-suda

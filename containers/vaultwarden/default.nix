@@ -1,9 +1,9 @@
 { config, vars, ... }:
 let
-directories = [
-"${vars.serviceConfigRoot}/vaultwarden"
-];
-  in
+  directories = [
+    "${vars.serviceConfigRoot}/vaultwarden"
+  ];
+in
 {
   systemd.tmpfiles.rules = map (x: "d ${x} 0775 share share - -") directories;
   virtualisation.oci-containers = {
@@ -12,6 +12,7 @@ directories = [
         image = "vaultwarden/server:latest";
         autoStart = true;
         extraOptions = [
+          "--pull=newer"
           "-l=traefik.enable=true"
           "-l=traefik.http.routers.vaultwarden.rule=Host(`pass.${vars.domainName}`)"
           "-l=traefik.http.services.vaultwarden.loadbalancer.server.port=80"
@@ -30,5 +31,5 @@ directories = [
         };
       };
     };
-};
+  };
 }

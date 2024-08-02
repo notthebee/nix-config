@@ -21,6 +21,7 @@ in
           "gluetun"
         ];
         extraOptions = [
+          "--pull=newer"
           "--network=container:gluetun"
           "-l=homepage.group=Arr"
           "-l=homepage.name=sabnzbd"
@@ -46,6 +47,7 @@ in
           "gluetun"
         ];
         extraOptions = [
+          "--pull=newer"
           "--network=container:gluetun"
           "-l=homepage.group=Arr"
           "-l=homepage.name=Deluge"
@@ -71,6 +73,7 @@ in
         image = "qmcgaw/gluetun:latest";
         autoStart = true;
         extraOptions = [
+          "--pull=newer"
           "--cap-add=NET_ADMIN"
           "-l=traefik.enable=true"
           "-l=traefik.http.routers.deluge.rule=Host(`deluge.${vars.domainName}`)"

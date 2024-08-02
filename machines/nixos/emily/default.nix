@@ -38,7 +38,7 @@
     ./shares
   ];
 
-  powerManagement.powertop.enable = true;
+  #powerManagement.powertop.enable = true;
 
 
   services.hddfancontrol = {

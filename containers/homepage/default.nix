@@ -1,32 +1,33 @@
 { config, vars, pkgs, ... }:
 let
-directories = [
-"${vars.serviceConfigRoot}/homepage"
-"${vars.serviceConfigRoot}/homepage/config"
-];
+  directories = [
+    "${vars.serviceConfigRoot}/homepage"
+    "${vars.serviceConfigRoot}/homepage/config"
+  ];
 
-settingsFormat = pkgs.formats.yaml { };
-homepageSettings = {
-  docker = settingsFormat.generate "docker.yaml" (import ./docker.nix);
-  services = pkgs.writeTextFile {
-    name = "services.yaml";
-    text = builtins.readFile ./services.yaml;
+  settingsFormat = pkgs.formats.yaml { };
+  homepageSettings = {
+    docker = settingsFormat.generate "docker.yaml" (import ./docker.nix);
+    services = pkgs.writeTextFile {
+      name = "services.yaml";
+      text = builtins.readFile ./services.yaml;
+    };
+    settings = pkgs.writeTextFile {
+      name = "settings.yaml";
+      text = builtins.readFile ./settings.yaml;
+    };
+    bookmarks = settingsFormat.generate "bookmarks.yaml" (import ./bookmarks.nix);
+    widgets = pkgs.writeTextFile {
+      name = "widgets.yaml";
+      text = builtins.readFile ./widgets.yaml;
+    };
   };
-  settings = pkgs.writeTextFile {
-    name = "settings.yaml";
-    text = builtins.readFile ./settings.yaml;
+  homepageCustomCss = pkgs.writeTextFile {
+    name = "custom.css";
+    text = builtins.readFile ./custom.css;
   };
-  bookmarks = settingsFormat.generate "bookmarks.yaml" (import ./bookmarks.nix);
-  widgets = pkgs.writeTextFile {
-    name = "widgets.yaml";
-    text = builtins.readFile ./widgets.yaml;
-  };
-};
-homepageCustomCss = pkgs.writeTextFile {
-  name = "custom.css";
-  text = builtins.readFile ./custom.css;
-};
-  in {
+in
+{
 
   environment.systemPackages = with pkgs; [ glances ];
 
@@ -48,9 +49,10 @@ homepageCustomCss = pkgs.writeTextFile {
         image = "ghcr.io/gethomepage/homepage:latest";
         autoStart = true;
         extraOptions = [
-        "-l=traefik.enable=true"
-        "-l=traefik.http.routers.home.rule=Host(`${vars.domainName}`)"
-        "-l=traefik.http.services.home.loadbalancer.server.port=3000"
+          "--pull=newer"
+          "-l=traefik.enable=true"
+          "-l=traefik.http.routers.home.rule=Host(`${vars.domainName}`)"
+          "-l=traefik.http.services.home.loadbalancer.server.port=3000"
         ];
         volumes = [
           "${vars.serviceConfigRoot}/homepage/config:/app/config"
@@ -76,5 +78,5 @@ homepageCustomCss = pkgs.writeTextFile {
         ];
       };
     };
-};
+  };
 }

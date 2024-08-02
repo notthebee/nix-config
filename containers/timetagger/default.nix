@@ -1,9 +1,9 @@
 { config, vars, ... }:
 let
-directories = [
-"${vars.serviceConfigRoot}/timetagger"
-];
-  in
+  directories = [
+    "${vars.serviceConfigRoot}/timetagger"
+  ];
+in
 {
   systemd.tmpfiles.rules = map (x: "d ${x} 0775 share share - -") directories;
   virtualisation.oci-containers = {
@@ -12,14 +12,15 @@ directories = [
         image = "ghcr.io/almarklein/timetagger:latest";
         autoStart = true;
         extraOptions = [
-        "-l=traefik.enable=true"
-        "-l=traefik.http.routers.timetagger.rule=Host(`time.${vars.domainName}`)"
-        "-l=traefik.http.services.timetagger.loadbalancer.server.port=80"
-        "-l=homepage.group=Services"
-        "-l=homepage.name=TimeTagger"
-        "-l=homepage.icon=timetagger.png"
-        "-l=homepage.href=https://time.${vars.domainName}"
-        "-l=homepage.description=Time tracking software"
+          "--pull=newer"
+          "-l=traefik.enable=true"
+          "-l=traefik.http.routers.timetagger.rule=Host(`time.${vars.domainName}`)"
+          "-l=traefik.http.services.timetagger.loadbalancer.server.port=80"
+          "-l=homepage.group=Services"
+          "-l=homepage.name=TimeTagger"
+          "-l=homepage.icon=timetagger.png"
+          "-l=homepage.href=https://time.${vars.domainName}"
+          "-l=homepage.description=Time tracking software"
         ];
         volumes = [
           "${vars.serviceConfigRoot}/timetagger:/opt/_timetagger"
@@ -32,5 +33,5 @@ directories = [
         };
       };
     };
-};
+  };
 }

@@ -1,19 +1,20 @@
-{ config, lib, vars, networksLocal, ... }: let
-internalIP = (lib.lists.findSingle (x: x.hostname == "${config.networking.hostName}") { ip-address = "${networksLocal.networks.lan.cidr}"; } "0.0.0.0" networksLocal.networks.lan.reservations).ip-address;
-directories = [
-"${vars.serviceConfigRoot}/traefik"
-];
-files = [
-"${vars.serviceConfigRoot}/traefik/acme.json"
-];
+{ config, lib, vars, networksLocal, ... }:
+let
+  internalIP = (lib.lists.findSingle (x: x.hostname == "${config.networking.hostName}") { ip-address = "${networksLocal.networks.lan.cidr}"; } "0.0.0.0" networksLocal.networks.lan.reservations).ip-address;
+  directories = [
+    "${vars.serviceConfigRoot}/traefik"
+  ];
+  files = [
+    "${vars.serviceConfigRoot}/traefik/acme.json"
+  ];
 in
 {
-  systemd.tmpfiles.rules = 
-  map (x: "d ${x} 0775 share share - -") directories ++ map (x: "f ${x} 0600 share share - -") files;
+  systemd.tmpfiles.rules =
+    map (x: "d ${x} 0775 share share - -") directories ++ map (x: "f ${x} 0600 share share - -") files;
   virtualisation.oci-containers = {
     containers = {
       traefik = {
-        image = "traefik";
+        image = "traefik:latest";
         autoStart = true;
         cmd = [
           "--api.insecure=true"
@@ -36,6 +37,7 @@ in
 
         ];
         extraOptions = [
+          "--pull=newer"
           # Proxying Traefik itself
           "-l=traefik.enable=true"
           "-l=traefik.http.routers.traefik.rule=Host(`proxy.${vars.domainName}`)"

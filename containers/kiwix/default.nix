@@ -12,6 +12,7 @@ in
         image = "ghcr.io/kiwix/kiwix-serve:latest";
         autoStart = true;
         extraOptions = [
+          "--pull=newer"
           "-l=traefik.enable=true"
           "-l=traefik.http.routers.kiwix.rule=Host(`kiwix.${vars.domainName}`)"
           "-l=traefik.http.services.kiwix.loadbalancer.server.port=8080"

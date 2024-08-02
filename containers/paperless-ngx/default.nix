@@ -1,46 +1,46 @@
 { config, vars, ... }:
 let
-directories = [
-"${vars.serviceConfigRoot}/paperless"
-"${vars.cacheArray}/Documents"
-"${vars.cacheArray}/Documents/Paperless"
-"${vars.cacheArray}/Documents/Paperless/Documents"
-"${vars.cacheArray}/Documents/Paperless/Import"
-"${vars.cacheArray}/Documents/Paperless/Export"
-];
+  directories = [
+    "${vars.serviceConfigRoot}/paperless"
+    "${vars.cacheArray}/Documents"
+    "${vars.cacheArray}/Documents/Paperless"
+    "${vars.cacheArray}/Documents/Paperless/Documents"
+    "${vars.cacheArray}/Documents/Paperless/Import"
+    "${vars.cacheArray}/Documents/Paperless/Export"
+  ];
 in
 {
 
   systemd.services = {
-  podman-paperless-redis = {
-    requires = [ "podman-paperless.service" ];
-    after = [ "podman-paperless.service" ];
-  };
+    podman-paperless-redis = {
+      requires = [ "podman-paperless.service" ];
+      after = [ "podman-paperless.service" ];
+    };
   };
   systemd.tmpfiles.rules = map (x: "d ${x} 0775 share share - -") directories;
 
-  networking.firewall.allowedTCPPorts = [ 
-  8080 # WebDAV
+  networking.firewall.allowedTCPPorts = [
+    8080 # WebDAV
   ];
 
   services.webdav = {
-  enable = true;
-  user = "share";
-  group = "share";
-  environmentFile = config.age.secrets.paperless.path;
-  settings = {
-    address = "0.0.0.0";
-    port = 8080;
-    scope = "${vars.cacheArray}/Documents/Paperless/Import";
-    modify = true;
-    auth = true;
-    users = [
-      {
-        username = "notthebee";
-        password = "{env}PASSWORD";
-      }
-    ];
-  };
+    enable = true;
+    user = "share";
+    group = "share";
+    environmentFile = config.age.secrets.paperless.path;
+    settings = {
+      address = "0.0.0.0";
+      port = 8080;
+      scope = "${vars.cacheArray}/Documents/Paperless/Import";
+      modify = true;
+      auth = true;
+      users = [
+        {
+          username = "notthebee";
+          password = "{env}PASSWORD";
+        }
+      ];
+    };
   };
 
   virtualisation.oci-containers = {
@@ -49,6 +49,7 @@ in
         image = "ghcr.io/paperless-ngx/paperless-ngx";
         autoStart = true;
         extraOptions = [
+          "--pull=newer"
           "--device=/dev/dri:/dev/dri"
           "-l=traefik.enable=true"
           "-l=traefik.http.routers.paperless.rule=Host(`paperless.${vars.domainName}`)"
@@ -87,12 +88,12 @@ in
         };
       };
       paperless-redis = {
-        image = "redis";     
+        image = "redis";
         autoStart = true;
         extraOptions = [
           "--network=container:paperless"
         ];
       };
-};
-};
+    };
+  };
 }
