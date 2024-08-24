@@ -64,6 +64,14 @@ in
         command = "/run/current-system/sw/bin/chown -R ${config.mover.user}\\:${config.mover.group} ${config.mover.cacheArray}";
         options = [ "NOPASSWD" ];
       }
+      {
+        command = "/run/current-system/sw/bin/chmod -R u=rwX\\,go=rX ${config.mover.backingArray}";
+        options = [ "NOPASSWD" ];
+      }
+      {
+        command = "/run/current-system/sw/bin/chmod -R u=rwX\\,go=rX ${config.mover.cacheArray}";
+        options = [ "NOPASSWD" ];
+      }
     ];
   }];
 

@@ -1,4 +1,4 @@
-{ vars, users, pkgs, config, lib, ...}: 
+{ vars, users, pkgs, config, lib, ... }:
 {
   systemd.tmpfiles.rules = [
     "d ${vars.mainArray}/Backups/restic 0775 share share - -"
@@ -56,8 +56,8 @@
         ];
         exclude = [
           "recyclarr/repo"
-            "recyclarr/repositories"
-            "pingvin/backend/uploads"
+          "recyclarr/repositories"
+          "pingvin/backend/uploads"
         ];
         paths = [
           "/tmp/appdata-local-${config.networking.hostName}.tar"
@@ -66,17 +66,17 @@
           ${pkgs.systemd}/bin/systemctl stop podman-*
           ${pkgs.gnutar}/bin/tar -cf /tmp/appdata-local-${config.networking.hostName}.tar /persist 
           ${pkgs.restic}/bin/restic -r "${config.services.restic.backups.appdata-local.repository}" -p ${config.age.secrets.resticPassword.path} unlock
-          '';
+        '';
         backupCleanupCommand = ''
           rm -rf /tmp/appdata-local*
-          ${pkgs.systemd}/bin/systemctl start --all "podman-*"
+          ${pkgs.systemd}/bin/systemctl start --no-block --all "podman-*"
           if [[ $SERVICE_RESULT =~ "success" ]]; then
             message=$(journalctl -xeu restic-backups-appdata-local | grep Files: | tail -1 | sed 's/^.*Files/Files/g')
           else
             message=$(journalctl --unit=restic-backups-appdata-local.service -n 20 --no-pager)
               fi
               /run/current-system/sw/bin/notify -s "$SERVICE_RESULT" -t "Backup Job appdata-local" -m "$message"
-              '';
+        '';
       };
       paperless-backblaze = {
         timerConfig = {
@@ -95,7 +95,7 @@
         ];
         backupPrepareCommand = ''
           ${pkgs.restic}/bin/restic -r "${config.services.restic.backups.paperless-backblaze.repository}" -p ${config.age.secrets.resticPassword.path} unlock
-          '';
+        '';
         backupCleanupCommand = ''
           if [[ $SERVICE_RESULT =~ "success" ]]; then
             message=$(journalctl -xeu restic-backups-paperless-backblaze | grep Files: | tail -1 | sed 's/^.*Files/Files/g')
@@ -103,7 +103,7 @@
             message=$(journalctl --unit=restic-backups-paperless-backblaze.service -n 20 --no-pager)
               fi
               /run/current-system/sw/bin/notify -s "$SERVICE_RESULT" -t "Backup Job paperless-backblaze" -m "$message"
-              '';
+        '';
       };
       appdata-backblaze = {
         timerConfig = {
@@ -115,7 +115,7 @@
         initialize = true;
         passwordFile = config.age.secrets.resticPassword.path;
         pruneOpts = [
-          "--keep-last 5"
+          "--keep-last 3"
         ];
         exclude = [
           "recyclarr/repo"
@@ -126,21 +126,21 @@
           "/tmp/appdata-backblaze-${config.networking.hostName}.tar"
         ];
         backupPrepareCommand = ''
-          ${pkgs.restic}/bin/restic forget --prune --no-cache --keep-last 5
+          ${pkgs.restic}/bin/restic forget --prune --no-cache --keep-last 3
           ${pkgs.systemd}/bin/systemctl stop podman-*
           ${pkgs.gnutar}/bin/tar -cf /tmp/appdata-backblaze-${config.networking.hostName}.tar /persist 
           ${pkgs.restic}/bin/restic -r "${config.services.restic.backups.appdata-backblaze.repository}" -p ${config.age.secrets.resticPassword.path} unlock
-          '';
+        '';
         backupCleanupCommand = ''
           rm -rf /tmp/appdata-backblaze*.tar
-          ${pkgs.systemd}/bin/systemctl start --all "podman-*"
+          ${pkgs.systemd}/bin/systemctl start --no-block --all "podman-*"
           if [[ $SERVICE_RESULT =~ "success" ]]; then
             message=$(journalctl -xeu restic-backups-appdata-backblaze | grep Files: | tail -1 | sed 's/^.*Files/Files/g')
           else
             message=$(journalctl --unit=restic-backups-appdata-backblaze.service -n 20 --no-pager)
               fi
               /run/current-system/sw/bin/notify -s "$SERVICE_RESULT" -t "Backup Job appdata-backblaze" -m "$message"
-              '';
+        '';
       };
     };
   };

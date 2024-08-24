@@ -5,7 +5,6 @@ let
     "${vars.serviceConfigRoot}/radarr"
     "${vars.serviceConfigRoot}/prowlarr"
     "${vars.serviceConfigRoot}/recyclarr"
-    "${vars.serviceConfigRoot}/booksonic"
     "${vars.mainArray}/Media/Downloads"
     "${vars.mainArray}/Media/TV"
     "${vars.mainArray}/Media/Movies"
@@ -115,32 +114,6 @@ in
           TZ = vars.timeZone;
           PUID = "994";
           GUID = "993";
-          UMASK = "002";
-        };
-      };
-      booksonic = {
-        image = "lscr.io/linuxserver/booksonic-air";
-        autoStart = true;
-        extraOptions = [
-          "--pull=newer"
-          "-l=traefik.enable=true"
-          "-l=traefik.http.routers.booksonic.rule=Host(`booksonic.${vars.domainName}`)"
-          "-l=traefik.http.services.booksonic.loadbalancer.server.port=4040"
-          "-l=homepage.group=Media"
-          "-l=homepage.name=Booksonic"
-          "-l=homepage.icon=booksonic.png"
-          "-l=homepage.href=https://booksonic.${vars.domainName}"
-          "-l=homepage.description=Audiobook server"
-        ];
-        volumes = [
-          "${vars.mainArray}/Media/Audiobooks:/audiobooks"
-          "${vars.serviceConfigRoot}/booksonic:/config"
-        ];
-        environment = {
-          TZ = vars.timeZone;
-          PUID = "994";
-          GUID = "993";
-          CONTEXT_PATH = "/";
           UMASK = "002";
         };
       };

@@ -1,5 +1,5 @@
 {
-  environment.launchDaemons."limit.maxfiles.plist" ={
+  environment.launchDaemons."limit.maxfiles.plist" = {
     enable = true;
     text = ''
       <?xml version="1.0" encoding="UTF-8"?>
@@ -23,7 +23,7 @@
       <false/>
       </dict>
       </plist>
-      '';
+    '';
   };
   system = {
     defaults = {
@@ -38,7 +38,7 @@
         ShowStatusBar = true;
       };
       dock = {
-      # Quick Note on the bottom right hot corner
+        # Quick Note on the bottom right hot corner
         wvous-br-corner = 14;
         tilesize = 50;
       };
@@ -53,6 +53,6 @@
       /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
       launchctl stop com.apple.Dock.agent
       launchctl start com.apple.Dock.agent
-      '';
+    '';
   };
 }

@@ -116,6 +116,8 @@
             ./modules/zfs-root
             ./modules/email
             ./modules/duckdns
+            ./modules/monitoring_stats
+            ./modules/monitoring
 
             ./machines/nixos
             ./machines/nixos/alison
@@ -124,7 +126,7 @@
 
             ./containers/traefik
             ./containers/smarthome
-            ./containers/monitoring
+            ./containers/grafana
 
             # User-specific configurations
             ./users/notthebee
@@ -158,6 +160,7 @@
             ./modules/mover
             ./modules/motd
             ./modules/tailscale
+            ./modules/monitoring_stats
 
             # Import the machine config + secrets
             ./machines/nixos

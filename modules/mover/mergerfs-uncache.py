@@ -141,11 +141,14 @@ if __name__ == "__main__":
                     syslog.LOG_INFO, f"Fixing permissions on {cache_path}..."
                     )
             subprocess.run(["/run/wrappers/bin/sudo", "/run/current-system/sw/bin/chown", "-R", f"{uid}:{gid}", f"{cache_path}"])
+            subprocess.run(["/run/wrappers/bin/sudo", "/run/current-system/sw/bin/chmod", "-R", "u=rwX,go=rX", f"{cache_path}"])
             syslog.syslog(
                     syslog.LOG_INFO, f"Fixing permissions on {slow_path}..."
                     )
             subprocess.run(["/run/wrappers/bin/sudo", "/run/current-system/sw/bin/chown", "-R", f"{uid}:{gid}", f"{slow_path}"])
+            subprocess.run(["/run/wrappers/bin/sudo", "/run/current-system/sw/bin/chmod", "-R", "u=rwX,go=rX", f"{slow_path}"])
 
+    fix_permissions(uid, gid, cache_path, slow_path)
     if args.hc_url != "":
         try:
             urllib.request.urlopen(args.hc_url + "/start", timeout=3)
@@ -179,7 +182,6 @@ if __name__ == "__main__":
 
     semaphore = asyncio.Semaphore(1000)
 
-    fix_permissions(uid, gid, cache_path, slow_path)
     async def move_file(c_path, cache_path, slow_path):
         async with semaphore:
             try:

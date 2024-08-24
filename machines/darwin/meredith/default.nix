@@ -15,19 +15,12 @@
     caskArgs = {
       no_quarantine = true;
     };
-    brews = [
-      "ansible"
-      "ansible-lint"
-      "pulumi"
-    ];
     casks = [
       "notion"
       "telegram"
       "libreoffice"
       "signal"
-      "karabiner-elements"
       "grid"
-      "monitorcontrol"
       "google-chrome"
       "handbrake"
       "tailscale"
@@ -101,7 +94,10 @@
     nss
     nss.tools
     mkcert
-    jetbrains.pycharm-community-bin
+    karabiner-elements
+    monitorcontrol
+    vscode
+    pulumi
   ];
 
   services.nix-daemon.enable = lib.mkForce true;
