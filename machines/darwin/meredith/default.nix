@@ -4,6 +4,11 @@
     ulimit -n 2048
   '';
 
+
+  imports = [
+    ./work.nix
+  ];
+
   homebrew = {
     enable = true;
     onActivation = {
@@ -26,7 +31,7 @@
       "tailscale"
       "bambu-studio"
       "element"
-      "thunderbird"
+      "microsoft-outlook"
     ];
   };
   environment.systemPackages = with pkgs; [
@@ -97,7 +102,8 @@
     karabiner-elements
     monitorcontrol
     vscode
-    pulumi
+    pulumi-bin
+    pfetch
   ];
 
   services.nix-daemon.enable = lib.mkForce true;

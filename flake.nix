@@ -169,8 +169,8 @@
             agenix.nixosModules.default
 
             # Services and applications
-            ./containers/invoiceninja
-            ./containers/timetagger
+            #./containers/invoiceninja
+            #./containers/timetagger
             ./containers/paperless-ngx
             ./containers/traefik
             ./containers/deluge
