@@ -1,29 +1,29 @@
-{ inputs, config, pkgs, lib, ... }: 
+{ inputs, config, pkgs, lib, ... }:
 {
   # load module config to top-level configuration
 
   system.stateVersion = "22.11";
-  
+
   nix.gc = {
     automatic = true;
     dates = "weekly";
     options = "--delete-older-than 30d";
   };
   nix.optimise.automatic = true;
-  nix.optimise.dates = ["weekly"];
+  nix.optimise.dates = [ "weekly" ];
 
   system.autoUpgrade = {
     enable = true;
-    flake = inputs.self.outPath;
+    flake = "/etc/nixos\\?submodules=1";
     flags = [
       "--update-input"
+      "nixpkgs"
+      "-L"
     ];
     dates = "06:00";
     randomizedDelaySec = "45min";
+    allowReboot = true;
   };
-
-
-
 
   nixpkgs = {
     config = {
@@ -41,9 +41,9 @@
   services.openssh = {
     enable = lib.mkDefault true;
     settings = {
-    PasswordAuthentication = lib.mkDefault false; 
-    LoginGraceTime = 0;
-    PermitRootLogin = "no";
+      PasswordAuthentication = lib.mkDefault false;
+      LoginGraceTime = 0;
+      PermitRootLogin = "no";
     };
     ports = [ 69 ];
     hostKeys = [
@@ -84,7 +84,7 @@
     iperf3
     eza
     neofetch
-    (python310.withPackages(ps: with ps; [ pip ]))
+    (python310.withPackages (ps: with ps; [ pip ]))
     tmux
     rsync
     iotop
@@ -93,7 +93,7 @@
     jq
     ripgrep
     sqlite
-    inputs.agenix.packages."${system}".default 
+    inputs.agenix.packages."${system}".default
     lm_sensors
     jc
     moreutils
@@ -103,4 +103,4 @@
     bfg-repo-cleaner
   ];
 
-  }
+}

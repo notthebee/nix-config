@@ -14,32 +14,6 @@ in
   systemd.tmpfiles.rules = map (x: "d ${x} 0775 share share - -") directories;
   virtualisation.oci-containers = {
     containers = {
-      sabnzbd = {
-        image = "linuxserver/sabnzbd:latest";
-        autoStart = true;
-        dependsOn = [
-          "gluetun"
-        ];
-        extraOptions = [
-          "--pull=newer"
-          "--network=container:gluetun"
-          "-l=homepage.group=Arr"
-          "-l=homepage.name=sabnzbd"
-          "-l=homepage.icon=sabnzbd.svg"
-          "-l=homepage.href=https://sabnzbd.${vars.domainName}"
-          "-l=homepage.description=Newsgroup client"
-        ];
-        volumes = [
-          "${vars.mainArray}/Media/Downloads:/data/completed"
-          "${vars.cacheArray}/Media/Downloads.tmp:/data/incomplete"
-          "${vars.serviceConfigRoot}/sabnzbd:/config"
-        ];
-        environment = {
-          TZ = vars.timeZone;
-          PUID = "994";
-          GUID = "993";
-        };
-      };
       deluge = {
         image = "linuxserver/deluge:latest";
         autoStart = true;
@@ -79,9 +53,6 @@ in
           "-l=traefik.http.routers.deluge.rule=Host(`deluge.${vars.domainName}`)"
           "-l=traefik.http.routers.deluge.service=deluge"
           "-l=traefik.http.services.deluge.loadbalancer.server.port=8112"
-          "-l=traefik.http.routers.sabnzbd.rule=Host(`sabnzbd.${vars.domainName}`)"
-          "-l=traefik.http.routers.sabnzbd.service=sabnzbd"
-          "-l=traefik.http.services.sabnzbd.loadbalancer.server.port=8080"
           "--device=/dev/net/tun:/dev/net/tun"
           "-l=homepage.group=Arr"
           "-l=homepage.name=Gluetun"
