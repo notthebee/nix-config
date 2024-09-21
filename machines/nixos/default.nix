@@ -20,7 +20,7 @@
       "nixpkgs"
       "-L"
     ];
-    dates = "06:00";
+    dates = "Sat *-*-* 06:00:00";
     randomizedDelaySec = "45min";
     allowReboot = true;
   };
