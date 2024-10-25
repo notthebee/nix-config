@@ -38,7 +38,7 @@
     ./shares
   ];
 
-  powerManagement.powertop.enable = true;
+  powerManagement.powertop.enable = false;
 
   services.adiosBot = {
     enable = true;

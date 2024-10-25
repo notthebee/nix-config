@@ -1,9 +1,9 @@
-{ config, pkgs, lib, ... }:
+{ config, inputs, pkgs, lib, ... }:
 {
   nix.settings.trusted-users = [ "notthebee" ];
 
   age.secrets.hashedUserPassword = {
-    file = ../../secrets/hashedUserPassword.age;
+    file = "${inputs.secrets}/hashedUserPassword.age";
   };
 
 
