@@ -79,6 +79,12 @@ in
       nvim-colorizer = {
         enable = true;
       };
+      which-key = {
+        enable = true;
+      };
+      illuminate = {
+        enable = true;
+      };
     };
     extraPlugins = with pkgs.vimPlugins; [
       llm-nvim
@@ -198,6 +204,8 @@ in
         "@yaegassy/coc-ansible"
         "@yaegassy/coc-nginx"
         "coc-nil"
+        "coc-phpls"
+        "coc-pyright"
       ];
       suda_smart_edit = 1;
       "suda#nopass" = 1;

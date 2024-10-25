@@ -1,7 +1,5 @@
 { inputs, config, pkgs, lib, ... }:
 {
-  # load module config to top-level configuration
-
   system.stateVersion = "22.11";
 
   nix.gc = {

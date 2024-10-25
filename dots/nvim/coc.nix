@@ -10,7 +10,7 @@
     "typescript"
     "typescriptreact"
     "nix"
-    #"ansible"
+    "python"
   ];
   nil.server.path = "${pkgs.nil}/bin/nil";
   nil.formatting.command = [ "${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt" ];

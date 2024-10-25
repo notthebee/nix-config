@@ -4,7 +4,7 @@
   ];
 
   age.secrets.bwSession = {
-    file = ../../secrets/bwSession.age;
+    file = "${inputs.secrets}/bwSession.age";
   };
 
   programs = {

@@ -38,8 +38,12 @@
     ./shares
   ];
 
-  powerManagement.powertop.enable = true;
+  powerManagement.powertop.enable = false;
 
+  services.adiosBot = {
+    enable = true;
+    botTokenFile = config.age.secrets.adiosBotToken.path;
+  };
 
   services.hddfancontrol = {
     enable = true;

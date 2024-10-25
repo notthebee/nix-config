@@ -1,3 +1,0 @@
-[submodule "secrets"]
-	path = secrets
-	url = git@github.com:notthebee/nix-private.git

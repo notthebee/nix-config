@@ -1,7 +1,7 @@
-{ inputs, lib, config, pkgs,  ... }: 
+{ inputs, lib, config, pkgs, ... }:
 {
   age.secrets.gitIncludes = {
-    file = ../../secrets/gitIncludes.age;
+    file = "${inputs.secrets}/gitIncludes.age";
     path = "$HOME/.config/git/includes";
   };
 
@@ -16,10 +16,10 @@
       };
     };
     includes = [
-    {
-      path = "~" + (lib.removePrefix "$HOME" config.age.secrets.gitIncludes.path);
-      condition = "gitdir:~/Workspace/Projects/";
-    }
+      {
+        path = "~" + (lib.removePrefix "$HOME" config.age.secrets.gitIncludes.path);
+        condition = "gitdir:~/Workspace/Projects/";
+      }
     ];
   };
 }

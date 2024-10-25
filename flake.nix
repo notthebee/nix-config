@@ -1,14 +1,11 @@
 {
   inputs = {
-    secrets = {
-      url = "git+file:secrets";
-      flake = false;
-    };
     nixpkgs.url = "github:nixos/nixpkgs/release-24.05";
     nixvim = {
-      url = "github:nix-community/nixvim/nixos-24.05";
-      inputs.nixpkgs.follows = "nixpkgs";
+      url = "github:nix-community/nixvim";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     home-manager = {
       url = "github:nix-community/home-manager/release-24.05";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -25,12 +22,20 @@
       url = "github:LnL7/nix-darwin/master";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
+    adios-bot = {
+      url = "github:notthebee/adiosbot";
+      flake = false;
+    };
     nix-index-database = {
       url = "github:Mic92/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    secrets = {
+      url = "git+ssh://git@github.com/notthebee/nix-private.git";
+      flake = false;
+    };
 
+    deploy-rs.url = "github:serokell/deploy-rs";
     nur.url = "github:nix-community/nur";
 
   };
@@ -38,10 +43,13 @@
   outputs =
     { self
     , nixpkgs
+    , nixpkgs-unstable
     , nix-darwin
     , home-manager
     , recyclarr-configs
+    , adios-bot
     , nixvim
+    , deploy-rs
     , nix-index-database
     , agenix
     , nur
@@ -59,6 +67,7 @@
           inherit inputs networksLocal networksExternal;
         };
         modules = [
+          "${inputs.secrets}/default.nix"
           agenix.darwinModules.default
           ./machines/darwin
           ./machines/darwin/meredith
@@ -66,6 +75,41 @@
         ];
       };
 
+      deploy.nodes = {
+        spencer = {
+          hostname = "spencer";
+          profiles.system = {
+            user = "root";
+            sshUser = "notthebee";
+            path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.spencer;
+          };
+        };
+        aria = {
+          hostname = "aria";
+          profiles.system = {
+            user = "root";
+            sshUser = "notthebee";
+            path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.aria;
+          };
+        };
+        alison = {
+          hostname = "alison";
+          profiles.system = {
+            user = "root";
+            sshUser = "notthebee";
+            path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.alison;
+          };
+        };
+        emily = {
+          hostname = "emily";
+          profiles.system = {
+            user = "root";
+            sshUser = "notthebee";
+            path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.emily;
+          };
+        };
+
+      };
       nixosConfigurations = {
         spencer = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
@@ -82,7 +126,7 @@
             # Import the machine config + secrets
             ./machines/nixos
             ./machines/nixos/spencer
-            ./secrets
+            "${inputs.secrets}/default.nix"
             agenix.nixosModules.default
 
             # User-specific configurations
@@ -121,7 +165,7 @@
 
             ./machines/nixos
             ./machines/nixos/alison
-            ./secrets
+            "${inputs.secrets}/default.nix"
             agenix.nixosModules.default
 
             ./containers/traefik
@@ -161,11 +205,12 @@
             ./modules/motd
             ./modules/tailscale
             ./modules/monitoring_stats
+            ./modules/adios-bot
 
             # Import the machine config + secrets
             ./machines/nixos
             ./machines/nixos/emily
-            ./secrets
+            "${inputs.secrets}/default.nix"
             agenix.nixosModules.default
 
             # Services and applications
@@ -214,7 +259,7 @@
             # Import the machine config + secrets
             ./machines/nixos
             ./machines/nixos/aria
-            ./secrets
+            "${inputs.secrets}/default.nix"
             agenix.nixosModules.default
 
             # Services and applications

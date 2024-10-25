@@ -38,8 +38,7 @@
   virtualisation.docker.storageDriver = "overlay2";
 
   system.autoUpgrade = {
-    enable = true;
-    allowReboot = true;
+    allowReboot = lib.mkForce false;
   };
 
   services.duckdns = {

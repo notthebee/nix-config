@@ -110,6 +110,10 @@ in
     dnsutils
   ];
 
+  systemd.services.kea-dhcp4-server = {
+    wants = (lib.mapAttrsToList (_: val: (val.interface + "-netdev.service")) (lib.attrsets.filterAttrs (n: v: v.dhcp) config.networks)) ++ [ "guest-netdev.service" "network-pre.target" ];
+    after = (lib.mapAttrsToList (_: val: (val.interface + "-netdev.service")) (lib.attrsets.filterAttrs (n: v: v.dhcp) config.networks)) ++ [ "guest-netdev.service" "network-pre.target" ];
+  };
   services = {
     avahi = {
       enable = true;

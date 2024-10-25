@@ -32,6 +32,7 @@
       "bambu-studio"
       "element"
       "microsoft-outlook"
+      "monitorcontrol"
     ];
   };
   environment.systemPackages = with pkgs; [
@@ -77,7 +78,6 @@
     pwgen
     gnupg
     inputs.agenix.packages."${system}".default
-    bitwarden-cli
     yt-dlp
     ffmpeg
     chromedriver
@@ -100,7 +100,6 @@
     nss.tools
     mkcert
     karabiner-elements
-    monitorcontrol
     vscode
     pulumi-bin
     pfetch
