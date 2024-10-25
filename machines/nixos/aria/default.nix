@@ -11,13 +11,13 @@
     boot = {
       devNodes = "/dev/disk/by-id/";
       # TODO
-      bootDevices = [  "ata-SAMSUNG_MZ7LN256HAJQ-00000_S3TWNX0N158949" ];
+      bootDevices = [ "ata-SAMSUNG_MZ7LN256HAJQ-00000_S3TWNX0N158949" ];
       immutable = false;
-      availableKernelModules = [  "uhci_hcd" "ehci_pci" "ahci" "sd_mod" "sr_mod" ];
+      availableKernelModules = [ "uhci_hcd" "ehci_pci" "ahci" "sd_mod" "sr_mod" ];
       removableEfi = true;
-      kernelParams = [ 
-      "pcie_aspm=force"
-      "consoleblank=60"
+      kernelParams = [
+        "pcie_aspm=force"
+        "consoleblank=60"
       ];
       sshUnlock = {
         enable = false;
@@ -35,21 +35,22 @@
     ./filesystems
     ./syncthing
     ./backup
-    ./shares ];
+    ./shares
+  ];
 
   powerManagement.powertop.enable = false;
 
   services.hddfancontrol = {
     enable = true;
     disks = [
-     "/dev/disk/by-label/Data1"
-     "/dev/disk/by-label/Data2"
-     "/dev/disk/by-label/Data3"
-     "/dev/disk/by-label/Data4"
-     "/dev/disk/by-label/Parity1"
+      "/dev/disk/by-label/Data1"
+      "/dev/disk/by-label/Data2"
+      "/dev/disk/by-label/Data3"
+      "/dev/disk/by-label/Data4"
+      "/dev/disk/by-label/Parity1"
     ];
     pwmPaths = [
-    "/sys/class/hwmon/hwmon0/pwm3"
+      "/sys/class/hwmon/hwmon0/pwm2"
     ];
     extraArgs = [
       "--pwm-start-value=100"
@@ -60,16 +61,16 @@
     ];
   };
   networking = {
-  useDHCP = true;
-  networkmanager.enable = false;
-  firewall = {
-  allowPing = true;
+    useDHCP = true;
+    networkmanager.enable = false;
+    firewall = {
+      allowPing = true;
+    };
   };
-};
 
   virtualisation.docker.storageDriver = "overlay2";
 
-  system.autoUpgrade.enable = true; 
+  system.autoUpgrade.enable = true;
 
   environment.systemPackages = with pkgs; [
     pciutils
@@ -84,5 +85,5 @@
     gcc
     intel-gpu-tools
   ];
-  
-  }
+
+}

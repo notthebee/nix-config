@@ -1,9 +1,5 @@
 {
   inputs = {
-    secrets = {
-      url = "git+file:secrets";
-      flake = false;
-    };
     nixpkgs.url = "github:nixos/nixpkgs/release-24.05";
     nixvim = {
       url = "github:nix-community/nixvim/nixos-24.05";
@@ -25,10 +21,17 @@
       url = "github:LnL7/nix-darwin/master";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
+    adios-bot = {
+      url = "github:notthebee/adiosbot";
+      flake = false;
+    };
     nix-index-database = {
       url = "github:Mic92/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+    secrets = {
+      url = "git+ssh://git@github.com/notthebee/nix-private.git";
+      flake = false;
     };
 
     nur.url = "github:nix-community/nur";
@@ -41,6 +44,7 @@
     , nix-darwin
     , home-manager
     , recyclarr-configs
+    , adios-bot
     , nixvim
     , nix-index-database
     , agenix
@@ -59,6 +63,7 @@
           inherit inputs networksLocal networksExternal;
         };
         modules = [
+          "${inputs.secrets}/default.nix"
           agenix.darwinModules.default
           ./machines/darwin
           ./machines/darwin/meredith
@@ -82,7 +87,7 @@
             # Import the machine config + secrets
             ./machines/nixos
             ./machines/nixos/spencer
-            ./secrets
+            "${inputs.secrets}/default.nix"
             agenix.nixosModules.default
 
             # User-specific configurations
@@ -121,7 +126,7 @@
 
             ./machines/nixos
             ./machines/nixos/alison
-            ./secrets
+            "${inputs.secrets}/default.nix"
             agenix.nixosModules.default
 
             ./containers/traefik
@@ -161,6 +166,7 @@
             ./modules/motd
             ./modules/tailscale
             ./modules/monitoring_stats
+            ./modules/adios-bot
 
             # Import the machine config + secrets
             ./machines/nixos
@@ -214,7 +220,7 @@
             # Import the machine config + secrets
             ./machines/nixos
             ./machines/nixos/aria
-            ./secrets
+            inputs.secrets
             agenix.nixosModules.default
 
             # Services and applications
