@@ -44,6 +44,7 @@
         ya = "yt-dlp --continue --no-check-certificate --format=bestaudio -x --audio-format wav";
         aspm = "sudo lspci -vv | awk '/ASPM/{print $0}' RS= | grep --color -P '(^[a-z0-9:.]+|ASPM )'";
         mkdir = "mkdir -p";
+        deploy-nix = "f() { nix flake update && deploy .#$1 --remote-build -s --auto-rollback false };f";
       };
 
       initExtra = ''

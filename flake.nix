@@ -71,7 +71,6 @@
           agenix.darwinModules.default
           ./machines/darwin
           ./machines/darwin/meredith
-          ./modules/deploy-nix
         ];
       };
 
