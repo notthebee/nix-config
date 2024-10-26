@@ -7,8 +7,8 @@
     enable = true;
     sensibleOnTop = false;
     extraConfig = ''
-      set -g default-terminal "xterm-256color"
-      set -ag terminal-overrides ",xterm-256color:RGB"
+      set -g default-terminal "xterm-kitty"
+      set -ag terminal-overrides ",xterm-kitty:RGB"
       set-option -g default-shell ${pkgs.zsh}/bin/zsh
       set -g status-keys vi
 
@@ -62,9 +62,9 @@
       set -g base-index 1
       setw -g pane-base-index 1
       set -g pane-border-format " #P: #{pane_current_command} "
-      '';
+    '';
     plugins = with pkgs.tmuxPlugins; [
-      yank 
+      yank
     ];
   };
 }
