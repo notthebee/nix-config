@@ -36,6 +36,9 @@ in
       };
     };
     plugins = {
+      web-devicons = {
+        enable = true;
+      };
       project-nvim = {
         enable = true;
       };
@@ -51,12 +54,14 @@ in
       };
       lualine = {
         enable = true;
-        sections = {
-          lualine_x = [
-            "diagnostics"
-            "encoding"
-            "filetype"
-          ];
+        settings = {
+          sections = {
+            lualine_x = [
+              "diagnostics"
+              "encoding"
+              "filetype"
+            ];
+          };
         };
       };
       indent-blankline = {
@@ -73,7 +78,7 @@ in
       gitgutter = {
         enable = true;
       };
-      surround = {
+      vim-surround = {
         enable = true;
       };
       nvim-colorizer = {
