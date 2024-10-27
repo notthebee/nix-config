@@ -1,162 +1,79 @@
-{ inputs, lib, config, pkgs, vars, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 let
-  directories = [
-    "${vars.serviceConfigRoot}/sonarr"
-    "${vars.serviceConfigRoot}/radarr"
-    "${vars.serviceConfigRoot}/prowlarr"
-    "${vars.serviceConfigRoot}/recyclarr"
-    "${vars.mainArray}/Media/Downloads"
-    "${vars.mainArray}/Media/TV"
-    "${vars.mainArray}/Media/Movies"
-    "${vars.mainArray}/Media/Audiobooks"
-  ];
+  cfg = config.services.arr;
 in
 {
-
-  system.activationScripts.recyclarr_configure = ''
-    sed=${pkgs.gnused}/bin/sed
-    configFile=${vars.serviceConfigRoot}/recyclarr/recyclarr.yml
-    sonarr="${inputs.recyclarr-configs}/sonarr/templates/web-2160p-v4.yml"
-    sonarrApiKey=$(cat "${config.age.secrets.sonarrApiKey.path}")
-    radarr="${inputs.recyclarr-configs}/radarr/templates/remux-web-2160p.yml"
-    radarrApiKey=$(cat "${config.age.secrets.radarrApiKey.path}")
-
-    cat $sonarr > $configFile
-    $sed -i"" "s/Put your API key here/$sonarrApiKey/g" $configFile
-    $sed -i"" "s/Put your Sonarr URL here/https:\/\/sonarr.${vars.domainName}/g" $configFile
-
-    printf "\n" >> ${vars.serviceConfigRoot}/recyclarr/recyclarr.yml
-    cat $radarr >> ${vars.serviceConfigRoot}/recyclarr/recyclarr.yml
-    $sed -i"" "s/Put your API key here/$radarrApiKey/g" $configFile
-    $sed -i"" "s/Put your Radarr URL here/https:\/\/radarr.${vars.domainName}/g" $configFile
-
-  '';
-
-  systemd.tmpfiles.rules = map (x: "d ${x} 0775 share share - -") directories;
-  virtualisation.oci-containers = {
-    containers = {
-      sabnzbd = {
-        image = "linuxserver/sabnzbd:latest";
-        autoStart = true;
-        extraOptions = [
-          "--pull=newer"
-          "-l=homepage.group=Arr"
-          "-l=homepage.name=sabnzbd"
-          "-l=homepage.icon=sabnzbd.svg"
-          "-l=homepage.href=https://sabnzbd.${vars.domainName}"
-          "-l=homepage.description=Newsgroup client"
-          "-l=traefik.enable=true"
-          "-l=traefik.http.routers.sabnzbd.rule=Host(`sabnzbd.${vars.domainName}`)"
-          "-l=traefik.http.routers.sabnzbd.service=sabnzbd"
-          "-l=traefik.http.services.sabnzbd.loadbalancer.server.port=8080"
-        ];
-        volumes = [
-          "${vars.mainArray}/Media/Downloads:/data/completed"
-          "${vars.cacheArray}/Media/Downloads.tmp:/data/incomplete"
-          "${vars.serviceConfigRoot}/sabnzbd:/config"
-        ];
-        environment = {
-          TZ = vars.timeZone;
-          PUID = "994";
-          GUID = "993";
-        };
-      };
-      sonarr = {
-        image = "lscr.io/linuxserver/sonarr:develop";
-        autoStart = true;
-        extraOptions = [
-          "--pull=newer"
-          "-l=traefik.enable=true"
-          "-l=traefik.http.routers.sonarr.rule=Host(`sonarr.${vars.domainName}`)"
-          "-l=traefik.http.services.sonarr.loadbalancer.server.port=8989"
-          "-l=homepage.group=Arr"
-          "-l=homepage.name=Sonarr"
-          "-l=homepage.icon=sonarr.svg"
-          "-l=homepage.href=https://sonarr.${vars.domainName}"
-          "-l=homepage.description=TV show tracker"
-          "-l=homepage.widget.type=sonarr"
-          "-l=homepage.widget.key={{HOMEPAGE_FILE_SONARR_KEY}}"
-          "-l=homepage.widget.url=http://sonarr:8989"
-        ];
-        volumes = [
-          "${vars.mainArray}/Media/Downloads:/downloads"
-          "${vars.mainArray}/Media/TV:/tv"
-          "${vars.serviceConfigRoot}/sonarr:/config"
-        ];
-        environment = {
-          TZ = vars.timeZone;
-          PUID = "994";
-          GUID = "993";
-          UMASK = "002";
-        };
-      };
-      prowlarr = {
-        image = "binhex/arch-prowlarr";
-        autoStart = true;
-        extraOptions = [
-          "--pull=newer"
-          "-l=traefik.enable=true"
-          "-l=traefik.http.routers.prowlarr.rule=Host(`prowlarr.${vars.domainName}`)"
-          "-l=traefik.http.services.prowlarr.loadbalancer.server.port=9696"
-          "-l=homepage.group=Arr"
-          "-l=homepage.name=Prowlarr"
-          "-l=homepage.icon=prowlarr.svg"
-          "-l=homepage.href=https://prowlarr.${vars.domainName}"
-          "-l=homepage.description=Torrent indexer"
-        ];
-        volumes = [
-          "${vars.serviceConfigRoot}/prowlarr:/config"
-        ];
-        environment = {
-          TZ = vars.timeZone;
-          PUID = "994";
-          GUID = "993";
-          UMASK = "002";
-        };
-      };
-      radarr = {
-        image = "lscr.io/linuxserver/radarr";
-        autoStart = true;
-        extraOptions = [
-          "--pull=newer"
-          "-l=traefik.enable=true"
-          "-l=traefik.http.routers.radarr.rule=Host(`radarr.${vars.domainName}`)"
-          "-l=traefik.http.services.radarr.loadbalancer.server.port=7878"
-          "-l=homepage.group=Arr"
-          "-l=homepage.name=Radarr"
-          "-l=homepage.icon=radarr.svg"
-          "-l=homepage.href=https://radarr.${vars.domainName}"
-          "-l=homepage.description=Movie tracker"
-          "-l=homepage.widget.type=radarr"
-          "-l=homepage.widget.key={{HOMEPAGE_FILE_RADARR_KEY}}"
-          "-l=homepage.widget.url=http://radarr:7878"
-        ];
-        volumes = [
-          "${vars.mainArray}/Media/Downloads:/downloads"
-          "${vars.mainArray}/Media/Movies:/movies"
-          "${vars.serviceConfigRoot}/radarr:/config"
-        ];
-        environment = {
-          TZ = vars.timeZone;
-          PUID = "994";
-          GUID = "993";
-          UMASK = "002";
-        };
-      };
-      recyclarr = {
-        image = "ghcr.io/recyclarr/recyclarr";
-        user = "994:993";
-        autoStart = true;
-        volumes = [
-          "${vars.serviceConfigRoot}/recyclarr:/config"
-        ];
-        environment = {
-          CRON_SCHEDULE = "@daily";
-        };
-        extraOptions = [
-          "--pull=newer"
-        ];
-      };
+  options.services.arr = {
+    enable = lib.mkEnableOption "The Arr stack (Prowlarr, Sonarr, Radarr and Recyclarr)";
+    mounts.config = lib.mkOption {
+      default = "/var/opt/arr";
+      type = lib.types.path;
+      description = ''
+        Base path of the Arr stack config files
+      '';
     };
+    mounts.tv = lib.mkOption {
+      default = lib.types.null;
+      type = lib.types.path;
+      description = ''
+        Path to the Sonarr TV shows
+      '';
+    };
+    mounts.movies = lib.mkOption {
+      default = lib.types.null;
+      type = lib.types.path;
+      description = ''
+        Path to the Radarr movies
+      '';
+    };
+    mounts.downloads = lib.mkOption {
+      default = lib.types.null;
+      type = lib.types.path;
+      description = ''
+        Media downloads path to grab files from
+      '';
+    };
+    user = lib.mkOption {
+      default = "share";
+      type = lib.types.str;
+      description = ''
+        User to run the Arr stack as
+      '';
+      apply = old: builtins.toString config.users.users."${old}".uid;
+    };
+    group = lib.mkOption {
+      default = "share";
+      type = lib.types.str;
+      description = ''
+        Group to run the Arr stack as
+      '';
+      apply = old: builtins.toString config.users.groups."${old}".gid;
+    };
+    timeZone = lib.mkOption {
+      default = "Europe/Berlin";
+      type = lib.types.str;
+      description = ''
+        Time zone to be used inside the Arr containers
+      '';
+    };
+    baseDomainName = lib.mkOption {
+      default = null;
+      type = lib.types.str;
+      description = ''
+        Base domain name to be used for Traefik reverse proxy (e.g. sonarr.baseDomainName)
+      '';
+    };
+
   };
+  imports = [
+    ./prowlarr.nix
+    ./radarr.nix
+    ./recyclarr.nix
+    ./sonarr.nix
+  ];
 }

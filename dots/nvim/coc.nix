@@ -13,7 +13,7 @@
     "python"
   ];
   nil.server.path = "${pkgs.nil}/bin/nil";
-  nil.formatting.command = [ "${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt" ];
+  nil.formatting.command = [ "${pkgs.nixfmt-rfc-style}/bin/nixfmt" ];
   nil.diagnostics.excludedFiles = [ "generated.nix" ];
   nil.nix.flake.autoEvalInputs = false;
   nil.nix.maxMemoryMB = 2048;

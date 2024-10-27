@@ -1,4 +1,5 @@
 {
+  security.pam.enableSudoTouchIdAuth = true;
   environment.launchDaemons."limit.maxfiles.plist" = {
     enable = true;
     text = ''
@@ -43,7 +44,7 @@
         tilesize = 50;
       };
       NSGlobalDomain = {
-        "com.apple.sound.beep.volume" = 0.000;
+        "com.apple.sound.beep.volume" = 0.0;
         InitialKeyRepeat = 13;
         KeyRepeat = 2;
       };

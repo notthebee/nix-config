@@ -41,11 +41,6 @@
     allowReboot = lib.mkForce false;
   };
 
-  services.duckdns = {
-    enable = true;
-    domainsFile = config.age.secrets.duckDNSDomain.path;
-    tokenFile = config.age.secrets.duckDNSToken.path;
-  };
   users = {
     groups.share = {
       gid = 993;

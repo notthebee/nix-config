@@ -1,13 +1,15 @@
-{ inputs, pkgs, lib, ... }:
+{
+  inputs,
+  pkgs,
+  lib,
+  ...
+}:
 {
   environment.shellInit = ''
     ulimit -n 2048
   '';
 
-
-  imports = [
-    ./work.nix
-  ];
+  imports = [ ./work.nix ];
 
   homebrew = {
     enable = true;
@@ -33,17 +35,20 @@
       "element"
       "microsoft-outlook"
       "monitorcontrol"
+      "zen-browser"
     ];
   };
   environment.systemPackages = with pkgs; [
-    (python311Full.withPackages (ps: with ps; [
-      pip
-      jmespath
-      requests
-      setuptools
-      pyyaml
-      pyopenssl
-    ]))
+    (python311Full.withPackages (
+      ps: with ps; [
+        pip
+        jmespath
+        requests
+        setuptools
+        pyyaml
+        pyopenssl
+      ]
+    ))
     ansible-language-server
     vault
     yq
@@ -103,6 +108,8 @@
     vscode
     pulumi-bin
     pfetch
+    devenv
+    nixfmt-rfc-style
   ];
 
   services.nix-daemon.enable = lib.mkForce true;

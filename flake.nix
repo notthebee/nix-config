@@ -41,19 +41,20 @@
   };
 
   outputs =
-    { self
-    , nixpkgs
-    , nixpkgs-unstable
-    , nix-darwin
-    , home-manager
-    , recyclarr-configs
-    , adios-bot
-    , nixvim
-    , deploy-rs
-    , nix-index-database
-    , agenix
-    , nur
-    , ...
+    {
+      self,
+      nixpkgs,
+      nixpkgs-unstable,
+      nix-darwin,
+      home-manager,
+      recyclarr-configs,
+      adios-bot,
+      nixvim,
+      deploy-rs,
+      nix-index-database,
+      agenix,
+      nur,
+      ...
     }@inputs:
     let
       networksExternal = import ./machines/networksExternal.nix;
@@ -133,7 +134,9 @@
             home-manager.nixosModules.home-manager
             {
               home-manager.useGlobalPkgs = false; # makes hm use nixos's pkgs value
-              home-manager.extraSpecialArgs = { inherit inputs networksLocal networksExternal; }; # allows access to flake inputs in hm modules
+              home-manager.extraSpecialArgs = {
+                inherit inputs networksLocal networksExternal;
+              }; # allows access to flake inputs in hm modules
               home-manager.users.notthebee.imports = [
                 agenix.homeManagerModules.default
                 nix-index-database.hmModules.nix-index
@@ -158,7 +161,6 @@
             ./modules/motd
             ./modules/zfs-root
             ./modules/email
-            ./modules/duckdns
             ./modules/monitoring_stats
             ./modules/monitoring
 
@@ -176,7 +178,9 @@
             home-manager.nixosModules.home-manager
             {
               home-manager.useGlobalPkgs = false; # makes hm use nixos's pkgs value
-              home-manager.extraSpecialArgs = { inherit inputs networksLocal networksExternal; };
+              home-manager.extraSpecialArgs = {
+                inherit inputs networksLocal networksExternal;
+              };
               home-manager.users.notthebee.imports = [
                 agenix.homeManagerModules.default
                 nix-index-database.hmModules.nix-index
@@ -205,6 +209,7 @@
             ./modules/tailscale
             ./modules/monitoring_stats
             ./modules/adios-bot
+            ./modules/duckdns
 
             # Import the machine config + secrets
             ./machines/nixos
@@ -219,6 +224,7 @@
             ./containers/traefik
             ./containers/deluge
             ./containers/arr
+            ./containers/sabnzbd
             ./containers/jellyfin
             ./containers/vaultwarden
             ./containers/pingvin-share
@@ -229,7 +235,9 @@
             home-manager.nixosModules.home-manager
             {
               home-manager.useGlobalPkgs = false;
-              home-manager.extraSpecialArgs = { inherit inputs networksLocal networksExternal; };
+              home-manager.extraSpecialArgs = {
+                inherit inputs networksLocal networksExternal;
+              };
               home-manager.users.notthebee.imports = [
                 agenix.homeManagerModules.default
                 nix-index-database.hmModules.nix-index
@@ -270,7 +278,9 @@
             home-manager.nixosModules.home-manager
             {
               home-manager.useGlobalPkgs = false;
-              home-manager.extraSpecialArgs = { inherit inputs networksLocal networksExternal; };
+              home-manager.extraSpecialArgs = {
+                inherit inputs networksLocal networksExternal;
+              };
               home-manager.users.notthebee.imports = [
                 agenix.homeManagerModules.default
                 nix-index-database.hmModules.nix-index

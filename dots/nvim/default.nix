@@ -1,12 +1,15 @@
-{ inputs, lib, config, pkgs, ... }:
+{
+  inputs,
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 let
   coc = import ./coc.nix;
 in
 {
-  imports = [
-    inputs.nixvim.homeManagerModules.nixvim
-  ];
-
+  imports = [ inputs.nixvim.homeManagerModules.nixvim ];
 
   home.packages = with pkgs; [
     figlet
@@ -22,7 +25,12 @@ in
 
   xdg.configFile = {
     "nvim/coc-settings.json" = {
-      source = pkgs.writeText "coc-settings.json" (builtins.toJSON (coc { homeDir = config.xdg.configHome; pkgs = pkgs; }));
+      source = pkgs.writeText "coc-settings.json" (
+        builtins.toJSON (coc {
+          homeDir = config.xdg.configHome;
+          pkgs = pkgs;
+        })
+      );
     };
   };
 
@@ -39,6 +47,7 @@ in
       web-devicons = {
         enable = true;
       };
+      barbecue.enable = true;
       project-nvim = {
         enable = true;
       };
@@ -67,9 +76,7 @@ in
       indent-blankline = {
         enable = true;
         settings = {
-          exclude.filetypes = [
-            "startify"
-          ];
+          exclude.filetypes = [ "startify" ];
         };
       };
       barbar = {

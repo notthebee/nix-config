@@ -1,6 +1,19 @@
-{ inputs, networksLocal, lib, config, vars, pkgs, ... }:
 {
-  boot.kernelModules = [ "coretemp" "jc42" "lm78" "f71882fg" ];
+  inputs,
+  networksLocal,
+  lib,
+  config,
+  vars,
+  pkgs,
+  ...
+}:
+{
+  boot.kernelModules = [
+    "coretemp"
+    "jc42"
+    "lm78"
+    "f71882fg"
+  ];
   hardware.cpu.intel.updateMicrocode = true;
   hardware.enableRedistributableFirmware = true;
   hardware.opengl.enable = true;
@@ -12,7 +25,13 @@
       devNodes = "/dev/disk/by-id/";
       bootDevices = [ "ata-Samsung_SSD_870_EVO_250GB_S6PENL0T902873K" ];
       immutable = false;
-      availableKernelModules = [ "uhci_hcd" "ehci_pci" "ahci" "sd_mod" "sr_mod" ];
+      availableKernelModules = [
+        "uhci_hcd"
+        "ehci_pci"
+        "ahci"
+        "sd_mod"
+        "sr_mod"
+      ];
 
       removableEfi = true;
       kernelParams = [
@@ -30,6 +49,12 @@
       timeZone = "Europe/Berlin";
       hostId = "0730ae51";
     };
+  };
+
+  services.duckdns = {
+    enable = true;
+    domainsFile = config.age.secrets.duckDNSDomain.path;
+    tokenFile = config.age.secrets.duckDNSToken.path;
   };
 
   imports = [
@@ -52,9 +77,7 @@
       "/dev/disk/by-label/Data2"
       "/dev/disk/by-label/Parity1"
     ];
-    pwmPaths = [
-      "/sys/class/hwmon/hwmon1/device/pwm2"
-    ];
+    pwmPaths = [ "/sys/class/hwmon/hwmon1/device/pwm2" ];
     extraArgs = [
       "--pwm-start-value=100"
       "--pwm-stop-value=50"
@@ -114,4 +137,25 @@
     intel-gpu-tools
   ];
 
+  services.arr = {
+    enable = true;
+    mounts = {
+      config = vars.serviceConfigRoot;
+      tv = "${vars.mainArray}/Media/TV";
+      movies = "${vars.mainArray}/Media/Movies";
+      downloads = "${vars.mainArray}/Media/Downloads";
+    };
+    recyclarr = {
+      configPath = inputs.recyclarr-configs;
+    };
+    sonarr = {
+      apiKeyFile = config.age.secrets.sonarrApiKey.path;
+    };
+    radarr = {
+      apiKeyFile = config.age.secrets.radarrApiKey.path;
+    };
+    user = "share";
+    group = "share";
+    baseDomainName = vars.domainName;
+  };
 }
