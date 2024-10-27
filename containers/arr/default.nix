@@ -1,11 +1,12 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}:
+{ config, lib, ... }:
 let
   cfg = config.services.arr;
+  directories = [
+    cfg.mounts.config
+    cfg.mounts.tv
+    cfg.mounts.movies
+    cfg.mounts.downloads
+  ];
 in
 {
   options.services.arr = {
@@ -76,4 +77,7 @@ in
     ./recyclarr.nix
     ./sonarr.nix
   ];
+  config = lib.mkIf cfg.enable {
+    systemd.tmpfiles.rules = map (x: "d ${x} 0775 ${cfg.user} ${cfg.group} - -") directories;
+  };
 }

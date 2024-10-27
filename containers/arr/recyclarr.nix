@@ -27,9 +27,9 @@ in
     system.activationScripts.recyclarr_configure = ''
       sed=${pkgs.gnused}/bin/sed
       configFile=${cfg.mounts.config}/recyclarr/recyclarr.yml
-      sonarr="${cfg.recyclarr.configPath}/recyclarr/sonarr/templates/web-2160p-v4.yml"
+      sonarr="${cfg.recyclarr.configPath}/sonarr/templates/web-2160p-v4.yml"
       sonarrApiKey=$(cat "${cfg.sonarr.apiKeyFile}")
-      radarr="${cfg.recyclarr.configPath}/recyclarr/radarr/templates/remux-web-2160p.yml"
+      radarr="${cfg.recyclarr.configPath}/radarr/templates/remux-web-2160p.yml"
       radarrApiKey=$(cat "${cfg.radarr.apiKeyFile}")
 
       cat $sonarr > $configFile
