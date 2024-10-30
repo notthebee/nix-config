@@ -16,7 +16,7 @@ let
   mergerfs-uncache = pkgs.writeScriptBin "mergerfs-uncache" (readFile ./mergerfs-uncache.py);
 in
 {
-  options.mover = {
+  options.services.mover = {
     enable = mkEnableOption "mergerfs-uncache mover script";
     cacheArray = mkOption {
       description = "The drive aray to move the data from";

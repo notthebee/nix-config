@@ -1,6 +1,5 @@
 {
   inputs,
-  networksLocal,
   lib,
   config,
   vars,
@@ -100,7 +99,7 @@
 
   system.autoUpgrade.enable = true;
 
-  mover = {
+  services.mover = {
     cacheArray = vars.cacheArray;
     backingArray = vars.slowArray;
     percentageFree = 60;
