@@ -1,23 +1,27 @@
-{ config, pkgs, lib, inputs, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  inputs,
+  ...
+}:
 let
   cfg = config.services.adiosBot;
-  inherit (builtins) head toString map tail concatStringsSep readFile fetchurl;
-  inherit (lib) mkIf types mkDefault mkOption mkMerge strings;
-  adiosBot = pkgs.writeScriptBin "adiosBot" (readFile "${inputs.adios-bot}/main.py");
+  adiosBot = pkgs.writeScriptBin "adiosBot" (builtins.readFile "${inputs.adios-bot}/main.py");
 in
 {
   options.services.adiosBot = {
     enable = lib.mkEnableOption ("AdiosBot");
 
-    botTokenFile = mkOption {
+    botTokenFile = lib.mkOption {
       description = "Path to the file with the Discord bot token";
-      type = types.str;
+      type = lib.types.str;
       default = "/mnt/cache";
     };
 
-    workingDir = mkOption {
+    workingDir = lib.mkOption {
       description = "Path to store the service files (e.g. user whitelist, message timestamps)";
-      type = types.str;
+      type = lib.types.str;
       default = "/persist/opt/services/adiosbot";
     };
   };
@@ -25,10 +29,12 @@ in
   config = lib.mkIf cfg.enable {
     environment.systemPackages = [
       adiosBot
-      (pkgs.python312Full.withPackages (ps: with ps; [
-        discordpy
-        pytz
-      ]))
+      (pkgs.python312Full.withPackages (
+        ps: with ps; [
+          discordpy
+          pytz
+        ]
+      ))
     ];
 
     systemd.services.adios-bot = {
@@ -36,10 +42,12 @@ in
       after = [ "network.target" ];
       wantedBy = [ "multi-user.target" ];
       path = [
-        (pkgs.python312Full.withPackages (ps: with ps; [
-          discordpy
-          pytz
-        ]))
+        (pkgs.python312Full.withPackages (
+          ps: with ps; [
+            discordpy
+            pytz
+          ]
+        ))
         pkgs.systemd
         pkgs.coreutils
         pkgs.gawk
