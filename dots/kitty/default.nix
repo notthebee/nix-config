@@ -9,16 +9,16 @@
     shellIntegration = {
       enableZshIntegration = true;
     };
+    settings = {
+      macos_titlebar_color = "#2E3440";
+      window_padding_width = 0;
+      window_margin_width = 0;
+      adjust_line_height = "120%";
+      font_family = "Comic Code Ligatures";
+      font_size = "16.0";
+      shell = "/run/current-system/sw/bin/tmux";
+    };
     extraConfig = ''
-      macos_titlebar_color #2E3440
-      window_padding_width 0
-      window_margin_width 0
-      adjust_line_height 120%
-      font_family      Comic Code Ligatures
-      font_size 16.0
-      #modify_font cell_width 95%
-      shell /run/current-system/sw/bin/tmux
-
       # "Nerd Fonts - Pomicons"
       symbol_map  U+E000-U+E00D Symbols Nerd Font
 

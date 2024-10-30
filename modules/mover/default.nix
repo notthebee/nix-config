@@ -1,12 +1,23 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 let
-  inherit (builtins) head toString map tail concatStringsSep readFile;
-  inherit (lib) mkIf types mkDefault mkOption mkMerge strings;
+  cfg = config.services.mover;
+  inherit (builtins) toString map readFile;
+  inherit (lib)
+    mkIf
+    mkEnableOption
+    types
+    mkOption
+    ;
   mergerfs-uncache = pkgs.writeScriptBin "mergerfs-uncache" (readFile ./mergerfs-uncache.py);
 in
 {
-
   options.mover = {
+    enable = mkEnableOption "mergerfs-uncache mover script";
     cacheArray = mkOption {
       description = "The drive aray to move the data from";
       type = types.str;
@@ -42,67 +53,67 @@ in
 
   };
 
-  config.environment.systemPackages = [
-    mergerfs-uncache
-    (pkgs.python312Full.withPackages (ps: with ps; [
-      aiofiles
-    ]))
-  ];
+  config = mkIf cfg.enable {
+    environment.systemPackages = [
+      mergerfs-uncache
+      (pkgs.python312Full.withPackages (ps: with ps; [ aiofiles ]))
+    ];
 
-  config.security.sudo.extraRules = [{
-    users = [ config.mover.user ];
-    commands = [
+    security.sudo.extraRules = [
       {
-        command = "/run/current-system/sw/bin/journalctl --unit=mergerfs-uncache.service *";
-        options = [ "NOPASSWD" ];
-      }
-      {
-        command = "/run/current-system/sw/bin/chown -R ${config.mover.user}\\:${config.mover.group} ${config.mover.backingArray}";
-        options = [ "NOPASSWD" ];
-      }
-      {
-        command = "/run/current-system/sw/bin/chown -R ${config.mover.user}\\:${config.mover.group} ${config.mover.cacheArray}";
-        options = [ "NOPASSWD" ];
-      }
-      {
-        command = "/run/current-system/sw/bin/chmod -R u=rwX\\,go=rX ${config.mover.backingArray}";
-        options = [ "NOPASSWD" ];
-      }
-      {
-        command = "/run/current-system/sw/bin/chmod -R u=rwX\\,go=rX ${config.mover.cacheArray}";
-        options = [ "NOPASSWD" ];
+        users = [ config.mover.user ];
+        commands = [
+          {
+            command = "/run/current-system/sw/bin/journalctl --unit=mergerfs-uncache.service *";
+            options = [ "NOPASSWD" ];
+          }
+          {
+            command = "/run/current-system/sw/bin/chown -R ${config.mover.user}\\:${config.mover.group} ${config.mover.backingArray}";
+            options = [ "NOPASSWD" ];
+          }
+          {
+            command = "/run/current-system/sw/bin/chown -R ${config.mover.user}\\:${config.mover.group} ${config.mover.cacheArray}";
+            options = [ "NOPASSWD" ];
+          }
+          {
+            command = "/run/current-system/sw/bin/chmod -R u=rwX\\,go=rX ${config.mover.backingArray}";
+            options = [ "NOPASSWD" ];
+          }
+          {
+            command = "/run/current-system/sw/bin/chmod -R u=rwX\\,go=rX ${config.mover.cacheArray}";
+            options = [ "NOPASSWD" ];
+          }
+        ];
       }
     ];
-  }];
 
-  config.systemd = {
-    services.mergerfs-uncache = {
-      description = "MergerFS Mover script";
-      path = [
-        pkgs.rsync
-        (pkgs.python312Full.withPackages (ps: with ps; [
-          aiofiles
-        ]))
-        pkgs.systemd
-        pkgs.coreutils
-        pkgs.gawk
-      ];
-      serviceConfig = {
-        Type = "oneshot";
-        ExecStart = "/run/current-system/sw/bin/mergerfs-uncache -s ${config.mover.cacheArray} -d ${config.mover.backingArray} -t ${config.mover.percentageFree} --exclude ${config.mover.excludedPaths} -u ${config.mover.user} -g ${config.mover.group}";
-        User = config.mover.user;
-        Group = config.mover.group;
+    systemd = {
+      services.mergerfs-uncache = {
+        description = "MergerFS Mover script";
+        path = [
+          pkgs.rsync
+          (pkgs.python312Full.withPackages (ps: with ps; [ aiofiles ]))
+          pkgs.systemd
+          pkgs.coreutils
+          pkgs.gawk
+        ];
+        serviceConfig = {
+          Type = "oneshot";
+          ExecStart = "/run/current-system/sw/bin/mergerfs-uncache -s ${config.mover.cacheArray} -d ${config.mover.backingArray} -t ${config.mover.percentageFree} --exclude ${config.mover.excludedPaths} -u ${config.mover.user} -g ${config.mover.group}";
+          User = config.mover.user;
+          Group = config.mover.group;
+        };
+        postStop = ''
+          message=$(/run/wrappers/bin/sudo /run/current-system/sw/bin/journalctl --unit=mergerfs-uncache.service -n 20 --no-pager)
+          /run/current-system/sw/bin/notify -s "$SERVICE_RESULT" -t "mergerfs-uncache Mover" -m "$message"
+        '';
       };
-      postStop = ''
-        message=$(/run/wrappers/bin/sudo /run/current-system/sw/bin/journalctl --unit=mergerfs-uncache.service -n 20 --no-pager)
-        /run/current-system/sw/bin/notify -s "$SERVICE_RESULT" -t "mergerfs-uncache Mover" -m "$message"
-      '';
-    };
-    timers.mergerfs-uncache = {
-      wantedBy = [ "multi-user.target" ];
-      timerConfig = {
-        OnCalendar = "Sat 00:00:00";
-        Unit = "mergerfs-uncache.service";
+      timers.mergerfs-uncache = {
+        wantedBy = [ "multi-user.target" ];
+        timerConfig = {
+          OnCalendar = "Sat 00:00:00";
+          Unit = "mergerfs-uncache.service";
+        };
       };
     };
   };
