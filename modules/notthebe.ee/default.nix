@@ -1,4 +1,9 @@
-{ pkgs, lib, config, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
 let
   domain = "notthebe.ee";
   fqdn = "chat.${domain}";
@@ -20,6 +25,8 @@ in
   services.nginx = {
 
     enable = true;
+    user = "deploy";
+    group = "deploy";
 
     recommendedGzipSettings = true;
     recommendedOptimisation = true;
@@ -102,7 +109,10 @@ in
     ];
   };
 
-  networking.firewall.allowedTCPPorts = [ 80 443 ];
+  networking.firewall.allowedTCPPorts = [
+    80
+    443
+  ];
 
   security.acme = {
     acceptTerms = true;
