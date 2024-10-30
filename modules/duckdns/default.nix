@@ -25,7 +25,7 @@ in
       example = [ "examplehost" ];
       description = ''
         The domain(s) to update in DuckDNS
-        (without the .duckdns.org prefix)
+        (without the .duckdns.org suffix)
       '';
     };
 
@@ -43,7 +43,7 @@ in
         The path to a file containing a
         newline-separated list of DuckDNS
         domain(s) to be updated
-        (without the .duckdns.org prefix)
+        (without the .duckdns.org suffix)
       '';
     };
 
@@ -73,6 +73,7 @@ in
         pkgs.gnused
         pkgs.systemd
         pkgs.curl
+        pkgs.gawk
       ];
       serviceConfig = {
         Type = "simple";
@@ -89,7 +90,26 @@ in
         ${lib.optionalString (cfg.domainsFile != null) ''
           export DUCKDNS_DOMAINS=$(systemd-creds cat DUCKDNS_DOMAINS_FILE | sed -z 's/\n/,/g')
         ''}
-        curl --no-progress-meter -k -K- <<< "url = \"https://www.duckdns.org/update?domains=$DUCKDNS_DOMAINS&token=$DUCKDNS_TOKEN&ip=\"" | grep -v "KO"
+        echo "Detecting IPv4 via DuckDNS"
+        DRESPONSE=$(curl -sS --max-time 60 -K- <<< "url = \"https://www.duckdns.org/update?domains=$DUCKDNS_DOMAINS&token=$DUCKDNS_TOKEN&ip=\"")
+        IPV4=$(echo "$${DRESPONSE}" | awk 'NR==2')
+        IPV6=$(echo "$${DRESPONSE}" | awk 'NR==3')
+        RESPONSE=$(echo "$${DRESPONSE}" | awk 'NR==1')
+        IPCHANGE=$(echo "$${DRESPONSE}" | awk 'NR==4')
+
+        if [[ "$${RESPONSE}" = "OK" ]] && [[ "$${IPCHANGE}" = "UPDATED" ]]; then
+          if [[ "$${IPV4}" != "" ]] && [[ "$${IPV6}" == "" ]]; then
+            echo "Your IP was updated at $(date) to IPv4: $${IPV4}"
+              elif [[ " $${IPV4}" == "" ]] && [[ "$${IPV6}" != "" ]]; then
+              echo "Your IP was updated at $(date) to IPv6: $${IPV6}"
+          else
+            echo "Your IP was updated at $(date) to IPv4: $${IPV4} & IPv6 to: {$IPV6}"
+              fi
+              elif [[ "$${RESPONSE}" = "OK" ]] && [[ "$${IPCHANGE}" = "NOCHANGE" ]]; then
+              echo "DuckDNS request at $(date) successful. IP(s) unchanged."
+        else
+          echo -e "Something went wrong, please check your settings $(date)\nThe response returned was:\n$${DRESPONSE}\n"
+            fi
       '';
     };
   };
