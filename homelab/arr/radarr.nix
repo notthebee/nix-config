@@ -5,11 +5,11 @@
   ...
 }:
 let
-  cfg = config.services.arr;
+  cfg = config.homelab.services.arr;
   directories = [ "${cfg.mounts.config}/radarr" ];
 in
 {
-  options.services.arr.radarr = {
+  options.homelab.services.arr.radarr = {
     enable = lib.mkOption {
       default = true;
       type = lib.types.bool;

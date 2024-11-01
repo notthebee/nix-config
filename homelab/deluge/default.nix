@@ -5,7 +5,7 @@
   ...
 }:
 let
-  cfg = config.services.delugevpn;
+  cfg = config.homelab.services.delugevpn;
   directories = [
     cfg.mounts.downloads.complete
     cfg.mounts.downloads.incomplete
@@ -13,7 +13,7 @@ let
   ];
 in
 {
-  options.services.delugevpn = {
+  options.homelab.services.delugevpn = {
     enable = lib.mkEnableOption "Deluge torrent client (with optional Gluetun sidecar)";
     gluetun.enable = lib.mkOption {
       default = true;
@@ -35,51 +35,49 @@ in
       '';
     };
     mounts.config = lib.mkOption {
-      default = "/var/opt/deluge";
+      default = "${config.homelab.mounts.config}/deluge";
       type = lib.types.path;
       description = ''
         Path to Deluge configs
       '';
     };
     mounts.downloads.complete = lib.mkOption {
-      default = lib.types.null;
+      default = "${config.homelab.mounts.merged}/Downloads";
       type = lib.types.path;
       description = ''
         Path to the completed downloads
       '';
     };
     mounts.downloads.incomplete = lib.mkOption {
-      default = lib.types.null;
+      default = "${config.homelab.mounts.fast}/Downloads.tmp";
       type = lib.types.path;
       description = ''
         Path to the incomplete downloads
       '';
     };
     user = lib.mkOption {
-      default = "share";
+      default = config.homelab.user;
       type = lib.types.str;
       description = ''
         User to run the Deluge and Gluetun containers as
       '';
-      apply = old: builtins.toString config.users.users."${old}".uid;
     };
     group = lib.mkOption {
-      default = "share";
+      default = config.homelab.group;
       type = lib.types.str;
       description = ''
         User to run the Deluge and Gluetun containers as
       '';
-      apply = old: builtins.toString config.users.groups."${old}".gid;
     };
     timeZone = lib.mkOption {
-      default = "Europe/Berlin";
+      default = config.homelab.timeZone;
       type = lib.types.str;
       description = ''
         Time zone to be used inside the Deluge and Gluetun containers
       '';
     };
     baseDomainName = lib.mkOption {
-      default = null;
+      default = config.homelab.baseDomainName;
       type = lib.types.str;
       description = ''
         Base domain name to be used for Traefik reverse proxy (e.g. deluge.baseDomainName)

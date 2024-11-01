@@ -5,11 +5,11 @@
   ...
 }:
 let
-  cfg = config.services.arr;
+  cfg = config.homelab.services.arr;
   directories = [ "${cfg.mounts.config}/sonarr" ];
 in
 {
-  options.services.arr.sonarr = {
+  options.homelab.services.arr.sonarr = {
     enable = lib.mkOption {
       default = true;
       type = lib.types.bool;

@@ -60,6 +60,7 @@
     ./filesystems
     ./backup
     ./shares
+    ./homelab
   ];
 
   powerManagement.powertop.enable = false;
@@ -135,41 +136,4 @@
     gcc
     intel-gpu-tools
   ];
-  services = {
-    arr = {
-      enable = true;
-      mounts = {
-        config = vars.serviceConfigRoot;
-        tv = "${vars.mainArray}/Media/TV";
-        movies = "${vars.mainArray}/Media/Movies";
-        downloads = "${vars.mainArray}/Media/Downloads";
-      };
-      recyclarr = {
-        configPath = inputs.recyclarr-configs;
-      };
-      sonarr = {
-        apiKeyFile = config.age.secrets.sonarrApiKey.path;
-      };
-      radarr = {
-        apiKeyFile = config.age.secrets.radarrApiKey.path;
-      };
-      baseDomainName = vars.domainName;
-    };
-    delugevpn = {
-      enable = true;
-      gluetun = {
-        enable = true;
-        wireguardCredentialsFile = config.age.secrets.wireguardCredentials.path;
-      };
-      mounts = {
-        config = "${vars.serviceConfigRoot}/deluge";
-        downloads = {
-          complete = "${vars.mainArray}/Media/Downloads";
-          incomplete = "${vars.cacheArray}/Media/Downloads.tmp";
-        };
-      };
-      baseDomainName = vars.domainName;
-    };
-  };
-
 }

@@ -5,11 +5,11 @@
   ...
 }:
 let
-  cfg = config.services.arr;
+  cfg = config.homelab.services.arr;
   directories = [ "${cfg.mounts.config}/recyclarr" ];
 in
 {
-  options.services.arr.recyclarr = {
+  options.homelab.services.arr.recyclarr = {
     enable = lib.mkOption {
       default = true;
       type = lib.types.bool;

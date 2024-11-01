@@ -169,9 +169,9 @@
             "${inputs.secrets}/default.nix"
             agenix.nixosModules.default
 
-            ./containers/traefik
-            ./containers/smarthome
-            ./containers/grafana
+            ./homelab/traefik
+            ./homelab/smarthome
+            ./homelab/grafana
 
             # User-specific configurations
             ./users/notthebee
@@ -218,17 +218,16 @@
             agenix.nixosModules.default
 
             # Services and applications
-            #./containers/invoiceninja
-            #./containers/timetagger
-            ./containers/paperless-ngx
-            ./containers/traefik
-            ./containers/deluge
-            ./containers/arr
-            ./containers/sabnzbd
-            ./containers/jellyfin
-            ./containers/vaultwarden
-            ./containers/pingvin-share
-            ./containers/homepage
+            #./homelab/invoiceninja
+            #./homelab/timetagger
+            ./homelab/paperless-ngx
+            ./homelab/traefik
+            ./homelab/sabnzbd
+            ./homelab/jellyfin
+            ./homelab/vaultwarden
+            ./homelab/pingvin-share
+            ./homelab/homepage
+            ./homelab
 
             # User-specific configurations
             ./users/notthebee
@@ -270,8 +269,8 @@
             agenix.nixosModules.default
 
             # Services and applications
-            ./containers/traefik
-            ./containers/immich
+            ./homelab/traefik
+            ./homelab/immich
 
             # User-specific configurations
             ./users/notthebee

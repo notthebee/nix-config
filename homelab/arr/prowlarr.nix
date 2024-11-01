@@ -1,10 +1,10 @@
 { config, lib, ... }:
 let
-  cfg = config.services.arr;
+  cfg = config.homelab.services.arr;
   directories = [ "${cfg.mounts.config}/prowlarr" ];
 in
 {
-  options.services.arr.prowlarr = {
+  options.homelab.services.arr.prowlarr = {
     enable = lib.mkOption {
       default = true;
       type = lib.types.bool;

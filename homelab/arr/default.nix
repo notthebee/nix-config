@@ -1,6 +1,6 @@
 { config, lib, ... }:
 let
-  cfg = config.services.arr;
+  cfg = config.homelab.services.arr;
   directories = [
     cfg.mounts.config
     cfg.mounts.tv
@@ -9,61 +9,59 @@ let
   ];
 in
 {
-  options.services.arr = {
+  options.homelab.services.arr = {
     enable = lib.mkEnableOption "The Arr stack (Prowlarr, Sonarr, Radarr and Recyclarr)";
     mounts.config = lib.mkOption {
-      default = "/var/opt/arr";
+      default = config.homelab.mounts.config;
       type = lib.types.path;
       description = ''
         Base path of the Arr stack config files
       '';
     };
     mounts.tv = lib.mkOption {
-      default = lib.types.null;
+      default = "${config.homelab.mounts.merged}/Media/TV";
       type = lib.types.path;
       description = ''
         Path to the Sonarr TV shows
       '';
     };
     mounts.movies = lib.mkOption {
-      default = lib.types.null;
+      default = "${config.homelab.mounts.merged}/Media/Movies";
       type = lib.types.path;
       description = ''
         Path to the Radarr movies
       '';
     };
     mounts.downloads = lib.mkOption {
-      default = lib.types.null;
+      default = "${config.homelab.mounts.merged}/Media/Downloads";
       type = lib.types.path;
       description = ''
         Media downloads path to grab files from
       '';
     };
     user = lib.mkOption {
-      default = "share";
+      default = config.homelab.user;
       type = lib.types.str;
       description = ''
         User to run the Arr stack as
       '';
-      apply = old: builtins.toString config.users.users."${old}".uid;
     };
     group = lib.mkOption {
-      default = "share";
+      default = config.homelab.group;
       type = lib.types.str;
       description = ''
         Group to run the Arr stack as
       '';
-      apply = old: builtins.toString config.users.groups."${old}".gid;
     };
     timeZone = lib.mkOption {
-      default = "Europe/Berlin";
+      default = config.homelab.timeZone;
       type = lib.types.str;
       description = ''
         Time zone to be used inside the Arr containers
       '';
     };
     baseDomainName = lib.mkOption {
-      default = null;
+      default = config.homelab.baseDomainName;
       type = lib.types.str;
       description = ''
         Base domain name to be used for Traefik reverse proxy (e.g. sonarr.baseDomainName)
