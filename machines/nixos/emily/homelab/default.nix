@@ -1,9 +1,11 @@
 { inputs, config, ... }:
 {
   homelab = {
+    enable = true;
     baseDomainName = "goose.party";
     timeZone = "Europe/Berlin";
     mounts = {
+      config = "/persist/opt/services";
       slow = "/mnt/mergerfs_slow";
       fast = "/mnt/cache";
       merged = "/mnt/user";
