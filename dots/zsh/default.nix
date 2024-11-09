@@ -1,12 +1,16 @@
-{ inputs, pkgs, lib, config, ... }: {
-  home.packages = with pkgs; [
-    grc
-  ];
+{
+  inputs,
+  pkgs,
+  lib,
+  config,
+  ...
+}:
+{
+  home.packages = with pkgs; [ grc ];
 
   age.secrets.bwSession = {
     file = "${inputs.secrets}/bwSession.age";
   };
-
 
   programs = {
     starship = {
@@ -24,9 +28,7 @@
     zoxide = {
       enable = true;
       enableZshIntegration = true;
-      options = [
-        "--cmd cd"
-      ];
+      options = [ "--cmd cd" ];
     };
 
     direnv = {
@@ -36,6 +38,7 @@
 
     zsh = {
       enable = true;
+      enableCompletion = false;
       zplug = {
         enable = true;
         plugins = [
@@ -59,46 +62,45 @@
         deploy-nix = "f() { nix flake update && deploy .#$1 --remote-build -s --auto-rollback false };f";
       };
 
-      initExtra =
-        ''
-          # Cycle back in the suggestions menu using Shift+Tab
-          bindkey '^[[Z' reverse-menu-complete
+      initExtra = ''
+        # Cycle back in the suggestions menu using Shift+Tab
+        bindkey '^[[Z' reverse-menu-complete
 
-          bindkey '^B' autosuggest-toggle
-          # Make Ctrl+W remove one path segment instead of the whole path
-          WORDCHARS=''${WORDCHARS/\/}
+        bindkey '^B' autosuggest-toggle
+        # Make Ctrl+W remove one path segment instead of the whole path
+        WORDCHARS=''${WORDCHARS/\/}
 
-          # Highlight the selected suggestion
-          zstyle ':completion:*' list-colors ''${(s.:.)LS_COLORS}
-          zstyle ':completion:*' menu yes=long select
+        # Highlight the selected suggestion
+        zstyle ':completion:*' list-colors ''${(s.:.)LS_COLORS}
+        zstyle ':completion:*' menu yes=long select
 
-            if [ $(uname) = "Darwin" ]; then 
-              path=("$HOME/.nix-profile/bin" "/run/wrappers/bin" "/etc/profiles/per-user/$USER/bin" "/nix/var/nix/profiles/default/bin" "/run/current-system/sw/bin" "/opt/homebrew/bin" $path)
-              export BW_SESSION=$(${pkgs.coreutils}/bin/cat ${config.age.secrets.bwSession.path})
-              export DOCKER_HOST="unix://$HOME/.colima/default/docker.sock" 
-            fi
-      
-            export EDITOR=nvim || export EDITOR=vim
-            export LANG=en_US.UTF-8
-            export LC_CTYPE=en_US.UTF-8
-            export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
+          if [ $(uname) = "Darwin" ]; then 
+            path=("$HOME/.nix-profile/bin" "/run/wrappers/bin" "/etc/profiles/per-user/$USER/bin" "/nix/var/nix/profiles/default/bin" "/run/current-system/sw/bin" "/opt/homebrew/bin" $path)
+            export BW_SESSION=$(${pkgs.coreutils}/bin/cat ${config.age.secrets.bwSession.path})
+            export DOCKER_HOST="unix://$HOME/.colima/default/docker.sock" 
+          fi
+
+          export EDITOR=nvim || export EDITOR=vim
+          export LANG=en_US.UTF-8
+          export LC_CTYPE=en_US.UTF-8
+          export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
 
 
-            if [ $(uname) = "Darwin" ]; then 
-              alias lsblk="diskutil list"
-              ulimit -n 2048
-            fi 
+          if [ $(uname) = "Darwin" ]; then 
+            alias lsblk="diskutil list"
+            ulimit -n 2048
+          fi 
 
-            source $ZPLUG_HOME/repos/unixorn/warhol.plugin.zsh/warhol.plugin.zsh
-            bindkey '^[[A' history-substring-search-up
-            bindkey '^[[B' history-substring-search-down
+          source $ZPLUG_HOME/repos/unixorn/warhol.plugin.zsh/warhol.plugin.zsh
+          bindkey '^[[A' history-substring-search-up
+          bindkey '^[[B' history-substring-search-down
 
-            if command -v motd &> /dev/null
-            then
-              motd
-            fi
-            bindkey -e
-        '';
+          if command -v motd &> /dev/null
+          then
+            motd
+          fi
+          bindkey -e
+      '';
     };
   };
 }
