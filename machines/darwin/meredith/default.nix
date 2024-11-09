@@ -35,6 +35,7 @@
       "element"
       "microsoft-outlook"
       "monitorcontrol"
+      "raycast"
       "zen-browser"
     ];
   };
