@@ -1,4 +1,10 @@
-{ inputs, config, pkgs, lib, ... }:
+{
+  inputs,
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 {
   system.stateVersion = "22.11";
 
@@ -33,7 +39,6 @@
   users.users = {
     root = {
       initialHashedPassword = config.age.secrets.hashedUserPassword.path;
-      openssh.authorizedKeys.keys = [ "sshKey_placeholder" ];
     };
   };
   services.openssh = {
@@ -57,7 +62,10 @@
     ];
   };
 
-  nix.settings.experimental-features = lib.mkDefault [ "nix-command" "flakes" ];
+  nix.settings.experimental-features = lib.mkDefault [
+    "nix-command"
+    "flakes"
+  ];
 
   programs.git.enable = true;
   programs.mosh.enable = true;
@@ -82,7 +90,7 @@
     iperf3
     eza
     neofetch
-    (python310.withPackages (ps: with ps; [ pip ]))
+    (python312.withPackages (ps: with ps; [ pip ]))
     tmux
     rsync
     iotop
