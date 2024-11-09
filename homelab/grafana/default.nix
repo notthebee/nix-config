@@ -1,8 +1,6 @@
 { config, vars, ... }:
 let
-  directories = [
-    "${vars.serviceConfigRoot}/grafana"
-  ];
+  directories = [ "${vars.serviceConfigRoot}/grafana" ];
 in
 {
   systemd.tmpfiles.rules = map (x: "d ${x} 0775 472 0 - -") directories;
@@ -16,9 +14,7 @@ in
           "-l=traefik.enable=true"
           "-l=traefik.http.routers.grafana.rule=Host(`grafana.${vars.domainName}`)"
         ];
-        volumes = [
-          "${vars.serviceConfigRoot}/grafana:/var/lib/grafana"
-        ];
+        volumes = [ "${vars.serviceConfigRoot}/grafana:/var/lib/grafana" ];
       };
     };
   };
