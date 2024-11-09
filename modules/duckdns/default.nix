@@ -6,6 +6,29 @@
 }:
 let
   cfg = config.services.duckdns;
+  duckdns = pkgs.writeShellScriptBin "duckdns" ''
+    # Use DuckDns to autodetect IPv4
+    echo "Detecting IPv4 via DuckDNS"
+    DRESPONSE=$(curl -sS --max-time 60 --no-progress-meter -k -K- <<< "url = \"https://www.duckdns.org/update?verbose=true&domains=$DUCKDNS_DOMAINS&token=$DUCKDNS_TOKEN&ip=\"")
+    IPV4=$(echo "$DRESPONSE" | awk 'NR==2')
+    IPV6=$(echo "$DRESPONSE" | awk 'NR==3')
+    RESPONSE=$(echo "$DRESPONSE" | awk 'NR==1')
+    IPCHANGE=$(echo "$DRESPONSE" | awk 'NR==4')
+
+    if [[ "$RESPONSE" = "OK" ]] && [[ "$IPCHANGE" = "UPDATED" ]]; then
+        if [[ "$IPV4" != "" ]] && [[ "$IPV6" == "" ]]; then
+            echo "Your IP was updated at $(date) to IPv4: $IPV4"
+        elif [[ "$IPV4" == "" ]] && [[ "$IPV6" != "" ]]; then
+            echo "Your IP was updated at $(date) to IPv6: $IPV6"
+        else
+            echo "Your IP was updated at $(date) to IPv4: $IPV4 & IPv6 to: $IPV6"
+        fi
+    elif [[ "$RESPONSE" = "OK" ]] && [[ "$IPCHANGE" = "NOCHANGE" ]]; then
+        echo "DuckDNS request at $(date) successful. IP(s) unchanged."
+    else
+        echo -e "Something went wrong, please check your settings\nThe response returned was:\n$DRESPONSE\n"
+    fi
+  '';
 in
 {
   options.services.duckdns = {
@@ -64,6 +87,9 @@ in
         message = "services.duckdns.tokenFile has to be defined";
       }
     ];
+
+    environment.systemPackages = [ duckdns ];
+
     systemd.services.duckdns = {
       description = "DuckDNS Dynamic DNS Client";
       after = [ "network.target" ];
@@ -74,6 +100,7 @@ in
         pkgs.systemd
         pkgs.curl
         pkgs.gawk
+        duckdns
       ];
       serviceConfig = {
         Type = "simple";
@@ -90,26 +117,7 @@ in
         ${lib.optionalString (cfg.domainsFile != null) ''
           export DUCKDNS_DOMAINS=$(systemd-creds cat DUCKDNS_DOMAINS_FILE | sed -z 's/\n/,/g')
         ''}
-        echo "Detecting IPv4 via DuckDNS"
-        DRESPONSE=$(curl -sS --max-time 60 -K- <<< "url = \"https://www.duckdns.org/update?domains=$DUCKDNS_DOMAINS&token=$DUCKDNS_TOKEN&ip=\"")
-        IPV4=$(echo "$${DRESPONSE}" | awk 'NR==2')
-        IPV6=$(echo "$${DRESPONSE}" | awk 'NR==3')
-        RESPONSE=$(echo "$${DRESPONSE}" | awk 'NR==1')
-        IPCHANGE=$(echo "$${DRESPONSE}" | awk 'NR==4')
-
-        if [[ "$${RESPONSE}" = "OK" ]] && [[ "$${IPCHANGE}" = "UPDATED" ]]; then
-          if [[ "$${IPV4}" != "" ]] && [[ "$${IPV6}" == "" ]]; then
-            echo "Your IP was updated at $(date) to IPv4: $${IPV4}"
-              elif [[ " $${IPV4}" == "" ]] && [[ "$${IPV6}" != "" ]]; then
-              echo "Your IP was updated at $(date) to IPv6: $${IPV6}"
-          else
-            echo "Your IP was updated at $(date) to IPv4: $${IPV4} & IPv6 to: {$IPV6}"
-              fi
-              elif [[ "$${RESPONSE}" = "OK" ]] && [[ "$${IPCHANGE}" = "NOCHANGE" ]]; then
-              echo "DuckDNS request at $(date) successful. IP(s) unchanged."
-        else
-          echo -e "Something went wrong, please check your settings $(date)\nThe response returned was:\n$${DRESPONSE}\n"
-            fi
+        ${duckdns}/bin/duckdns
       '';
     };
   };
