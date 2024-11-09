@@ -74,6 +74,7 @@ in
     ./radarr.nix
     ./recyclarr.nix
     ./sonarr.nix
+    ./bazarr.nix
   ];
   config = lib.mkIf cfg.enable {
     systemd.tmpfiles.rules = map (x: "d ${x} 0775 ${cfg.user} ${cfg.group} - -") directories;
