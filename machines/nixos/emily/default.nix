@@ -63,8 +63,6 @@
     ./homelab
   ];
 
-  powerManagement.powertop.enable = false;
-
   services.adiosBot = {
     enable = true;
     botTokenFile = config.age.secrets.adiosBotToken.path;
@@ -130,7 +128,6 @@
     gocode-gomod
     godef
     golint
-    powertop
     cpufrequtils
     gnumake
     gcc

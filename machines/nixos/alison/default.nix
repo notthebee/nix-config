@@ -1,6 +1,16 @@
-{ inputs, lib, config, vars, pkgs, ... }:
 {
-  boot.kernelModules = [ "i915" "cp210x" ];
+  inputs,
+  lib,
+  config,
+  vars,
+  pkgs,
+  ...
+}:
+{
+  boot.kernelModules = [
+    "i915"
+    "cp210x"
+  ];
   hardware.cpu.intel.updateMicrocode = true;
   hardware.enableRedistributableFirmware = true;
   boot.zfs.forceImportRoot = true;
@@ -9,7 +19,13 @@
       devNodes = "/dev/disk/by-id/";
       bootDevices = [ "nvme-WD_BLACK_SN770_500GB_22453P805347" ];
       immutable = false;
-      availableKernelModules = [ "uhci_hcd" "ehci_pci" "ahci" "sd_mod" "sr_mod" ];
+      availableKernelModules = [
+        "uhci_hcd"
+        "ehci_pci"
+        "ahci"
+        "sd_mod"
+        "sr_mod"
+      ];
       removableEfi = true;
       kernelParams = [
         "pcie_aspm=force"
@@ -26,14 +42,11 @@
     };
   };
 
-
   imports = [
     ./containerOverrides
     ./router
     ./filesystems
   ];
-
-  #powerManagement.powertop.enable = true;
 
   virtualisation.docker.storageDriver = "overlay2";
 

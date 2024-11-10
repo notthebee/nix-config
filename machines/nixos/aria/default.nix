@@ -1,4 +1,12 @@
-{ inputs, lib, config, vars, networksExternal, pkgs, ... }:
+{
+  inputs,
+  lib,
+  config,
+  vars,
+  networksExternal,
+  pkgs,
+  ...
+}:
 {
   boot.kernelModules = [ "nct6775" ];
   hardware.cpu.intel.updateMicrocode = true;
@@ -13,7 +21,13 @@
       # TODO
       bootDevices = [ "ata-SAMSUNG_MZ7LN256HAJQ-00000_S3TWNX0N158949" ];
       immutable = false;
-      availableKernelModules = [ "uhci_hcd" "ehci_pci" "ahci" "sd_mod" "sr_mod" ];
+      availableKernelModules = [
+        "uhci_hcd"
+        "ehci_pci"
+        "ahci"
+        "sd_mod"
+        "sr_mod"
+      ];
       removableEfi = true;
       kernelParams = [
         "pcie_aspm=force"
@@ -38,8 +52,6 @@
     ./shares
   ];
 
-  powerManagement.powertop.enable = false;
-
   services.hddfancontrol = {
     enable = true;
     disks = [
@@ -49,9 +61,7 @@
       "/dev/disk/by-label/Data4"
       "/dev/disk/by-label/Parity1"
     ];
-    pwmPaths = [
-      "/sys/class/hwmon/hwmon0/pwm2"
-    ];
+    pwmPaths = [ "/sys/class/hwmon/hwmon0/pwm2" ];
     extraArgs = [
       "--pwm-start-value=100"
       "--pwm-stop-value=50"
