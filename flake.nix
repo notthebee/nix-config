@@ -124,13 +124,18 @@
       nixosConfigurations = {
         maya = nixpkgs-unstable.lib.nixosSystem {
           system = "x86_64-linux";
+          specialArgs = {
+            inherit inputs;
+          };
           modules = [
             ./machines/nixos
             ./machines/nixos/maya
+
             "${inputs.secrets}/default.nix"
             agenix.nixosModules.default
-            ./users/notthebee
+            jovian.nixosModules.default
             home-manager.nixosModules.home-manager
+            ./users/notthebee
             {
               home-manager.useGlobalPkgs = false; # makes hm use nixos's pkgs value
               home-manager.extraSpecialArgs = {
