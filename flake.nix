@@ -14,7 +14,10 @@
       url = "github:nix-community/home-manager/master";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
-
+    ryzen-undervolt = {
+      url = "github:svenlange2/Ryzen-5800x3d-linux-undervolting/0f05965f9939259c27a428065fda5a6c0cbb9225";
+      flake = false;
+    };
     agenix = {
       url = "github:ryantm/agenix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -59,6 +62,7 @@
       home-manager-unstable,
       recyclarr-configs,
       adios-bot,
+      ryzen-undervolt,
       nixvim,
       jovian,
       deploy-rs,
@@ -136,7 +140,7 @@
           modules = [
             ./machines/nixos
             ./machines/nixos/maya
-
+            ./modules/ryzen-undervolt
             "${inputs.secrets}/default.nix"
             agenix.nixosModules.default
             jovian.nixosModules.default

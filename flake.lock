@@ -518,11 +518,11 @@
     },
     "nur": {
       "locked": {
-        "lastModified": 1731258665,
-        "narHash": "sha256-DVFTn7Ol69nWLSFwnBj/2T3wptOC97MH4i5NHlkQrzk=",
+        "lastModified": 1731264423,
+        "narHash": "sha256-DTWprnE/7Oud9JpJL1LOGVJP9CFod7YeArsb0U3yXWo=",
         "owner": "nix-community",
         "repo": "nur",
-        "rev": "5b5350f16cefe83e1a3ed3f30d69b6af654f0d52",
+        "rev": "00516a12c8792c11daa0982b8285b54c9a4e3c5e",
         "type": "github"
       },
       "original": {
@@ -585,7 +585,25 @@
         "nixvim": "nixvim",
         "nur": "nur",
         "recyclarr-configs": "recyclarr-configs",
+        "ryzen-undervolt": "ryzen-undervolt",
         "secrets": "secrets"
+      }
+    },
+    "ryzen-undervolt": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1704490715,
+        "narHash": "sha256-ngYM4E1xXfk3pbRp32pLHhngOerRHH9gBSN/aK8BPYQ=",
+        "owner": "svenlange2",
+        "repo": "Ryzen-5800x3d-linux-undervolting",
+        "rev": "0f05965f9939259c27a428065fda5a6c0cbb9225",
+        "type": "github"
+      },
+      "original": {
+        "owner": "svenlange2",
+        "repo": "Ryzen-5800x3d-linux-undervolting",
+        "rev": "0f05965f9939259c27a428065fda5a6c0cbb9225",
+        "type": "github"
       }
     },
     "secrets": {

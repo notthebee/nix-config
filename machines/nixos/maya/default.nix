@@ -13,7 +13,10 @@
 
   hardware = {
     enableRedistributableFirmware = true;
-    cpu.amd.updateMicrocode = true;
+    cpu.amd = {
+      updateMicrocode = true;
+      ryzen-smu.enable = true;
+    };
     xone.enable = true;
     graphics = {
       enable = true;
@@ -24,6 +27,10 @@
   services = {
     openssh.enable = true;
     desktopManager.plasma6.enable = true;
+    ryzen-undervolt = {
+      enable = true;
+      offset = -25;
+    };
   };
 
   networking = {
