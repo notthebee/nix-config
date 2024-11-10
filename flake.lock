@@ -244,6 +244,27 @@
         "type": "github"
       }
     },
+    "home-manager-unstable": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs-unstable"
+        ]
+      },
+      "locked": {
+        "lastModified": 1731235328,
+        "narHash": "sha256-NjavpgE9/bMe/ABvZpyHIUeYF1mqR5lhaep3wB79ucs=",
+        "owner": "nix-community",
+        "repo": "home-manager",
+        "rev": "60bb110917844d354f3c18e05450606a435d2d10",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "ref": "master",
+        "repo": "home-manager",
+        "type": "github"
+      }
+    },
     "home-manager_2": {
       "inputs": {
         "nixpkgs": [
@@ -437,11 +458,11 @@
     },
     "nixpkgs-unstable": {
       "locked": {
-        "lastModified": 1730785428,
-        "narHash": "sha256-Zwl8YgTVJTEum+L+0zVAWvXAGbWAuXHax3KzuejaDyo=",
+        "lastModified": 1731139594,
+        "narHash": "sha256-IigrKK3vYRpUu+HEjPL/phrfh7Ox881er1UEsZvw9Q4=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "4aa36568d413aca0ea84a1684d2d46f55dbabad7",
+        "rev": "76612b17c0ce71689921ca12d9ffdc9c23ce40b2",
         "type": "github"
       },
       "original": {
@@ -453,11 +474,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1731239293,
-        "narHash": "sha256-q2yjIWFFcTzp5REWQUOU9L6kHdCDmFDpqeix86SOvDc=",
+        "lastModified": 1731255958,
+        "narHash": "sha256-cjD6FGfNeQRUXByeRQi0srmwoMXUY4sq12U8LvZLVK8=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "9256f7c71a195ebe7a218043d9f93390d49e6884",
+        "rev": "5354a00f3cdbab47090bdc51aedbe13d1e2aa9b1",
         "type": "github"
       },
       "original": {
@@ -497,11 +518,11 @@
     },
     "nur": {
       "locked": {
-        "lastModified": 1731243617,
-        "narHash": "sha256-RBNhh7c6iG5/yechGlUArzqz2THHcxbSW3RSLSjTlZg=",
+        "lastModified": 1731258665,
+        "narHash": "sha256-DVFTn7Ol69nWLSFwnBj/2T3wptOC97MH4i5NHlkQrzk=",
         "owner": "nix-community",
         "repo": "nur",
-        "rev": "6f38da2cb8f7615f93e567f90b1af4abb4c240b0",
+        "rev": "5b5350f16cefe83e1a3ed3f30d69b6af654f0d52",
         "type": "github"
       },
       "original": {
@@ -555,6 +576,7 @@
         "agenix": "agenix",
         "deploy-rs": "deploy-rs",
         "home-manager": "home-manager_2",
+        "home-manager-unstable": "home-manager-unstable",
         "jovian": "jovian",
         "nix-darwin": "nix-darwin",
         "nix-index-database": "nix-index-database",

@@ -10,6 +10,11 @@
       url = "github:nix-community/home-manager/release-24.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    home-manager-unstable = {
+      url = "github:nix-community/home-manager/master";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+
     agenix = {
       url = "github:ryantm/agenix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -51,6 +56,7 @@
       nixpkgs-unstable,
       nix-darwin,
       home-manager,
+      home-manager-unstable,
       recyclarr-configs,
       adios-bot,
       nixvim,
@@ -134,7 +140,7 @@
             "${inputs.secrets}/default.nix"
             agenix.nixosModules.default
             jovian.nixosModules.default
-            home-manager.nixosModules.home-manager
+            home-manager-unstable.nixosModules.home-manager
             ./users/notthebee
             {
               home-manager.useGlobalPkgs = false; # makes hm use nixos's pkgs value
