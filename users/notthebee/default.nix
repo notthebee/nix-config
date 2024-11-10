@@ -24,6 +24,7 @@
           "users"
           "video"
           "podman"
+          "input"
         ];
         group = "notthebee";
         openssh.authorizedKeys.keys = [
