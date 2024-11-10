@@ -16,7 +16,11 @@ From your host, copy the public SSH key to the server
 ```bash
 ssh-add ~/.ssh/notthebee
 ssh-copy-id -i ~/.ssh/notthebee root@<NIXOS-IP>
-ssh root@<NIXOS-IP>
+```
+
+SSH into the host with agent forwarding enabled (for the secrets repo access)
+```bash
+ssh -A root@<NIXOS-IP>
 ```
 
 Enable flakes
@@ -33,7 +37,7 @@ curl https://raw.githubusercontent.com/notthebee/nix-config/main/disko/zfs-root/
     -o /tmp/disko.nix
 sed -i "s|to-be-filled-during-installation|$DISK|" /tmp/disko.nix
 nix --experimental-features "nix-command flakes" run github:nix-community/disko \
-    -- --mode disko /tmp/disko.nix
+    -- -m destroy,format,mount /tmp/disko.nix
 ```
 
 Install git and git-crypt
