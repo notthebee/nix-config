@@ -34,6 +34,10 @@
       url = "git+ssh://git@github.com/notthebee/nix-private.git";
       flake = false;
     };
+    jovian = {
+      url = "github:Jovian-Experiments/Jovian-NixOS";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
 
     deploy-rs.url = "github:serokell/deploy-rs";
     nur.url = "github:nix-community/nur";
@@ -50,6 +54,7 @@
       recyclarr-configs,
       adios-bot,
       nixvim,
+      jovian,
       deploy-rs,
       nix-index-database,
       agenix,
@@ -61,7 +66,6 @@
       networksLocal = import ./machines/networksLocal.nix;
     in
     {
-
       darwinConfigurations."meredith" = nix-darwin.lib.darwinSystem {
         system = "aarch64-darwin";
         specialArgs = {
@@ -108,9 +112,39 @@
             path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.emily;
           };
         };
-
+        maya = {
+          hostname = "maya";
+          profiles.system = {
+            user = "root";
+            sshUser = "notthebee";
+            path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.maya;
+          };
+        };
       };
       nixosConfigurations = {
+        maya = nixpkgs-unstable.lib.nixosSystem {
+          system = "x86_64-linux";
+          modules = [
+            ./machines/nixos
+            ./machines/nixos/maya
+            "${inputs.secrets}/default.nix"
+            agenix.nixosModules.default
+            ./users/notthebee
+            home-manager.nixosModules.home-manager
+            {
+              home-manager.useGlobalPkgs = false; # makes hm use nixos's pkgs value
+              home-manager.extraSpecialArgs = {
+                inherit inputs networksLocal networksExternal;
+              }; # allows access to flake inputs in hm modules
+              home-manager.users.notthebee.imports = [
+                agenix.homeManagerModules.default
+                nix-index-database.hmModules.nix-index
+                ./users/notthebee/dots.nix
+              ];
+              home-manager.backupFileExtension = "bak";
+            }
+          ];
+        };
         spencer = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           specialArgs = {
@@ -289,7 +323,6 @@
             }
           ];
         };
-
       };
     };
 }
