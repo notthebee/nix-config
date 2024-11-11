@@ -46,6 +46,10 @@
       url = "github:Jovian-Experiments/Jovian-NixOS";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+    alga = {
+      url = "github:Tenzer/alga";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
 
     deploy-rs.url = "github:serokell/deploy-rs";
     nur.url = "github:nix-community/nur";
@@ -59,6 +63,7 @@
       nixpkgs-unstable,
       nix-darwin,
       home-manager,
+      alga,
       home-manager-unstable,
       recyclarr-configs,
       adios-bot,
@@ -135,12 +140,13 @@
         maya = nixpkgs-unstable.lib.nixosSystem {
           system = "x86_64-linux";
           specialArgs = {
-            inherit inputs;
+            inherit inputs networksLocal;
           };
           modules = [
             ./machines/nixos
             ./machines/nixos/maya
             ./modules/ryzen-undervolt
+            ./modules/lgtv
             "${inputs.secrets}/default.nix"
             agenix.nixosModules.default
             jovian.nixosModules.default

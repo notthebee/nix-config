@@ -1,4 +1,17 @@
-{ pkgs, ... }:
+{
+  pkgs,
+  lib,
+  networksLocal,
+  ...
+}:
+let
+  tvIpAddress =
+    (lib.lists.findSingle (x: x.hostname == "lgtv") false false networksLocal.networks.iot.reservations)
+    .ip-address;
+  tvMacAddress =
+    (lib.lists.findSingle (x: x.hostname == "lgtv") false false networksLocal.networks.iot.reservations)
+    .hw-address;
+in
 {
   imports = [ ./lact.nix ];
   boot = {
@@ -27,6 +40,13 @@
   services = {
     openssh.enable = true;
     desktopManager.plasma6.enable = true;
+    lgtv = {
+      enable = true;
+      ipAddress = tvIpAddress;
+      macAddress = tvMacAddress;
+      user = "notthebee";
+      group = "notthebee";
+    };
     ryzen-undervolt = {
       enable = true;
       offset = -25;
