@@ -59,7 +59,8 @@
         ya = "yt-dlp --continue --no-check-certificate --format=bestaudio -x --audio-format wav";
         aspm = "sudo lspci -vv | awk '/ASPM/{print $0}' RS= | grep --color -P '(^[a-z0-9:.]+|ASPM )'";
         mkdir = "mkdir -p";
-        deploy-nix = "f() { nix flake update && deploy .#$1 --remote-build -s --auto-rollback false };f";
+        # Only do `nix flake update` if flake.lock hasn't been updated within an hour
+        deploy-nix = "f() { if [[ $(find . -mmin -60 -type f -name flake.lock | wc -c) -eq 0 ]]; then nix flake update; fi && deploy .#$1 --remote-build -s --auto-rollback false };f";
       };
 
       initExtra = ''
