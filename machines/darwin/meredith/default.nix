@@ -40,7 +40,7 @@
     ];
   };
   environment.systemPackages = with pkgs; [
-    (python311Full.withPackages (
+    (python312Full.withPackages (
       ps: with ps; [
         pip
         jmespath
