@@ -47,7 +47,6 @@
             ip46tables -A FORWARD -i ${config.networks.iot.interface} -o ${externalInterface} -j nixos-fw-log-refuse 
 
             # Isolate the guest network from the rest of the subnets
-
           ''
           (lib.concatMapStrings (x: "${x}\n") (lib.lists.forEach (lib.attrsets.mapAttrsToList (name: value: name) (lib.attrsets.filterAttrs (n: v: n != "guest") config.networks)) (x:
             ''
