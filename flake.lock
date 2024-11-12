@@ -426,15 +426,15 @@
     "nix-darwin": {
       "inputs": {
         "nixpkgs": [
-          "nixpkgs"
+          "nixpkgs-fix-ghostscript"
         ]
       },
       "locked": {
-        "lastModified": 1731153869,
-        "narHash": "sha256-3Ftf9oqOypcEyyrWJ0baVkRpvQqroK/SVBFLvU3nPuc=",
+        "lastModified": 1731424394,
+        "narHash": "sha256-J+POQgWQdjhuF1pEnkVKWPJ+dM62FTepk6TmJdj3O5U=",
         "owner": "LnL7",
         "repo": "nix-darwin",
-        "rev": "5c74ab862c8070cbf6400128a1b56abb213656da",
+        "rev": "e30d226a24e4079d068321f935dbf30626f08dc8",
         "type": "github"
       },
       "original": {
@@ -545,6 +545,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-fix-ghostscript": {
+      "locked": {
+        "lastModified": 1726714676,
+        "narHash": "sha256-w235Gx0YLnjY8M9J07L5T/FiWA56xkD5JMD9sRXjHAA=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "aecd17c0dbd112d6df343827d9324f071ef9c502",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "aecd17c0dbd112d6df343827d9324f071ef9c502",
+        "type": "github"
+      }
+    },
     "nixpkgs-unstable": {
       "locked": {
         "lastModified": 1731139594,
@@ -563,11 +579,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1731356506,
-        "narHash": "sha256-j0UUHSKvBlJHF3/LyX6FfWiJrcSSqiBXucT/NTKxVQU=",
+        "lastModified": 1731430377,
+        "narHash": "sha256-ZACceDE4SR5gs2bru0xlqnYNB5Xblad088RUK10Qho0=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "d3c490e9c812d0a9dcb0593663d9430451fb8f96",
+        "rev": "ab85400fd483ca28aeebab5086041c4e6a977b73",
         "type": "github"
       },
       "original": {
@@ -607,11 +623,11 @@
     },
     "nur": {
       "locked": {
-        "lastModified": 1731357928,
-        "narHash": "sha256-RH0DWVggSrH0NjzfCr60lNfSpFvbjV+zcS4gIhk6irk=",
+        "lastModified": 1731433528,
+        "narHash": "sha256-GGlw5xsz8Qjzt3tfh2kFzbrMofx+J+vfXH2Lvr1f16I=",
         "owner": "nix-community",
         "repo": "nur",
-        "rev": "c18781dd9bfe715f59e5ece0c18a9e2959e22d1c",
+        "rev": "37d882663e9546df4024f7bc03254ba2ddef3787",
         "type": "github"
       },
       "original": {
@@ -694,6 +710,7 @@
         "nix-darwin": "nix-darwin",
         "nix-index-database": "nix-index-database",
         "nixpkgs": "nixpkgs_2",
+        "nixpkgs-fix-ghostscript": "nixpkgs-fix-ghostscript",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "nixvim": "nixvim",
         "nur": "nur",
