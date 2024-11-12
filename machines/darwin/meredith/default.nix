@@ -51,7 +51,6 @@
       ]
     ))
     ansible-language-server
-    vault
     yq
     git-lfs
     pre-commit
@@ -86,19 +85,13 @@
     inputs.agenix.packages."${system}".default
     yt-dlp
     ffmpeg
-    chromedriver
-    mosh
     discord
     git-filter-repo
     spotify
-    httpie
     slack
     mattermost
-    sentry-cli
-    vscode
     google-cloud-sdk
     pinentry.curses
-    nixos-rebuild
     deploy-rs
     nixpkgs-fmt
     nil
@@ -106,9 +99,7 @@
     nss.tools
     mkcert
     karabiner-elements
-    vscode
     pulumi-bin
-    pfetch
     devenv
     nixfmt-rfc-style
   ];

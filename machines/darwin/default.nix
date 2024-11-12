@@ -38,7 +38,6 @@
 
   services.karabiner-elements.enable = true;
   nix = {
-    linux-builder.enable = true;
     settings = {
       max-jobs = "auto";
       trusted-users = [
