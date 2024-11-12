@@ -12,6 +12,14 @@
     file = "${inputs.secrets}/hashedUserPassword.age";
   };
 
+  email = {
+    fromAddress = "moe@notthebe.ee";
+    toAddress = "server_announcements@mailbox.org";
+    smtpServer = "email-smtp.eu-west-1.amazonaws.com";
+    smtpUsername = "AKIAYYXVLL34J7LSXFZF";
+    smtpPasswordPath = config.age.secrets.smtpPassword.path;
+  };
+
   users = {
     users = {
       notthebee = {

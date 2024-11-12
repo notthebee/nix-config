@@ -147,6 +147,7 @@
             ./machines/nixos/maya
             ./modules/ryzen-undervolt
             ./modules/lgtv
+            ./modules/email
             "${inputs.secrets}/default.nix"
             agenix.nixosModules.default
             jovian.nixosModules.default
