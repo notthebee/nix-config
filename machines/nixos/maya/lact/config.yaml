@@ -1,0 +1,18 @@
+daemon:
+  log_level: info
+  admin_groups:
+  - wheel
+  - sudo
+  disable_clocks_cleanup: false
+apply_settings_timer: 5
+gpus:
+  1002:744C-1EAE:7901-0000:07:00.0:
+    fan_control_enabled: false
+    pmfw_options:
+      acoustic_limit: 1500
+      acoustic_target: 1000
+      minimum_pwm: 15
+      target_temperature: 80
+    power_cap: 310.0
+    performance_level: auto
+    voltage_offset: -50
