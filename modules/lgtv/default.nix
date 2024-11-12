@@ -43,7 +43,7 @@ let
       ${wolExec}
       sleep 3
       result=$( ${algaExec} input list || true)
-      if echo $result | grep -q "${cfg.hdmiInput}"; then
+      if echo $result | ${lib.getExe pkgs.gnugrep} -q "${cfg.hdmiInput}"; then
         ${algaExec} input set ${cfg.hdmiInput}
         exit 0
       else
@@ -86,8 +86,26 @@ in
       lgtv-off
     ];
     powerManagement.enable = true;
-    powerManagement.powerUpCommands = lib.getExe lgtv-on;
-    powerManagement.resumeCommands = config.powerManagement.powerUpCommands;
+    powerManagement.resumeCommands = lib.getExe lgtv-on;
     powerManagement.powerDownCommands = lib.getExe lgtv-off;
+
+    systemd.services.lgtv-on = {
+      description = "Turn the LG TV on";
+      after = [ "network-online.target" ];
+      wants = [ "network-online.target" ];
+      wantedBy = [ "multi-user.target" ];
+      path = [
+        pkgs.gnused
+        pkgs.wol
+        pkgs.sudo
+        inputs.alga.packages.${pkgs.system}.default
+        pkgs.systemd
+        lgtv-on
+      ];
+      serviceConfig = {
+        Type = "oneshot";
+      };
+      script = lib.getExe lgtv-on;
+    };
   };
 }
