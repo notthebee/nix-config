@@ -66,6 +66,8 @@ in
   };
   imports = [
     ./arr
+    ./audiobookshelf
+    ./calibre
     ./deluge
   ];
 }

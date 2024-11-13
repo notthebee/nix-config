@@ -42,14 +42,14 @@ in
       '';
     };
     mounts.downloads.complete = lib.mkOption {
-      default = "${config.homelab.mounts.merged}/Downloads";
+      default = "${config.homelab.mounts.merged}/Media/Downloads";
       type = lib.types.path;
       description = ''
         Path to the completed downloads
       '';
     };
     mounts.downloads.incomplete = lib.mkOption {
-      default = "${config.homelab.mounts.fast}/Downloads.tmp";
+      default = "${config.homelab.mounts.fast}/Media/Downloads.tmp";
       type = lib.types.path;
       description = ''
         Path to the incomplete downloads
