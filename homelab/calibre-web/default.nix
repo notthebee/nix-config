@@ -7,7 +7,7 @@
 let
   cfg = config.homelab.services.calibre-web;
   directories = [
-    cfg.mounts.books
+    cfg.mounts.library
     cfg.mounts.config
   ];
 in

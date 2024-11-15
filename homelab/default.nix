@@ -67,7 +67,7 @@ in
   imports = [
     ./arr
     ./audiobookshelf
-    ./calibre
+    ./calibre-web
     ./deluge
   ];
 }
