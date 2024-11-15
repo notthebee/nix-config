@@ -7,6 +7,7 @@
 let
   cfg = config.homelab.services.audiobookshelf;
   directories = [
+    cfg.mounts.base
     cfg.mounts.podcasts
     cfg.mounts.audiobooks
     cfg.mounts.config
@@ -23,15 +24,23 @@ in
         Path to Audiobookshelf configs
       '';
     };
+    mounts.base = lib.mkOption {
+      default = "${config.homelab.mounts.merged}/Media/Audiobookshelf";
+      type = lib.types.path;
+      description = ''
+        Path to the audiobookshelf media files
+      '';
+    };
+
     mounts.audiobooks = lib.mkOption {
-      default = "${config.homelab.mounts.merged}/Media/Audiobookshelf/Audiobooks";
+      default = "${cfg.mounts.base}/Audiobooks";
       type = lib.types.path;
       description = ''
         Path to the audiobooks folder
       '';
     };
     mounts.podcasts = lib.mkOption {
-      default = "${config.homelab.mounts.merged}/Media/Audiobookshelf/Podcasts";
+      default = "${cfg.mounts.base}/Podcasts";
       type = lib.types.path;
       description = ''
         Path to the podcasts folder
@@ -80,7 +89,6 @@ in
         audiobookshelf = {
           image = "ghcr.io/advplyr/audiobookshelf:latest";
           autoStart = true;
-          dependsOn = lib.lists.optionals (cfg.gluetun.enable) [ "gluetun" ];
           extraOptions = [
             "--pull=newer"
             "-l=homepage.group=Media"
@@ -91,7 +99,7 @@ in
             "-l=traefik.enable=true"
             "-l=traefik.http.routers.audiobookshelf.rule=Host(`audiobooks.${cfg.baseDomainName}`)"
             "-l=traefik.http.routers.audiobookshelf.service=audiobookshelf"
-            "-l=traefik.http.services.audiobookshelf.loadbalancer.server.port=8112"
+            "-l=traefik.http.services.audiobookshelf.loadbalancer.server.port=80"
           ];
           volumes = [
             "${cfg.mounts.audiobooks}:/audiobooks"
