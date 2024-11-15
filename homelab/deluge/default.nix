@@ -95,13 +95,13 @@ in
           extraOptions =
             [
               "--pull=newer"
-              "-l=homepage.group=Arr"
+              "-l=homepage.group=Downloads"
               "-l=homepage.name=Deluge"
               "-l=homepage.icon=deluge.svg"
               "-l=homepage.href=https://deluge.${vars.domainName}"
               "-l=homepage.description=Torrent client"
               "-l=homepage.widget.type=deluge"
-              "-l=homepage.widget.password=''"
+              "-l=homepage.widget.password='deluge'"
               ''-l=homepage.widget.url=http://${if cfg.gluetun.enable then "gluetun" else "deluge"}:8112''
             ]
             ++ lib.lists.optional (cfg.gluetun.enable) "--network=container:gluetun"
@@ -133,7 +133,7 @@ in
             "-l=traefik.http.routers.deluge.service=deluge"
             "-l=traefik.http.services.deluge.loadbalancer.server.port=8112"
             "--device=/dev/net/tun:/dev/net/tun"
-            "-l=homepage.group=Arr"
+            "-l=homepage.group=Downloads"
             "-l=homepage.name=Gluetun"
             "-l=homepage.icon=gluetun.svg"
             "-l=homepage.href=https://deluge.${cfg.baseDomainName}"
