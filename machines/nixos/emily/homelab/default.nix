@@ -23,6 +23,12 @@
           apiKeyFile = config.age.secrets.radarrApiKey.path;
         };
       };
+      audiobookshelf = {
+        enable = true;
+      };
+      calibre-web = {
+        enable = true;
+      };
       delugevpn = {
         enable = true;
         gluetun = {
