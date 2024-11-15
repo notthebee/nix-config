@@ -6,7 +6,8 @@ layout:
   - Glances:
       header: false
       style: "row"
-      columns: 3
+      columns: 4
   - Arr:
+  - Downloads:
   - Media: 
   - Services:
