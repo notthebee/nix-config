@@ -66,6 +66,9 @@ in
     networkmanager.enable = true;
     hostName = "maya";
     hostId = "899635ed";
+    interfaces.enp4s0.wakeOnLan = {
+      enable = true;
+    };
   };
 
   jovian = {
