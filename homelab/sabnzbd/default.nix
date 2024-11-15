@@ -16,7 +16,7 @@ in
         autoStart = true;
         extraOptions = [
           "--pull=newer"
-          "-l=homepage.group=Arr"
+          "-l=homepage.group=Downloads"
           "-l=homepage.name=sabnzbd"
           "-l=homepage.icon=sabnzbd.svg"
           "-l=homepage.href=https://sabnzbd.${vars.domainName}"
