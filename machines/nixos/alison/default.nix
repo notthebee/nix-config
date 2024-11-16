@@ -1,9 +1,7 @@
 {
-  inputs,
   lib,
-  config,
-  vars,
   pkgs,
+  config,
   ...
 }:
 {
@@ -43,9 +41,9 @@
   };
 
   imports = [
-    ./containerOverrides
     ./router
     ./filesystems
+    ../../networks.nix
   ];
 
   virtualisation.docker.storageDriver = "overlay2";
@@ -65,6 +63,22 @@
     };
   };
 
+  homelab = {
+    enable = true;
+    baseDomainName = "goose.party";
+    timeZone = "Europe/Berlin";
+    mounts = {
+      config = "/persist/opt/services";
+    };
+    services.traefik = {
+      enable = true;
+      listenAddress = config.homelab.networks.local.lan.cidr;
+      acme = {
+        email = config.email.fromAddress;
+        dnsChallenge.credentialsFile = config.age.secrets.cloudflareDnsApiCredentials.path;
+      };
+    };
+  };
   environment.systemPackages = with pkgs; [
     pciutils
     smartmontools

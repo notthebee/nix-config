@@ -77,15 +77,11 @@
       nur,
       ...
     }@inputs:
-    let
-      networksExternal = import ./machines/networksExternal.nix;
-      networksLocal = import ./machines/networksLocal.nix;
-    in
     {
       darwinConfigurations."meredith" = nix-darwin.lib.darwinSystem {
         system = "aarch64-darwin";
         specialArgs = {
-          inherit inputs networksLocal networksExternal;
+          inherit inputs;
         };
         modules = [
           "${inputs.secrets}/default.nix"
@@ -135,13 +131,14 @@
             sshUser = "notthebee";
             path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.maya;
           };
+
         };
       };
       nixosConfigurations = {
         maya = nixpkgs-unstable.lib.nixosSystem {
           system = "x86_64-linux";
           specialArgs = {
-            inherit inputs networksLocal;
+            inherit inputs;
           };
           modules = [
             ./machines/nixos
@@ -157,7 +154,7 @@
             {
               home-manager.useGlobalPkgs = false; # makes hm use nixos's pkgs value
               home-manager.extraSpecialArgs = {
-                inherit inputs networksLocal networksExternal;
+                inherit inputs;
               }; # allows access to flake inputs in hm modules
               home-manager.users.notthebee.imports = [
                 agenix.homeManagerModules.default
@@ -171,7 +168,7 @@
         spencer = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           specialArgs = {
-            inherit inputs networksLocal networksExternal;
+            inherit inputs;
             vars = import ./machines/nixos/vars.nix;
           };
           modules = [
@@ -179,6 +176,7 @@
             ./modules/email
             ./modules/tg-notify
             ./modules/notthebe.ee
+            ./homelab
 
             # Import the machine config + secrets
             ./machines/nixos
@@ -192,7 +190,7 @@
             {
               home-manager.useGlobalPkgs = false; # makes hm use nixos's pkgs value
               home-manager.extraSpecialArgs = {
-                inherit inputs networksLocal networksExternal;
+                inherit inputs;
               }; # allows access to flake inputs in hm modules
               home-manager.users.notthebee.imports = [
                 agenix.homeManagerModules.default
@@ -203,17 +201,15 @@
             }
           ];
         };
-
         alison = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           specialArgs = {
-            inherit inputs networksLocal networksExternal;
+            inherit inputs;
             vars = import ./machines/nixos/vars.nix;
           };
           modules = [
             # Base configuration and modules
             ./modules/tg-notify
-            ./modules/router
             ./modules/podman
             ./modules/motd
             ./modules/zfs-root
@@ -226,7 +222,7 @@
             "${inputs.secrets}/default.nix"
             agenix.nixosModules.default
 
-            ./homelab/traefik
+            ./homelab
             ./homelab/smarthome
             ./homelab/grafana
 
@@ -236,7 +232,7 @@
             {
               home-manager.useGlobalPkgs = false; # makes hm use nixos's pkgs value
               home-manager.extraSpecialArgs = {
-                inherit inputs networksLocal networksExternal;
+                inherit inputs;
               };
               home-manager.users.notthebee.imports = [
                 agenix.homeManagerModules.default
@@ -251,7 +247,7 @@
         emily = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           specialArgs = {
-            inherit inputs networksLocal networksExternal;
+            inherit inputs;
             vars = import ./machines/nixos/vars.nix;
           };
           modules = [
@@ -278,7 +274,6 @@
             #./homelab/invoiceninja
             #./homelab/timetagger
             ./homelab/paperless-ngx
-            ./homelab/traefik
             ./homelab/sabnzbd
             ./homelab/jellyfin
             ./homelab/vaultwarden
@@ -292,7 +287,7 @@
             {
               home-manager.useGlobalPkgs = false;
               home-manager.extraSpecialArgs = {
-                inherit inputs networksLocal networksExternal;
+                inherit inputs;
               };
               home-manager.users.notthebee.imports = [
                 agenix.homeManagerModules.default
@@ -306,7 +301,7 @@
         aria = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           specialArgs = {
-            inherit inputs networksLocal networksExternal;
+            inherit inputs;
             vars = import ./machines/nixos/aria/vars.nix;
           };
           modules = [
@@ -326,7 +321,7 @@
             agenix.nixosModules.default
 
             # Services and applications
-            ./homelab/traefik
+            ./homelab
             ./homelab/immich
 
             # User-specific configurations
@@ -335,7 +330,7 @@
             {
               home-manager.useGlobalPkgs = false;
               home-manager.extraSpecialArgs = {
-                inherit inputs networksLocal networksExternal;
+                inherit inputs;
               };
               home-manager.users.notthebee.imports = [
                 agenix.homeManagerModules.default

@@ -6,28 +6,28 @@ in
   options.homelab = {
     enable = lib.mkEnableOption "The homelab services and configuration variables";
     mounts.slow = lib.mkOption {
-      default = null;
+      default = "/mnt/mergerfs_slow";
       type = lib.types.path;
       description = ''
         Path to the 'slow' tier mount
       '';
     };
     mounts.fast = lib.mkOption {
-      default = null;
+      default = "/mnt/cache";
       type = lib.types.path;
       description = ''
         Path to the 'fast' tier mount
       '';
     };
     mounts.config = lib.mkOption {
-      default = null;
+      default = "/persist/opt/services";
       type = lib.types.path;
       description = ''
         Path to the service configuration files
       '';
     };
     mounts.merged = lib.mkOption {
-      default = null;
+      default = "/mnt/user";
       type = lib.types.path;
       description = ''
         Path to the merged tier mount
@@ -69,5 +69,7 @@ in
     ./audiobookshelf
     ./calibre-web
     ./deluge
+    ./traefik
+    ./networks
   ];
 }

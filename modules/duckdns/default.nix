@@ -54,7 +54,7 @@ in
 
     domainsFile = lib.mkOption {
       default = null;
-      type = lib.types.nullOr lib.types.path;
+      type = lib.types.nullOr (lib.types.path);
       example = lib.literalExpression ''
         pkgs.writeText "duckdns-domains.txt" '''
           examplehost
