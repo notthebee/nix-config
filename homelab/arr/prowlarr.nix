@@ -6,7 +6,7 @@ in
 {
   options.homelab.services.arr.prowlarr = {
     enable = lib.mkOption {
-      default = true;
+      default = config.homelab.services.arr.enable;
       type = lib.types.bool;
       description = "Enable Prowlarr";
     };

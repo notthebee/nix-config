@@ -11,13 +11,16 @@ in
 {
   options.homelab.services.arr.recyclarr = {
     enable = lib.mkOption {
-      default = true;
+      default = config.homelab.services.arr.enable;
       type = lib.types.bool;
       description = "Enable Recyclarr";
     };
     configPath = lib.mkOption {
-      default = true;
-      type = lib.types.package;
+      default = "/dev/null";
+      type = lib.types.oneOf [
+        lib.types.path
+        lib.types.package
+      ];
       description = "Path to the Recyclarr config files";
     };
   };

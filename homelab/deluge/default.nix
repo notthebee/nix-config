@@ -16,12 +16,12 @@ in
   options.homelab.services.delugevpn = {
     enable = lib.mkEnableOption "Deluge torrent client (with optional Gluetun sidecar)";
     gluetun.enable = lib.mkOption {
-      default = true;
+      default = cfg.enable;
       type = lib.types.bool;
       description = "Enable Gluetun (killswitch VPN gateway)";
     };
     gluetun.wireguardCredentialsFile = lib.mkOption {
-      default = true;
+      default = "/dev/null";
       type = lib.types.path;
       description = "Path to a file with Wireguard credentials";
       example = lib.literalExpression ''

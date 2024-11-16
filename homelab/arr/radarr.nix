@@ -11,12 +11,12 @@ in
 {
   options.homelab.services.arr.radarr = {
     enable = lib.mkOption {
-      default = true;
+      default = config.homelab.services.arr.enable;
       type = lib.types.bool;
       description = "Enable Radarr";
     };
     apiKeyFile = lib.mkOption {
-      default = true;
+      default = "/dev/null";
       type = lib.types.path;
       description = "Path to the file containing the Radarr API key";
     };
