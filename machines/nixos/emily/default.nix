@@ -61,6 +61,7 @@
     ./backup
     ./shares
     ./homelab
+    ../../networks.nix
   ];
 
   services.adiosBot = {

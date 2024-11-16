@@ -11,6 +11,13 @@
       merged = "/mnt/user";
     };
     services = {
+      traefik = {
+        enable = true;
+        acme = {
+          email = config.email.fromAddress;
+          dnsChallenge.credentialsFile = config.age.secrets.cloudflareDnsApiCredentials.path;
+        };
+      };
       arr = {
         enable = true;
         recyclarr = {

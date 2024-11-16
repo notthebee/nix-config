@@ -1,3 +1,2 @@
-machines/networksExternal.nix filter=git-crypt diff=git-crypt
-machines/networksLocal.nix filter=git-crypt diff=git-crypt
+machines/networks.nix filter=git-crypt diff=git-crypt
 machines/darwin/meredith/work.nix filter=git-crypt diff=git-crypt

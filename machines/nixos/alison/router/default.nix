@@ -1,8 +1,17 @@
-{ lib, config, pkgs, vars, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  vars,
+  ...
+}:
 let
   externalInterface = "enp2s0";
-  internalInterfaces = lib.mapAttrsToList (_: val: val.interface) config.networks;
-  internalIPs = lib.mapAttrsToList (_: val: lib.strings.removeSuffix ".1" val.cidr + ".0/24") config.networks;
+  networks = config.homelab.networks.local;
+  internalInterfaces = lib.mapAttrsToList (_: val: val.interface) networks;
+  internalIPs = lib.mapAttrsToList (
+    _: val: lib.strings.removeSuffix ".1" val.cidr + ".0/24"
+  ) networks;
 in
 {
 
@@ -15,7 +24,7 @@ in
     ./dns.nix
     ./firewall.nix
     ./wireguard.nix
-    ../../../networksLocal.nix
+    ../../../networks.nix
   ];
 
   boot.kernel.sysctl = {
@@ -26,28 +35,32 @@ in
   networking = {
     hostName = "alison";
     domain = "${config.networking.hostName}.${vars.domainName}";
-    nameservers = [
-      "127.0.0.1"
-    ];
+    nameservers = [ "127.0.0.1" ];
     hosts = lib.mkForce {
       "127.0.0.1" = [ "localhost" ];
       "::1" = [ "localhost" ];
     };
     bridges = {
-      br0.interfaces = [ "enp1s0" "eno1" ];
-      br1.interfaces = [ "enp4s0" "guest" ];
+      br0.interfaces = [
+        "enp1s0"
+        "eno1"
+      ];
+      br1.interfaces = [
+        "enp4s0"
+        "guest"
+      ];
     };
     vlans = {
       iot = {
-        interface = "${config.networks.lan.interface}";
+        interface = "${networks.lan.interface}";
         id = 3;
       };
       app = {
-        interface = "${config.networks.lan.interface}";
+        interface = "${networks.lan.interface}";
         id = 4;
       };
       guest = {
-        interface = "${config.networks.lan.interface}";
+        interface = "${networks.lan.interface}";
         id = 5;
       };
     };
@@ -55,33 +68,41 @@ in
       ${externalInterface} = {
         useDHCP = true;
       };
-      ${config.networks.lan.interface} = {
+      ${networks.lan.interface} = {
         useDHCP = false;
-        ipv4.addresses = [{
-          address = "${config.networks.lan.cidr}";
-          prefixLength = 24;
-        }];
+        ipv4.addresses = [
+          {
+            address = "${networks.lan.cidr}";
+            prefixLength = 24;
+          }
+        ];
       };
-      ${config.networks.iot.interface} = {
+      ${networks.iot.interface} = {
         useDHCP = false;
-        ipv4.addresses = [{
-          address = "${config.networks.iot.cidr}";
-          prefixLength = 24;
-        }];
+        ipv4.addresses = [
+          {
+            address = "${networks.iot.cidr}";
+            prefixLength = 24;
+          }
+        ];
       };
-      ${config.networks.app.interface} = {
+      ${networks.app.interface} = {
         useDHCP = false;
-        ipv4.addresses = [{
-          address = "${config.networks.app.cidr}";
-          prefixLength = 24;
-        }];
+        ipv4.addresses = [
+          {
+            address = "${networks.app.cidr}";
+            prefixLength = 24;
+          }
+        ];
       };
-      ${config.networks.guest.interface} = {
+      ${networks.guest.interface} = {
         useDHCP = false;
-        ipv4.addresses = [{
-          address = "${config.networks.guest.cidr}";
-          prefixLength = 24;
-        }];
+        ipv4.addresses = [
+          {
+            address = "${networks.guest.cidr}";
+            prefixLength = 24;
+          }
+        ];
       };
     };
     nat = {
@@ -98,7 +119,7 @@ in
         noipv6rs
         interface ${externalInterface}
         ia_na 1
-        ia_pd 2/::/60 ${config.networks.lan.interface}/0/64 ${config.networks.iot.interface}/1/64 ${config.networks.guest.interface}/2/64 ${config.networks.app.interface}/4/64
+        ia_pd 2/::/60 ${networks.lan.interface}/0/64 ${networks.iot.interface}/1/64 ${networks.guest.interface}/2/64 ${networks.app.interface}/4/64
         vendorclassid nixos
       '';
     };
@@ -111,7 +132,14 @@ in
   ];
 
   systemd.services.kea-dhcp4-server = {
-    wants = (lib.mapAttrsToList (_: val: (val.interface + "-netdev.service")) (lib.attrsets.filterAttrs (n: v: v.dhcp) config.networks)) ++ [ "guest-netdev.service" "network-pre.target" ];
+    wants =
+      (lib.mapAttrsToList (_: val: (val.interface + "-netdev.service")) (
+        lib.attrsets.filterAttrs (n: v: v.dhcp) networks
+      ))
+      ++ [
+        "guest-netdev.service"
+        "network-pre.target"
+      ];
     after = config.systemd.services.kea-dhcp4-server.wants;
   };
   services = {
@@ -130,7 +158,9 @@ in
         enable = true;
         settings = {
           interfaces-config = {
-            interfaces = (lib.mapAttrsToList (_: val: val.interface) (lib.attrsets.filterAttrs (n: v: v.dhcp) config.networks)) ++ [ "guest" ];
+            interfaces =
+              (lib.mapAttrsToList (_: val: val.interface) (lib.attrsets.filterAttrs (n: v: v.dhcp) networks))
+              ++ [ "guest" ];
           };
           lease-database = {
             name = "/var/lib/kea/dhcp4.leases";
@@ -140,12 +170,12 @@ in
           option-data = [
             {
               name = "domain-name-servers";
-              data = "${config.networks.lan.cidr}";
+              data = "${networks.lan.cidr}";
               always-send = true;
             }
             {
               name = "routers";
-              data = "${config.networks.lan.cidr}";
+              data = "${networks.lan.cidr}";
             }
             {
               name = "domain-name";
@@ -158,26 +188,68 @@ in
           valid-lifetime = 43200;
 
           subnet4 =
-            lib.lists.forEach (lib.attrsets.mapAttrsToList (name: value: name) (lib.attrsets.filterAttrs (n: v: v.dhcp) config.networks)) (x:
-              {
+            lib.lists.forEach
+              (lib.attrsets.mapAttrsToList (name: value: name) (lib.attrsets.filterAttrs (n: v: v.dhcp) networks))
+              (x: {
                 pools = [
                   {
-                    pool = toString ((lib.strings.removeSuffix ".1" (lib.attrsets.getAttrFromPath [ x "cidr" ] config.networks)) + ".100") + " - " + ((lib.strings.removeSuffix ".1" (lib.attrsets.getAttrFromPath [ x "cidr" ] config.networks)) + ".255");
+                    pool =
+                      toString (
+                        (lib.strings.removeSuffix ".1" (
+                          lib.attrsets.getAttrFromPath [
+                            x
+                            "cidr"
+                          ] networks
+                        ))
+                        + ".100"
+                      )
+                      + " - "
+                      + (
+                        (lib.strings.removeSuffix ".1" (
+                          lib.attrsets.getAttrFromPath [
+                            x
+                            "cidr"
+                          ] networks
+                        ))
+                        + ".255"
+                      );
                   }
                 ];
                 option-data = [
                   {
                     name = "domain-name-servers";
-                    data = (lib.attrsets.getAttrFromPath [ x "cidr" ] config.networks);
+                    data = (
+                      lib.attrsets.getAttrFromPath [
+                        x
+                        "cidr"
+                      ] networks
+                    );
                     always-send = true;
                   }
                   {
                     name = "routers";
-                    data = (lib.attrsets.getAttrFromPath [ x "cidr" ] config.networks);
+                    data = (
+                      lib.attrsets.getAttrFromPath [
+                        x
+                        "cidr"
+                      ] networks
+                    );
                   }
                 ];
-                subnet = (lib.strings.removeSuffix ".1" (lib.attrsets.getAttrFromPath [ x "cidr" ] config.networks)) + ".0/24";
-                reservations = (lib.attrsets.getAttrFromPath [ x "reservations" ] config.networks);
+                subnet =
+                  (lib.strings.removeSuffix ".1" (
+                    lib.attrsets.getAttrFromPath [
+                      x
+                      "cidr"
+                    ] networks
+                  ))
+                  + ".0/24";
+                reservations = (
+                  lib.attrsets.getAttrFromPath [
+                    x
+                    "reservations"
+                  ] networks
+                );
               });
         };
       };
@@ -185,26 +257,32 @@ in
 
     radvd = {
       enable = true;
-      config =
-        lib.concatStrings (lib.lists.forEach (lib.attrsets.mapAttrsToList (name: value: name) (lib.attrsets.filterAttrs (n: v: v.dhcp) config.networks)) (x:
-          (lib.concatMapStrings (x: "${x}\n") [
-            (lib.concatStrings [
-              "interface "
-              (lib.attrsets.getAttrFromPath [ x "interface" ] config.networks)
-            ]
-            )
-            ''
-              {
-                AdvSendAdvert on;
-                prefix ::/64
+      config = lib.concatStrings (
+        lib.lists.forEach
+          (lib.attrsets.mapAttrsToList (name: value: name) (lib.attrsets.filterAttrs (n: v: v.dhcp) networks))
+          (
+            x:
+            (lib.concatMapStrings (x: "${x}\n") [
+              (lib.concatStrings [
+                "interface "
+                (lib.attrsets.getAttrFromPath [
+                  x
+                  "interface"
+                ] networks)
+              ])
+              ''
                 {
-                  AdvOnLink on;
-                  AdvAutonomous on;
+                  AdvSendAdvert on;
+                  prefix ::/64
+                  {
+                    AdvOnLink on;
+                    AdvAutonomous on;
+                  };
                 };
-              };
-            ''
-          ]
-          )));
+              ''
+            ])
+          )
+      );
     };
     journald = {
       rateLimitBurst = 0;

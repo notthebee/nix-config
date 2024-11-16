@@ -1,9 +1,6 @@
 {
-  inputs,
   lib,
   config,
-  vars,
-  networksExternal,
   pkgs,
   ...
 }:
@@ -14,7 +11,7 @@
   hardware.opengl.enable = true;
   hardware.opengl.driSupport = true;
   boot.zfs.forceImportRoot = true;
-  motd.networkInterfaces = lib.lists.singleton networksExternal.aria.interface;
+  motd.networkInterfaces = lib.lists.singleton config.homelab.networks.external.aria.interface;
   zfs-root = {
     boot = {
       devNodes = "/dev/disk/by-id/";
@@ -50,6 +47,7 @@
     ./syncthing
     ./backup
     ./shares
+    ../../networks.nix
   ];
 
   services.hddfancontrol = {
@@ -95,5 +93,23 @@
     gcc
     intel-gpu-tools
   ];
+
+  homelab = {
+    enable = true;
+    baseDomainName = "goose.party";
+    timeZone = "Europe/Berlin";
+    mounts = {
+      slow = "/mnt/mergerfs_slow";
+      fast = "/mnt/user";
+      config = "/persist/opt/services";
+    };
+    services.traefik = {
+      enable = true;
+      acme = {
+        email = config.email.fromAddress;
+        dnsChallenge.credentialsFile = config.age.secrets.cloudflareDnsApiCredentials.path;
+      };
+    };
+  };
 
 }

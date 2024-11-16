@@ -1,22 +1,25 @@
 {
   pkgs,
   lib,
-  networksLocal,
+  config,
   ...
 }:
 let
   tvIpAddress =
-    (lib.lists.findSingle (x: x.hostname == "lgtv") false false networksLocal.networks.iot.reservations)
-    .ip-address;
+    (lib.lists.findSingle (
+      x: x.hostname == "lgtv"
+    ) false false config.homelab.networks.local.iot.reservations).ip-address;
   tvMacAddress =
-    (lib.lists.findSingle (x: x.hostname == "lgtv") false false networksLocal.networks.iot.reservations)
-    .hw-address;
+    (lib.lists.findSingle (
+      x: x.hostname == "lgtv"
+    ) false false config.homelab.networks.local.iot.reservations).hw-address;
 in
 {
   imports = [
     ./lact.nix
     ./boot.nix
     ./no-rgb.nix
+    ../../networks.nix
   ];
 
   environment.systemPackages = [
