@@ -1,9 +1,4 @@
-{
-  config,
-  vars,
-  lib,
-  ...
-}:
+{ config, lib, ... }:
 let
   cfg = config.homelab.services.delugevpn;
   directories = [
@@ -98,7 +93,7 @@ in
               "-l=homepage.group=Downloads"
               "-l=homepage.name=Deluge"
               "-l=homepage.icon=deluge.svg"
-              "-l=homepage.href=https://deluge.${vars.domainName}"
+              "-l=homepage.href=https://deluge.${cfg.baseDomainName}"
               "-l=homepage.description=Torrent client"
               "-l=homepage.widget.type=deluge"
               "-l=homepage.widget.password='deluge'"

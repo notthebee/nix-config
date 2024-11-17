@@ -1,7 +1,4 @@
 { lib, config, ... }:
-let
-  cfg = config.homelab;
-in
 {
   options.homelab = {
     enable = lib.mkEnableOption "The homelab services and configuration variables";
@@ -70,6 +67,9 @@ in
     ./calibre-web
     ./deluge
     ./traefik
+    ./jellyfin
+    ./paperless-ngx
+    ./homepage
     ./networks
   ];
 }

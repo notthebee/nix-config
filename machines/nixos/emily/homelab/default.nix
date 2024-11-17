@@ -11,6 +11,19 @@
       merged = "/mnt/user";
     };
     services = {
+      homepage = {
+        enable = true;
+      };
+      jellyfin = {
+        enable = true;
+        apiKeyFile = config.age.secrets.jellyfinApiKey.path;
+      };
+      paperless = {
+        enable = true;
+        apiKeyFile = config.age.secrets.paperlessApiKey.path;
+        secretsFile = config.age.secrets.paperless.path;
+        adminUser = "notthebee";
+      };
       traefik = {
         enable = true;
         acme = {

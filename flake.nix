@@ -77,7 +77,43 @@
       nur,
       ...
     }@inputs:
+    let
+      nixosHosts = [
+        "spencer"
+        "aria"
+        "alison"
+        "maya"
+        "emily"
+      ];
+      darwinHosts = [ "meredith" ];
+      homeManagerCfg = {
+        home-manager.useGlobalPkgs = false; # makes hm use nixos's pkgs value
+        home-manager.extraSpecialArgs = {
+          inherit inputs;
+        }; # allows access to flake inputs in hm modules
+        home-manager.users.notthebee.imports = [
+          agenix.homeManagerModules.default
+          nix-index-database.hmModules.nix-index
+          ./users/notthebee/dots.nix
+        ];
+        home-manager.backupFileExtension = "bak";
+      };
+    in
     {
+      deploy.nodes =
+        let
+          nixosConfigurations = self.nixosConfigurations;
+          deployProfile = hostname: {
+            hostname = hostname;
+            profiles.system = {
+              user = "root";
+              sshUser = "notthebee";
+              path = deploy-rs.lib.x86_64-linux.activate.nixos nixosConfigurations.${hostname};
+            };
+          };
+        in
+        nixpkgs.lib.attrsets.genAttrs nixosHosts (hostname: deployProfile hostname);
+
       darwinConfigurations."meredith" = nix-darwin.lib.darwinSystem {
         system = "aarch64-darwin";
         specialArgs = {
@@ -90,55 +126,12 @@
           ./machines/darwin/meredith
         ];
       };
-
-      deploy.nodes = {
-        spencer = {
-          hostname = "spencer";
-          profiles.system = {
-            user = "root";
-            sshUser = "notthebee";
-            path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.spencer;
-          };
-        };
-        aria = {
-          hostname = "aria";
-          profiles.system = {
-            user = "root";
-            sshUser = "notthebee";
-            path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.aria;
-          };
-        };
-        alison = {
-          hostname = "alison";
-          profiles.system = {
-            user = "root";
-            sshUser = "notthebee";
-            path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.alison;
-          };
-        };
-        emily = {
-          hostname = "emily";
-          profiles.system = {
-            user = "root";
-            sshUser = "notthebee";
-            path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.emily;
-          };
-        };
-        maya = {
-          hostname = "maya";
-          profiles.system = {
-            user = "root";
-            sshUser = "notthebee";
-            path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.maya;
-          };
-
-        };
-      };
       nixosConfigurations = {
         maya = nixpkgs-unstable.lib.nixosSystem {
           system = "x86_64-linux";
           specialArgs = {
             inherit inputs;
+
           };
           modules = [
             ./machines/nixos
@@ -151,18 +144,7 @@
             jovian.nixosModules.default
             home-manager-unstable.nixosModules.home-manager
             ./users/notthebee
-            {
-              home-manager.useGlobalPkgs = false; # makes hm use nixos's pkgs value
-              home-manager.extraSpecialArgs = {
-                inherit inputs;
-              }; # allows access to flake inputs in hm modules
-              home-manager.users.notthebee.imports = [
-                agenix.homeManagerModules.default
-                nix-index-database.hmModules.nix-index
-                ./users/notthebee/dots.nix
-              ];
-              home-manager.backupFileExtension = "bak";
-            }
+            homeManagerCfg
           ];
         };
         spencer = nixpkgs.lib.nixosSystem {
@@ -187,18 +169,7 @@
             # User-specific configurations
             ./users/notthebee
             home-manager.nixosModules.home-manager
-            {
-              home-manager.useGlobalPkgs = false; # makes hm use nixos's pkgs value
-              home-manager.extraSpecialArgs = {
-                inherit inputs;
-              }; # allows access to flake inputs in hm modules
-              home-manager.users.notthebee.imports = [
-                agenix.homeManagerModules.default
-                nix-index-database.hmModules.nix-index
-                ./users/notthebee/dots.nix
-              ];
-              home-manager.backupFileExtension = "bak";
-            }
+            homeManagerCfg
           ];
         };
         alison = nixpkgs.lib.nixosSystem {
@@ -229,18 +200,7 @@
             # User-specific configurations
             ./users/notthebee
             home-manager.nixosModules.home-manager
-            {
-              home-manager.useGlobalPkgs = false; # makes hm use nixos's pkgs value
-              home-manager.extraSpecialArgs = {
-                inherit inputs;
-              };
-              home-manager.users.notthebee.imports = [
-                agenix.homeManagerModules.default
-                nix-index-database.hmModules.nix-index
-                ./users/notthebee/dots.nix
-              ];
-              home-manager.backupFileExtension = "bak";
-            }
+            homeManagerCfg
           ];
         };
 
@@ -273,29 +233,15 @@
             # Services and applications
             #./homelab/invoiceninja
             #./homelab/timetagger
-            ./homelab/paperless-ngx
             ./homelab/sabnzbd
-            ./homelab/jellyfin
             ./homelab/vaultwarden
             ./homelab/pingvin-share
-            ./homelab/homepage
             ./homelab
 
             # User-specific configurations
             ./users/notthebee
             home-manager.nixosModules.home-manager
-            {
-              home-manager.useGlobalPkgs = false;
-              home-manager.extraSpecialArgs = {
-                inherit inputs;
-              };
-              home-manager.users.notthebee.imports = [
-                agenix.homeManagerModules.default
-                nix-index-database.hmModules.nix-index
-                ./users/notthebee/dots.nix
-              ];
-              home-manager.backupFileExtension = "bak";
-            }
+            homeManagerCfg
           ];
         };
         aria = nixpkgs.lib.nixosSystem {
@@ -327,18 +273,7 @@
             # User-specific configurations
             ./users/notthebee
             home-manager.nixosModules.home-manager
-            {
-              home-manager.useGlobalPkgs = false;
-              home-manager.extraSpecialArgs = {
-                inherit inputs;
-              };
-              home-manager.users.notthebee.imports = [
-                agenix.homeManagerModules.default
-                nix-index-database.hmModules.nix-index
-                ./users/notthebee/dots.nix
-              ];
-              home-manager.backupFileExtension = "bak";
-            }
+            homeManagerCfg
           ];
         };
       };
