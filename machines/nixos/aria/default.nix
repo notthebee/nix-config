@@ -15,7 +15,6 @@
   zfs-root = {
     boot = {
       devNodes = "/dev/disk/by-id/";
-      # TODO
       bootDevices = [ "ata-SAMSUNG_MZ7LN256HAJQ-00000_S3TWNX0N158949" ];
       immutable = false;
       availableKernelModules = [
@@ -96,18 +95,25 @@
 
   homelab = {
     enable = true;
-    baseDomainName = "goose.party";
+    baseDomainName = "aria.goose.party";
     timeZone = "Europe/Berlin";
     mounts = {
       slow = "/mnt/mergerfs_slow";
       fast = "/mnt/user";
       config = "/persist/opt/services";
     };
-    services.traefik = {
-      enable = true;
-      acme = {
-        email = config.email.fromAddress;
-        dnsChallenge.credentialsFile = config.age.secrets.cloudflareDnsApiCredentials.path;
+    services = {
+      immich = {
+        enable = true;
+        mounts.photos = "${config.homelab.mounts.fast}/Photos";
+        dbCredentialsFile = config.age.secrets.ariaImmichDatabase.path;
+      };
+      traefik = {
+        enable = true;
+        acme = {
+          email = config.email.fromAddress;
+          dnsChallenge.credentialsFile = config.age.secrets.cloudflareDnsApiCredentials.path;
+        };
       };
     };
   };

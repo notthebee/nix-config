@@ -96,7 +96,7 @@ in
               "-l=homepage.href=https://deluge.${cfg.baseDomainName}"
               "-l=homepage.description=Torrent client"
               "-l=homepage.widget.type=deluge"
-              "-l=homepage.widget.password='deluge'"
+              "-l=homepage.widget.password=deluge"
               ''-l=homepage.widget.url=http://${if cfg.gluetun.enable then "gluetun" else "deluge"}:8112''
             ]
             ++ lib.lists.optional (cfg.gluetun.enable) "--network=container:gluetun"

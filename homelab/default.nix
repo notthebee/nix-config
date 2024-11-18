@@ -70,6 +70,7 @@
     ./jellyfin
     ./paperless-ngx
     ./homepage
+    ./immich
     ./networks
   ];
 }

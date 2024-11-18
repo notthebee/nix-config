@@ -268,7 +268,6 @@
 
             # Services and applications
             ./homelab
-            ./homelab/immich
 
             # User-specific configurations
             ./users/notthebee
