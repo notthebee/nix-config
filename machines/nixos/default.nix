@@ -78,6 +78,15 @@
     defaultEditor = true;
   };
 
+  email = {
+    enable = true;
+    fromAddress = "moe@notthebe.ee";
+    toAddress = "server_announcements@mailbox.org";
+    smtpServer = "email-smtp.eu-west-1.amazonaws.com";
+    smtpUsername = "AKIAYYXVLL34J7LSXFZF";
+    smtpPasswordPath = config.age.secrets.smtpPassword.path;
+  };
+
   security = {
     doas.enable = lib.mkDefault false;
     sudo = {

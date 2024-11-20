@@ -1,46 +1,53 @@
-{ config, pkgs, lib, builtins, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 let
-  inherit (lib) mkIf types mkDefault mkOption mkMerge strings;
-  inherit (builtins) head toString map tail;
-in {
+  cfg = config.email;
+in
+{
   options.email = {
-    fromAddress = mkOption {
+    enable = lib.mkEnableOption "Email sending functionality";
+    fromAddress = lib.mkOption {
       description = "The 'from' address";
-      type = types.str;
+      type = lib.types.str;
       default = "john@example.com";
     };
-    toAddress = mkOption {
+    toAddress = lib.mkOption {
       description = "The 'to' address";
-      type = types.str;
+      type = lib.types.str;
       default = "john@example.com";
     };
-    smtpServer = mkOption {
+    smtpServer = lib.mkOption {
       description = "The SMTP server address";
-      type = types.str;
+      type = lib.types.str;
       default = "smtp.example.com";
     };
-    smtpUsername = mkOption {
+    smtpUsername = lib.mkOption {
       description = "The SMTP username";
-      type = types.str;
+      type = lib.types.str;
       default = "john@example.com";
     };
-    smtpPasswordPath = mkOption {
+    smtpPasswordPath = lib.mkOption {
       description = "Path to the secret containing SMTP password";
-      type = types.path;
-    };
-    };
-
-  config.programs.msmtp = {
-    enable = true;
-    accounts.default = {
-      auth = true;
-      host = config.email.smtpServer;
-      from = config.email.fromAddress;
-      user = config.email.smtpUsername;
-      tls = true;
-      passwordeval = "${pkgs.coreutils}/bin/cat ${config.email.smtpPasswordPath}";
+      type = lib.types.path;
     };
   };
 
+  config = lib.mkIf cfg.enable {
+    programs.msmtp = {
+      enable = true;
+      accounts.default = {
+        auth = true;
+        host = config.email.smtpServer;
+        from = config.email.fromAddress;
+        user = config.email.smtpUsername;
+        tls = true;
+        passwordeval = "${pkgs.coreutils}/bin/cat ${config.email.smtpPasswordPath}";
+      };
+    };
+  };
 
-  }
+}
