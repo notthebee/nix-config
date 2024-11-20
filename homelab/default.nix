@@ -62,15 +62,7 @@
     };
   };
   imports = [
-    ./arr
-    ./audiobookshelf
-    ./calibre-web
-    ./deluge
-    ./traefik
-    ./jellyfin
-    ./paperless-ngx
-    ./homepage
-    ./immich
+    ./services
     ./networks
   ];
 }
