@@ -78,203 +78,115 @@
       ...
     }@inputs:
     let
-      nixosHosts = [
-        "spencer"
-        "aria"
-        "alison"
-        "maya"
-        "emily"
-      ];
-      darwinHosts = [ "meredith" ];
-      homeManagerCfg = {
-        home-manager.useGlobalPkgs = false; # makes hm use nixos's pkgs value
+      homeManagerCfg = userPackages: extraImports: {
+        home-manager.useGlobalPkgs = false;
         home-manager.extraSpecialArgs = {
           inherit inputs;
-        }; # allows access to flake inputs in hm modules
+        };
         home-manager.users.notthebee.imports = [
           agenix.homeManagerModules.default
           nix-index-database.hmModules.nix-index
           ./users/notthebee/dots.nix
         ];
         home-manager.backupFileExtension = "bak";
+        home-manager.useUserPackages = userPackages;
       };
+      mkDarwin = machineHostname: extraHmModules: extraModules: {
+        darwinConfigurations.${machineHostname} = nix-darwin.lib.darwinSystem {
+          system = "aarch64-darwin";
+          specialArgs = {
+            inherit inputs;
+          };
+          modules = [
+            "${inputs.secrets}/default.nix"
+            agenix.darwinModules.default
+            ./machines/darwin
+            ./machines/darwin/${machineHostname}
+            home-manager.darwinModules.home-manager
+            (nixpkgs.lib.attrsets.recursiveUpdate (homeManagerCfg true extraHmModules) {
+              home-manager.users.notthebee.home.homeDirectory = nixpkgs.lib.mkForce "/Users/notthebee";
+            })
+          ];
+        };
+      };
+      mkNixos = machineHostname: nixpkgsVersion: extraModules: {
+        deploy.nodes.${machineHostname} = {
+          hostname = machineHostname;
+          profiles.system = {
+            user = "root";
+            sshUser = "notthebee";
+            path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.${machineHostname};
+          };
+        };
+        nixosConfigurations.${machineHostname} = nixpkgsVersion.lib.nixosSystem {
+          system = "x86_64-linux";
+          specialArgs = {
+            inherit inputs;
+            vars = import ./machines/nixos/vars.nix;
+          };
+          modules = [
+            ./homelab
+            ./machines/nixos
+            ./machines/nixos/${machineHostname}
+            ./modules/email
+            "${inputs.secrets}/default.nix"
+            agenix.nixosModules.default
+            ./users/notthebee
+            (homeManagerCfg false)
+            home-manager.darwinModules.home-manager
+          ] ++ extraModules;
+        };
+      };
+      mkMerge = nixpkgs.lib.lists.foldl' (a: b: nixpkgs.lib.attrsets.recursiveUpdate a b) { };
     in
-    {
-      deploy.nodes =
-        let
-          nixosConfigurations = self.nixosConfigurations;
-          deployProfile = hostname: {
-            hostname = hostname;
-            profiles.system = {
-              user = "root";
-              sshUser = "notthebee";
-              path = deploy-rs.lib.x86_64-linux.activate.nixos nixosConfigurations.${hostname};
-            };
-          };
-        in
-        nixpkgs.lib.attrsets.genAttrs nixosHosts (hostname: deployProfile hostname);
-
-      darwinConfigurations."meredith" = nix-darwin.lib.darwinSystem {
-        system = "aarch64-darwin";
-        specialArgs = {
-          inherit inputs;
-        };
-        modules = [
-          "${inputs.secrets}/default.nix"
-          agenix.darwinModules.default
-          ./machines/darwin
-          ./machines/darwin/meredith
-        ];
-      };
-      nixosConfigurations = {
-        maya = nixpkgs-unstable.lib.nixosSystem {
-          system = "x86_64-linux";
-          specialArgs = {
-            inherit inputs;
-
-          };
-          modules = [
-            ./machines/nixos
-            ./machines/nixos/maya
-            ./modules/ryzen-undervolt
-            ./modules/lgtv
-            ./modules/email
-            "${inputs.secrets}/default.nix"
-            agenix.nixosModules.default
-            jovian.nixosModules.default
-            home-manager-unstable.nixosModules.home-manager
-            ./users/notthebee
-            homeManagerCfg
-          ];
-        };
-        spencer = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          specialArgs = {
-            inherit inputs;
-            vars = import ./machines/nixos/vars.nix;
-          };
-          modules = [
-            # Base configuration and modules
-            ./modules/email
-            ./modules/tg-notify
-            ./modules/notthebe.ee
-            ./homelab
-
-            # Import the machine config + secrets
-            ./machines/nixos
-            ./machines/nixos/spencer
-            "${inputs.secrets}/default.nix"
-            agenix.nixosModules.default
-
-            # User-specific configurations
-            ./users/notthebee
-            home-manager.nixosModules.home-manager
-            homeManagerCfg
-          ];
-        };
-        alison = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          specialArgs = {
-            inherit inputs;
-            vars = import ./machines/nixos/vars.nix;
-          };
-          modules = [
-            # Base configuration and modules
-            ./modules/tg-notify
-            ./modules/podman
-            ./modules/motd
-            ./modules/zfs-root
-            ./modules/email
-            ./modules/monitoring_stats
-            ./modules/monitoring
-
-            ./machines/nixos
-            ./machines/nixos/alison
-            "${inputs.secrets}/default.nix"
-            agenix.nixosModules.default
-
-            ./homelab
-            ./homelab/smarthome
-            ./homelab/grafana
-
-            # User-specific configurations
-            ./users/notthebee
-            home-manager.nixosModules.home-manager
-            homeManagerCfg
-          ];
-        };
-
-        emily = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          specialArgs = {
-            inherit inputs;
-            vars = import ./machines/nixos/vars.nix;
-          };
-          modules = [
-            # Base configuration and modules
-            ./modules/aspm-tuning
-            ./modules/zfs-root
-            ./modules/email
-            ./modules/tg-notify
-            ./modules/podman
-            ./modules/mover
-            ./modules/motd
-            ./modules/tailscale
-            ./modules/monitoring_stats
-            ./modules/adios-bot
-            ./modules/duckdns
-
-            # Import the machine config + secrets
-            ./machines/nixos
-            ./machines/nixos/emily
-            "${inputs.secrets}/default.nix"
-            agenix.nixosModules.default
-
-            # Services and applications
-            #./homelab/invoiceninja
-            #./homelab/timetagger
-            ./homelab/sabnzbd
-            ./homelab/vaultwarden
-            ./homelab/pingvin-share
-            ./homelab
-
-            # User-specific configurations
-            ./users/notthebee
-            home-manager.nixosModules.home-manager
-            homeManagerCfg
-          ];
-        };
-        aria = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          specialArgs = {
-            inherit inputs;
-            vars = import ./machines/nixos/aria/vars.nix;
-          };
-          modules = [
-            # Base configuration and modules
-            ./modules/aspm-tuning
-            ./modules/zfs-root
-            ./modules/email
-            ./modules/tg-notify
-            ./modules/podman
-            ./modules/motd
-            ./modules/tailscale
-
-            # Import the machine config + secrets
-            ./machines/nixos
-            ./machines/nixos/aria
-            "${inputs.secrets}/default.nix"
-            agenix.nixosModules.default
-
-            # Services and applications
-            ./homelab
-
-            # User-specific configurations
-            ./users/notthebee
-            home-manager.nixosModules.home-manager
-            homeManagerCfg
-          ];
-        };
-      };
-    };
+    mkMerge [
+      (mkNixos "spencer" nixpkgs [
+        ./modules/tg-notify
+        ./modules/notthebe.ee
+      ])
+      (mkNixos "maya" nixpkgs-unstable [
+        ./modules/ryzen-undervolt
+        ./modules/lgtv
+        jovian.nixosModules.default
+        home-manager-unstable.nixosModules.home-manager
+      ])
+      (mkNixos "alison" nixpkgs [
+        ./modules/motd
+        ./modules/zfs-root
+        ./modules/monitoring_stats
+        ./modules/monitoring
+        ./homelab/services/smarthome
+        ./homelab/services/grafana
+        home-manager.nixosModules.home-manager
+      ])
+      (mkNixos "emily" nixpkgs [
+        ./modules/aspm-tuning
+        ./modules/zfs-root
+        ./modules/tg-notify
+        ./modules/mover
+        ./modules/motd
+        ./modules/tailscale
+        ./modules/monitoring_stats
+        ./modules/adios-bot
+        ./modules/duckdns
+        ./homelab/services/sabnzbd
+        ./homelab/services/vaultwarden
+        ./homelab/services/pingvin-share
+        ./homelab
+        home-manager.nixosModules.home-manager
+      ])
+      (mkNixos "aria" nixpkgs [
+        ./modules/aspm-tuning
+        ./modules/zfs-root
+        ./modules/tg-notify
+        ./modules/motd
+        ./modules/tailscale
+        ./homelab
+        home-manager.nixosModules.home-manager
+      ])
+      (mkDarwin "meredith" [
+        dots/tmux
+        dots/kitty
+      ] [ ])
+    ];
 }
