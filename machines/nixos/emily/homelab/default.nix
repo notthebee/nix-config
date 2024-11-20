@@ -11,6 +11,7 @@
       merged = "/mnt/user";
     };
     services = {
+      enable = true;
       homepage = {
         enable = true;
       };

@@ -103,6 +103,7 @@
       config = "/persist/opt/services";
     };
     services = {
+      enable = true;
       immich = {
         enable = true;
         mounts.photos = "${config.homelab.mounts.fast}/Photos";

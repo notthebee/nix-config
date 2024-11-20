@@ -70,6 +70,7 @@
     mounts = {
       config = "/persist/opt/services";
     };
+    services.enable = true;
     services.traefik = {
       enable = true;
       listenAddress = config.homelab.networks.local.lan.cidr;
