@@ -10,6 +10,7 @@
       allowUnfree = true;
       allowUnfreePredicate = (_: true);
       packageOverrides = pkgs: {
+        # https://github.com/NixOS/nixpkgs/commit/3070d8a681fab94a2dd108de4b151e0def7e8868
         ghostscript = pkgs.ghostscript.overrideAttrs (oldAttrs: {
           dylib_version = lib.versions.major oldAttrs.version;
           nativeBuildInputs =
