@@ -9,14 +9,14 @@ let
       inputs.agenix.homeManagerModules.default
       inputs.nix-index-database.hmModules.nix-index
       ./users/notthebee/dots.nix
-    ];
+    ] ++ extraImports;
     home-manager.backupFileExtension = "bak";
     home-manager.useUserPackages = userPackages;
   };
 in
 {
 
-  mkDarwin = machineHostname: extraHmModules: extraModules: {
+  mkDarwin = machineHostname: nixpkgsVersion: extraHmModules: extraModules: {
     darwinConfigurations.${machineHostname} = inputs.nix-darwin.lib.darwinSystem {
       system = "aarch64-darwin";
       specialArgs = {
