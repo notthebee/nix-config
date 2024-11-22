@@ -215,8 +215,9 @@ in
         "coc-explorer"
         "@yaegassy/coc-ansible"
         "@yaegassy/coc-nginx"
+        "@yaegassy/coc-intelephense"
+        "@yaegassy/coc-phpstan"
         "coc-nil"
-        "coc-phpls"
         "coc-pyright"
       ];
       suda_smart_edit = 1;

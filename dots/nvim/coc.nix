@@ -11,6 +11,7 @@
     "typescriptreact"
     "nix"
     "python"
+    "php"
   ];
   nil.server.path = "${pkgs.nil}/bin/nil";
   nil.formatting.command = [ "${pkgs.nixfmt-rfc-style}/bin/nixfmt" ];
@@ -18,8 +19,8 @@
   nil.nix.flake.autoEvalInputs = false;
   nil.nix.maxMemoryMB = 2048;
   nil.nix.binary = "${pkgs.writeShellScript "nil-nix-wrapper" ''
-        nix --allow-import-from-derivation "$@"
-      ''}";
+    nix --allow-import-from-derivation "$@"
+  ''}";
   links.tooltip = true;
   #semanticTokens.filetypes = [ "nix" ];
   suggest.completionItemKindLabels = {
@@ -60,14 +61,26 @@
   explorer.openAction.strategy = "sourceWindow";
   explorer.root.customRules = {
     vcs = {
-      patterns = [ ".git" ".hg" ".projections.json" ];
+      patterns = [
+        ".git"
+        ".hg"
+        ".projections.json"
+      ];
     };
     vcs-r = {
-      patterns = [ ".git" ".hg" ".projections.json" ];
+      patterns = [
+        ".git"
+        ".hg"
+        ".projections.json"
+      ];
       bottomUp = true;
     };
   };
-  explorer.root.strategies = [ "custom:vcs" "workspace" "cwd" ];
+  explorer.root.strategies = [
+    "custom:vcs"
+    "workspace"
+    "cwd"
+  ];
   explorer.quitOnOpen = true;
   explorer.buffer.root.template = "[icon & 1] OPEN EDITORS";
   explorer.file.reveal.auto = false;
@@ -83,4 +96,5 @@
     ma = "addFile";
     mA = "addDirectory";
   };
+  phpstan.level = "max";
 }
