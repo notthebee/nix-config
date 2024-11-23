@@ -92,6 +92,16 @@ in
       ++ map (x: "f ${x} 0600 share share - -") files;
     virtualisation.oci-containers = {
       containers = {
+        traefik-socket-proxy = {
+          image = "ghcr.io/tecnativa/docker-socket-proxy:0.3.0";
+          autoStart = true;
+          extraOptions = [ "--pull=newer" ];
+          volumes = [ "/var/run/podman/podman.sock:/var/run/docker.sock:ro" ];
+          environment = {
+            CONTAINERS = "1";
+            POST = "0";
+          };
+        };
         traefik = {
           image = "traefik:latest";
           autoStart = true;
@@ -99,6 +109,7 @@ in
             "--api.insecure=true"
             "--providers.docker=true"
             "--providers.docker.exposedbydefault=false"
+            "--providers.docker.endpoint=tcp://traefik-socket-proxy:2375"
             "--entrypoints.web.address=:80"
             "--certificatesresolvers.letsencrypt.acme.dnschallenge=${builtins.toString cfg.acme.dnsChallenge.enable}"
             "--certificatesresolvers.letsencrypt.acme.dnschallenge.provider=${cfg.acme.dnsChallenge.provider}"
@@ -133,10 +144,7 @@ in
             "${cfg.listenAddress}:80:80"
           ];
           environmentFiles = [ cfg.acme.dnsChallenge.credentialsFile ];
-          volumes = [
-            "/var/run/podman/podman.sock:/var/run/docker.sock:ro"
-            "${cfg.mounts.config}/acme.json:/acme.json"
-          ];
+          volumes = [ "${cfg.mounts.config}/acme.json:/acme.json" ];
         };
       };
     };

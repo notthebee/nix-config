@@ -1,5 +1,6 @@
 {
-my-docker = {
-  socket = "/var/run/docker.sock";
-};
+  my-docker = {
+    host = "homepage-socket-proxy";
+    port = 2375;
+  };
 }

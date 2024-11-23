@@ -108,7 +108,7 @@ in
   };
   config = lib.mkIf cfg.enable {
     environment.systemPackages = with pkgs; [ glances ];
-    networking.firewall.allowedTCPPorts = [ 61208 ];
+    networking.firewall.interfaces.podman0.allowedTCPPorts = [ 61208 ];
     systemd.services.glances = {
       description = "Glances";
       wantedBy = [ "multi-user.target" ];
@@ -120,6 +120,16 @@ in
     systemd.tmpfiles.rules = map (x: "d ${x} 0775 share share - -") directories;
     virtualisation.oci-containers = {
       containers = {
+        homepage-socket-proxy = {
+          image = "ghcr.io/tecnativa/docker-socket-proxy:0.3.0";
+          autoStart = true;
+          extraOptions = [ "--pull=newer" ];
+          volumes = [ "/var/run/podman/podman.sock:/var/run/docker.sock:ro" ];
+          environment = {
+            CONTAINERS = "1";
+            POST = "0";
+          };
+        };
         homepage = {
           image = "ghcr.io/gethomepage/homepage:latest";
           autoStart = true;
@@ -138,7 +148,6 @@ in
               "${homepageSettings.settings}:/app/config/settings.yaml"
               "${homepageSettings.widgets}:/app/config/widgets.yaml"
               "${homepageCustomCss}:/app/config/custom.css"
-              "/var/run/podman/podman.sock:/var/run/docker.sock:ro"
             ]
             ++ lib.lists.optional cfg.integrations.sonarr "${config.homelab.services.arr.sonarr.apiKeyFile}:/app/config/sonarr.key"
             ++ lib.lists.optional cfg.integrations.radarr "${config.homelab.services.arr.radarr.apiKeyFile}:/app/config/radarr.key"
