@@ -34,15 +34,13 @@ in
       ];
     };
   };
-  mkNixos = machineHostname: nixpkgsVersion: extraModules: {
+  mkNixos = machineHostname: nixpkgsVersion: extraModules: rec {
     deploy.nodes.${machineHostname} = {
       hostname = machineHostname;
       profiles.system = {
         user = "root";
         sshUser = "notthebee";
-        path =
-          inputs.deploy-rs.lib.x86_64-linux.activate.nixos
-            inputs.self.nixosConfigurations.${machineHostname};
+        path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos nixosConfigurations.${machineHostname};
       };
     };
     nixosConfigurations.${machineHostname} = nixpkgsVersion.lib.nixosSystem {
@@ -59,8 +57,8 @@ in
         "${inputs.secrets}/default.nix"
         inputs.agenix.nixosModules.default
         ./users/notthebee
-        (homeManagerCfg false)
-        inputs.home-manager.darwinModules.home-manager
+        (homeManagerCfg false [ ])
+        inputs.home-manager.nixosModules.home-manager
       ] ++ extraModules;
     };
   };
