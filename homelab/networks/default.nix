@@ -34,11 +34,13 @@
       example = lib.literalExpression ''
           {
             lan = {
+              id = 1;
               cidr = 192.168.2.1;
               interface = "enp3s0";
               reservations = [];
         };
             iot = {
+              id = 2;
               cidr = 192.168.3.1;
               interface = "lan";
               reservations = [];
@@ -48,6 +50,10 @@
       type = lib.types.attrsOf (
         lib.types.submodule {
           options = {
+            id = lib.mkOption {
+              example = 1;
+              type = lib.types.int;
+            };
             cidr = lib.mkOption {
               example = "192.168.2.1";
               type = lib.types.str;
