@@ -9,6 +9,7 @@ let
       inputs.agenix.homeManagerModules.default
       inputs.nix-index-database.hmModules.nix-index
       ./users/notthebee/dots.nix
+      ./users/notthebee/age.nix
     ] ++ extraImports;
     home-manager.backupFileExtension = "bak";
     home-manager.useUserPackages = userPackages;
