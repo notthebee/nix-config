@@ -426,7 +426,7 @@
     "nix-darwin": {
       "inputs": {
         "nixpkgs": [
-          "nixpkgs-fix-ghostscript"
+          "nixpkgs"
         ]
       },
       "locked": {
@@ -542,22 +542,6 @@
         "owner": "NixOS",
         "ref": "nixpkgs-unstable",
         "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
-    "nixpkgs-fix-ghostscript": {
-      "locked": {
-        "lastModified": 1726714676,
-        "narHash": "sha256-w235Gx0YLnjY8M9J07L5T/FiWA56xkD5JMD9sRXjHAA=",
-        "owner": "nixos",
-        "repo": "nixpkgs",
-        "rev": "aecd17c0dbd112d6df343827d9324f071ef9c502",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nixos",
-        "repo": "nixpkgs",
-        "rev": "aecd17c0dbd112d6df343827d9324f071ef9c502",
         "type": "github"
       }
     },
@@ -695,7 +679,6 @@
         "nix-darwin": "nix-darwin",
         "nix-index-database": "nix-index-database",
         "nixpkgs": "nixpkgs_2",
-        "nixpkgs-fix-ghostscript": "nixpkgs-fix-ghostscript",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "nixvim": "nixvim",
         "recyclarr-configs": "recyclarr-configs",
