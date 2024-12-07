@@ -102,6 +102,7 @@
     pulumi-bin
     devenv
     nixfmt-rfc-style
+    opentofu
   ];
 
   services.nix-daemon.enable = lib.mkForce true;
