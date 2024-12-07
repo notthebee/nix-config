@@ -1,13 +1,13 @@
 {
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/release-24.05";
+    nixpkgs.url = "github:nixos/nixpkgs/release-24.11";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     nixvim = {
       url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     home-manager = {
-      url = "github:nix-community/home-manager/release-24.05";
+      url = "github:nix-community/home-manager/release-24.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     home-manager-unstable = {
@@ -16,6 +16,10 @@
     };
     ryzen-undervolt = {
       url = "github:svenlange2/Ryzen-5800x3d-linux-undervolting/0f05965f9939259c27a428065fda5a6c0cbb9225";
+      flake = false;
+    };
+    auto-aspm = {
+      url = "github:notthebee/AutoASPM";
       flake = false;
     };
     agenix = {
@@ -81,7 +85,6 @@
         inputs.home-manager.nixosModules.home-manager
       ])
       (mkNixos "emily" inputs.nixpkgs [
-        ./modules/aspm-tuning
         ./modules/zfs-root
         ./modules/tg-notify
         ./modules/mover
@@ -97,7 +100,6 @@
         inputs.home-manager.nixosModules.home-manager
       ])
       (mkNixos "aria" inputs.nixpkgs [
-        ./modules/aspm-tuning
         ./modules/zfs-root
         ./modules/tg-notify
         ./modules/motd
@@ -105,9 +107,12 @@
         ./homelab
         inputs.home-manager.nixosModules.home-manager
       ])
-      (mkDarwin "meredith" inputs.nixpkgs-fix-ghostscript [
-        dots/tmux
-        dots/kitty
-      ] [ ])
+      (mkDarwin "meredith" inputs.nixpkgs
+        [
+          dots/tmux
+          dots/kitty
+        ]
+        [ ]
+      )
     ];
 }

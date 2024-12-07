@@ -48,6 +48,7 @@
     ../../networks.nix
   ];
 
+  services.auto-aspm.enable = true;
   services.hddfancontrol = {
     enable = true;
     disks = [

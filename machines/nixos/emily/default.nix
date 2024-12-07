@@ -123,6 +123,8 @@
     ];
   };
 
+  services.auto-aspm.enable = true;
+
   environment.systemPackages = with pkgs; [
     pciutils
     glances

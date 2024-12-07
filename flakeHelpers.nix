@@ -55,6 +55,7 @@ in
         ./machines/nixos
         ./machines/nixos/${machineHostname}
         ./modules/email
+        ./modules/auto-aspm
         "${inputs.secrets}/default.nix"
         inputs.agenix.nixosModules.default
         ./users/notthebee
