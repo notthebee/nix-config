@@ -72,7 +72,7 @@
       "/dev/disk/by-label/Data2"
       "/dev/disk/by-label/Parity1"
     ];
-    pwmPaths = [ "/sys/class/hwmon/hwmon6/pwm1" ];
+    pwmPaths = [ "/sys/class/hwmon/hwmon1/pwm1" ];
     extraArgs = [
       "--pwm-start-value=50"
       "--pwm-stop-value=50"
