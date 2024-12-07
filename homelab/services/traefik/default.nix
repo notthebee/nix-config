@@ -42,6 +42,13 @@ in
         IP that Traefik should listen on
       '';
     };
+    socketProxy = lib.mkOption {
+      default = true;
+      type = lib.types.bool;
+      description = ''
+        Use a Docker socket proxy to access the Docker API
+      '';
+    };
     mounts.config = lib.mkOption {
       default = "${config.homelab.mounts.config}/traefik";
       type = lib.types.path;
@@ -91,62 +98,70 @@ in
       map (x: "d ${x} 0775 share share - -") directories
       ++ map (x: "f ${x} 0600 share share - -") files;
     virtualisation.oci-containers = {
-      containers = {
-        traefik-socket-proxy = {
-          image = "ghcr.io/tecnativa/docker-socket-proxy:0.3.0";
-          autoStart = true;
-          extraOptions = [ "--pull=newer" ];
-          volumes = [ "/var/run/podman/podman.sock:/var/run/docker.sock:ro" ];
-          environment = {
-            CONTAINERS = "1";
-            POST = "0";
+      containers =
+        {
+          traefik = {
+            image = "traefik:latest";
+            autoStart = true;
+            cmd = [
+              "--api.insecure=true"
+              "--providers.docker=true"
+              "--providers.docker.exposedbydefault=false"
+              "--entrypoints.web.address=:80"
+              "--certificatesresolvers.letsencrypt.acme.dnschallenge=${builtins.toString cfg.acme.dnsChallenge.enable}"
+              "--certificatesresolvers.letsencrypt.acme.dnschallenge.provider=${cfg.acme.dnsChallenge.provider}"
+              "--certificatesresolvers.letsencrypt.acme.email=${cfg.acme.email}"
+              # HTTP
+              "--entrypoints.web.address=:80"
+              "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+              "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+              "--entrypoints.websecure.address=:443"
+              # HTTPS
+              "--entrypoints.websecure.http.tls=true"
+              "--entrypoints.websecure.http.tls.certResolver=letsencrypt"
+              "--entrypoints.websecure.http.tls.domains[0].main=${cfg.domainName}"
+              "--entrypoints.websecure.http.tls.domains[0].sans=*.${cfg.domainName}"
+            ] ++ lib.lists.optional cfg.socketProxy "--providers.docker.endpoint=tcp://localhost:2375";
+            extraOptions = [
+              "--pull=newer"
+              # Proxying Traefik itself
+              "-l=traefik.enable=true"
+              "-l=traefik.http.routers.traefik.rule=Host(`proxy.${cfg.domainName}`)"
+              "-l=traefik.http.services.traefik.loadbalancer.server.port=8080"
+              "-l=homepage.group=Services"
+              "-l=homepage.name=Traefik"
+              "-l=homepage.icon=traefik.svg"
+              "-l=homepage.href=https://proxy.${cfg.domainName}"
+              "-l=homepage.description=Reverse proxy"
+              "-l=homepage.widget.type=traefik"
+              "-l=homepage.widget.url=http://traefik:8080"
+            ];
+            ports = [
+              "${cfg.listenAddress}:443:443"
+              "${cfg.listenAddress}:80:80"
+            ];
+            environmentFiles = [ cfg.acme.dnsChallenge.credentialsFile ];
+            volumes = [
+              "${cfg.mounts.config}/acme.json:/acme.json"
+            ] ++ lib.lists.optional (!cfg.socketProxy) "/var/run/podman/podman.sock:/var/run/docker.sock:ro";
+          };
+        }
+        // lib.attrsets.optionalAttrs cfg.socketProxy {
+          traefik-socket-proxy = {
+            image = "ghcr.io/tecnativa/docker-socket-proxy:0.3.0";
+            autoStart = true;
+            dependsOn = [ "traefik" ];
+            extraOptions = [
+              "--pull=newer"
+              "--network=container:traefik"
+            ];
+            volumes = [ "/var/run/podman/podman.sock:/var/run/docker.sock:ro" ];
+            environment = {
+              CONTAINERS = "1";
+              POST = "0";
+            };
           };
         };
-        traefik = {
-          image = "traefik:latest";
-          autoStart = true;
-          cmd = [
-            "--api.insecure=true"
-            "--providers.docker=true"
-            "--providers.docker.exposedbydefault=false"
-            "--providers.docker.endpoint=tcp://traefik-socket-proxy:2375"
-            "--entrypoints.web.address=:80"
-            "--certificatesresolvers.letsencrypt.acme.dnschallenge=${builtins.toString cfg.acme.dnsChallenge.enable}"
-            "--certificatesresolvers.letsencrypt.acme.dnschallenge.provider=${cfg.acme.dnsChallenge.provider}"
-            "--certificatesresolvers.letsencrypt.acme.email=${cfg.acme.email}"
-            # HTTP
-            "--entrypoints.web.address=:80"
-            "--entrypoints.web.http.redirections.entrypoint.to=websecure"
-            "--entrypoints.web.http.redirections.entrypoint.scheme=https"
-            "--entrypoints.websecure.address=:443"
-            # HTTPS
-            "--entrypoints.websecure.http.tls=true"
-            "--entrypoints.websecure.http.tls.certResolver=letsencrypt"
-            "--entrypoints.websecure.http.tls.domains[0].main=${cfg.domainName}"
-            "--entrypoints.websecure.http.tls.domains[0].sans=*.${cfg.domainName}"
-          ];
-          extraOptions = [
-            "--pull=newer"
-            # Proxying Traefik itself
-            "-l=traefik.enable=true"
-            "-l=traefik.http.routers.traefik.rule=Host(`proxy.${cfg.domainName}`)"
-            "-l=traefik.http.services.traefik.loadbalancer.server.port=8080"
-            "-l=homepage.group=Services"
-            "-l=homepage.name=Traefik"
-            "-l=homepage.icon=traefik.svg"
-            "-l=homepage.href=https://proxy.${cfg.domainName}"
-            "-l=homepage.description=Reverse proxy"
-            "-l=homepage.widget.type=traefik"
-            "-l=homepage.widget.url=http://traefik:8080"
-          ];
-          ports = [
-            "${cfg.listenAddress}:443:443"
-            "${cfg.listenAddress}:80:80"
-          ];
-          environmentFiles = [ cfg.acme.dnsChallenge.credentialsFile ];
-          volumes = [ "${cfg.mounts.config}/acme.json:/acme.json" ];
-        };
-      };
     };
   };
 }

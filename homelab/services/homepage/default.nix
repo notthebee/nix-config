@@ -123,7 +123,11 @@ in
         homepage-socket-proxy = {
           image = "ghcr.io/tecnativa/docker-socket-proxy:0.3.0";
           autoStart = true;
-          extraOptions = [ "--pull=newer" ];
+          dependsOn = [ "homepage" ];
+          extraOptions = [
+            "--pull=newer"
+            "--network=container:homepage"
+          ];
           volumes = [ "/var/run/podman/podman.sock:/var/run/docker.sock:ro" ];
           environment = {
             CONTAINERS = "1";

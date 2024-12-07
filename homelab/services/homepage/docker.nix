@@ -1,6 +1,6 @@
 {
   my-docker = {
-    host = "homepage-socket-proxy";
+    host = "localhost";
     port = 2375;
   };
 }
