@@ -1,5 +1,11 @@
 { homeDir, pkgs }:
 {
+  languageserver.terraform = {
+    command = "terraform-ls";
+    args = [ "serve" ];
+    filetypes = [ "tf" ];
+    initializationOptions = { };
+  };
   eslint.autoFixOnSave = true;
   coc.preferences.colorSupport = false;
   prettier.disableSuccessMessage = true;
@@ -12,6 +18,8 @@
     "nix"
     "python"
     "php"
+    "markdown"
+    "tf"
   ];
   nil.server.path = "${pkgs.nil}/bin/nil";
   nil.formatting.command = [ "${pkgs.nixfmt-rfc-style}/bin/nixfmt" ];

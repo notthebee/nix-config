@@ -1,6 +1,5 @@
 {
   inputs,
-  lib,
   config,
   pkgs,
   ...
@@ -15,6 +14,7 @@ in
     figlet
     nodejs
     ripgrep
+    terraform-ls
   ];
 
   programs.neovim = {
@@ -102,6 +102,7 @@ in
       llm-nvim
       ansible-vim
       coc-nvim
+      coc-markdownlint
       vim-suda
     ];
     opts = {
@@ -142,6 +143,15 @@ in
     };
 
     autoCmd = [
+      {
+        event = [
+          "BufRead"
+          "BufNewFile"
+        ];
+        pattern = [ "*.tf" ];
+        command = "setfiletype tf";
+      }
+
       {
         event = [ "InsertEnter" ];
         pattern = [ "*" ];
