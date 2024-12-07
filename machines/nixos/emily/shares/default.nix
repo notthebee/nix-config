@@ -1,15 +1,30 @@
-{ users, pkgs, config, lib, ... }:
+{ config, lib, ... }:
 let
-
+  smb_networks = "${config.homelab.networks.local.lan.cidr}/24 ${config.homelab.networks.local.wireguard.cidr}/24 100.0.0.0/8";
   smb = {
     share_list = {
-      Backups = { path = "/mnt/user/Backups"; };
-      Documents = { path = "/mnt/cache/Documents"; };
-      Media = { path = "/mnt/user/Media"; };
-      Misc = { path = "/mnt/user/Misc"; };
-      TimeMachine = { path = "/mnt/cache/TimeMachine"; "fruit:time machine" = "yes"; };
-      YoutubeArchive = { path = "/mnt/user/YoutubeArchive"; };
-      YoutubeCurrent = { path = "/mnt/cache/YoutubeCurrent"; };
+      Backups = {
+        path = "/mnt/user/Backups";
+      };
+      Documents = {
+        path = "/mnt/cache/Documents";
+      };
+      Media = {
+        path = "/mnt/user/Media";
+      };
+      Misc = {
+        path = "/mnt/user/Misc";
+      };
+      TimeMachine = {
+        path = "/mnt/cache/TimeMachine";
+        "fruit:time machine" = "yes";
+      };
+      YoutubeArchive = {
+        path = "/mnt/user/YoutubeArchive";
+      };
+      YoutubeCurrent = {
+        path = "/mnt/cache/YoutubeCurrent";
+      };
     };
     share_params = {
       "browseable" = "yes";
@@ -43,7 +58,9 @@ in
 
   users.users.notthebee.extraGroups = [ "share" ];
 
-  systemd.tmpfiles.rules = map (x: "d ${x.path} 0775 share share - -") (lib.attrValues smb.share_list) ++ [ "d /mnt 0775 share share - -" ];
+  systemd.tmpfiles.rules =
+    map (x: "d ${x.path} 0775 share share - -") (lib.attrValues smb.share_list)
+    ++ [ "d /mnt 0775 share share - -" ];
 
   system.activationScripts.samba_user_create = ''
     smb_password=$(cat "${config.age.secrets.sambaPassword.path}")
@@ -58,21 +75,19 @@ in
   services.samba = {
     enable = true;
     openFirewall = true;
-    invalidUsers = [
-      "root"
-    ];
-    securityType = "user";
-    extraConfig = ''
-      workgroup = WORKGROUP
-      server string = emily
-      netbios name = emily
-      security = user 
-      hosts allow = 192.168.2.0/24 192.168.3.135/32 14.0.0.0/24 100.0.0.0/8
-      guest account = nobody
-      map to guest = bad user
-      passdb backend = tdbsam
-    '';
-    shares = smb_shares;
+    settings = {
+      global = {
+        workgroup = "WORKGROUP";
+        "server string" = "emily";
+        "netbios name" = "emily";
+        "security" = "user";
+        "invalid users" = [ "root" ];
+        "hosts allow" = smb_networks;
+        "guest account" = "nobody";
+        "map to guest" = "bad user";
+        "passdb backend" = "tdbsam";
+      };
+    } // smb_shares;
   };
   services.avahi = {
     enable = true;

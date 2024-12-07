@@ -1,12 +1,20 @@
-{ users, pkgs, config, lib, ... }:
+{ config, lib, ... }:
 let
 
   smb = {
     share_list = {
-      Backups = { path = "/mnt/mergerfs_slow/Backups"; };
-      YouTube = { path = "/mnt/mergerfs_slow/YouTube"; };
-      Media = { path = "/mnt/mergerfs_slow/Media"; };
-      Photos = { path = "/mnt/user/Photos"; };
+      Backups = {
+        path = "/mnt/mergerfs_slow/Backups";
+      };
+      YouTube = {
+        path = "/mnt/mergerfs_slow/YouTube";
+      };
+      Media = {
+        path = "/mnt/mergerfs_slow/Media";
+      };
+      Photos = {
+        path = "/mnt/user/Photos";
+      };
     };
     share_params = {
       "browseable" = "yes";
@@ -40,7 +48,9 @@ in
 
   users.users.notthebee.extraGroups = [ "share" ];
 
-  systemd.tmpfiles.rules = map (x: "d ${x.path} 0775 share share - -") (lib.attrValues smb.share_list) ++ [ "d /mnt 0775 share share - -" ];
+  systemd.tmpfiles.rules =
+    map (x: "d ${x.path} 0775 share share - -") (lib.attrValues smb.share_list)
+    ++ [ "d /mnt 0775 share share - -" ];
 
   system.activationScripts.samba_user_create = ''
     smb_password=$(cat "${config.age.secrets.sambaPassword.path}")
@@ -55,21 +65,19 @@ in
   services.samba = {
     enable = true;
     openFirewall = true;
-    invalidUsers = [
-      "root"
-    ];
-    securityType = "user";
-    extraConfig = ''
-      workgroup = WORKGROUP
-      server string = aria
-      netbios name = aria
-      security = user 
-      hosts allow = 192.168.178.0/24
-      guest account = nobody
-      map to guest = bad user
-      passdb backend = tdbsam
-    '';
-    shares = smb_shares;
+    settings = {
+      global = {
+        workgroup = "WORKGROUP";
+        "server string" = "aria";
+        "netbios name" = "aria";
+        "invalid users" = [ "root" ];
+        "security" = "user";
+        "hosts allow" = "192.168.178.0/24";
+        "guest account" = "nobody";
+        "map to guest" = "bad user";
+        "passdb backend" = "tdbsam";
+      };
+    } // smb_shares;
   };
   services.avahi = {
     enable = true;

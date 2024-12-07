@@ -8,8 +8,7 @@
   boot.kernelModules = [ "nct6775" ];
   hardware.cpu.intel.updateMicrocode = true;
   hardware.enableRedistributableFirmware = true;
-  hardware.opengl.enable = true;
-  hardware.opengl.driSupport = true;
+  hardware.graphics.enable = true;
   boot.zfs.forceImportRoot = true;
   motd.networkInterfaces = lib.lists.singleton config.homelab.networks.external.aria.interface;
   zfs-root = {

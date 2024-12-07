@@ -1,5 +1,4 @@
 {
-  inputs,
   lib,
   config,
   vars,
@@ -9,14 +8,11 @@
 {
   boot.kernelModules = [
     "coretemp"
-    "jc42"
-    "lm78"
-    "f71882fg"
+    "nct6775"
   ];
   hardware.cpu.intel.updateMicrocode = true;
   hardware.enableRedistributableFirmware = true;
-  hardware.opengl.enable = true;
-  hardware.opengl.driSupport = true;
+  hardware.graphics.enable = true;
   boot.zfs.forceImportRoot = true;
   motd.networkInterfaces = lib.lists.singleton "enp1s0";
   zfs-root = {
@@ -76,9 +72,9 @@
       "/dev/disk/by-label/Data2"
       "/dev/disk/by-label/Parity1"
     ];
-    pwmPaths = [ "/sys/class/hwmon/hwmon1/device/pwm2" ];
+    pwmPaths = [ "/sys/class/hwmon/hwmon6/pwm1" ];
     extraArgs = [
-      "--pwm-start-value=100"
+      "--pwm-start-value=50"
       "--pwm-stop-value=50"
       "--smartctl"
       "-i 30"
@@ -89,6 +85,19 @@
   networking = {
     useDHCP = true;
     networkmanager.enable = false;
+    nameservers = [ "192.168.2.1" ];
+    interfaces.enp1s0 = {
+      ipv4.addresses = [
+        {
+          address = "192.168.2.230";
+          prefixLength = 24;
+        }
+      ];
+    };
+    defaultGateway = {
+      address = "192.168.2.1";
+      interface = "enp1s0";
+    };
     firewall = {
       allowPing = true;
       trustedInterfaces = [ "enp1s0" ];
