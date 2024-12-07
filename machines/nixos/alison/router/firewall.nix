@@ -17,7 +17,7 @@ in
       trustedInterfaces = (
         lib.mapAttrsToList (_: val: val.interface) (lib.attrsets.filterAttrs (n: v: v.trusted) networks)
       );
-      interfaces."podman+".allowedUDPPorts = [ 53 ];
+      interfaces."podman0".allowedUDPPorts = [ 53 ];
       # These ports will be opened *publicly*, via WAN
       allowedTCPPorts = lib.mkForce [ ];
       allowedUDPPorts = lib.mkForce [ ];

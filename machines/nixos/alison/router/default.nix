@@ -191,6 +191,12 @@ in
             lib.lists.forEach
               (lib.attrsets.mapAttrsToList (name: value: name) (lib.attrsets.filterAttrs (n: v: v.dhcp) networks))
               (x: {
+                id = (
+                  lib.attrsets.getAttrFromPath [
+                    x
+                    "id"
+                  ] networks
+                );
                 pools = [
                   {
                     pool =
