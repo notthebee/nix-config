@@ -68,7 +68,6 @@
       (helpers.mkNixos "spencer" inputs.nixpkgs [
         ./modules/tg-notify
         ./modules/notthebe.ee
-        ./modules/uptime-kuma
       ])
       (mkNixos "maya" inputs.nixpkgs-unstable [
         ./modules/ryzen-undervolt
