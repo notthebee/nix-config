@@ -124,6 +124,7 @@
   };
 
   services.auto-aspm.enable = true;
+  powerManagement.powertop.enable = true;
 
   environment.systemPackages = with pkgs; [
     pciutils
@@ -144,5 +145,6 @@
     gnumake
     gcc
     intel-gpu-tools
+    powertop
   ];
 }
