@@ -8,7 +8,9 @@
 {
   boot.kernelModules = [
     "coretemp"
-    "nct6775"
+    "jc42"
+    "lm78"
+    "f71882fg"
   ];
   hardware.cpu.intel.updateMicrocode = true;
   hardware.enableRedistributableFirmware = true;
@@ -72,7 +74,7 @@
       "/dev/disk/by-label/Data2"
       "/dev/disk/by-label/Parity1"
     ];
-    pwmPaths = [ "/sys/class/hwmon/hwmon1/pwm1" ];
+    pwmPaths = [ "/sys/class/hwmon/hwmon1/device/pwm2" ];
     extraArgs = [
       "--pwm-start-value=50"
       "--pwm-stop-value=50"
@@ -85,22 +87,9 @@
   networking = {
     useDHCP = true;
     networkmanager.enable = false;
-    nameservers = [ "192.168.2.1" ];
-    interfaces.enp1s0 = {
-      ipv4.addresses = [
-        {
-          address = "192.168.2.230";
-          prefixLength = 24;
-        }
-      ];
-    };
-    defaultGateway = {
-      address = "192.168.2.1";
-      interface = "enp1s0";
-    };
     firewall = {
       allowPing = true;
-      trustedInterfaces = [ "enp1s0" ];
+      trustedInterfaces = [ "enp2s0" ];
     };
   };
 
@@ -124,7 +113,7 @@
   };
 
   services.auto-aspm.enable = true;
-  powerManagement.powertop.enable = true;
+  #powerManagement.powertop.enable = true;
 
   environment.systemPackages = with pkgs; [
     pciutils

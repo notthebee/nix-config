@@ -7,6 +7,7 @@
     initializationOptions = { };
   };
   eslint.autoFixOnSave = true;
+  inlayHint.enable = false;
   coc.preferences.colorSupport = false;
   prettier.disableSuccessMessage = true;
   coc.preferences.formatOnSaveFiletypes = [

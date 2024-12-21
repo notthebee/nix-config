@@ -1,5 +1,5 @@
 # Disable RGB on all supported devices
-{ pkgs, lib, ... }:
+{ pkgs, ... }:
 let
   no-rgb = pkgs.writeScriptBin "no-rgb" ''
     #!/bin/sh

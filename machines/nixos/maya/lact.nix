@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ pkgs, ... }:
 let
   lactConfig = pkgs.writeTextFile {
     name = "config.yaml";

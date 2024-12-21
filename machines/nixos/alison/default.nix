@@ -70,13 +70,16 @@
     mounts = {
       config = "/persist/opt/services";
     };
-    services.enable = true;
-    services.traefik = {
+    services = {
       enable = true;
-      listenAddress = config.homelab.networks.local.lan.cidr;
-      acme = {
-        email = config.email.fromAddress;
-        dnsChallenge.credentialsFile = config.age.secrets.cloudflareDnsApiCredentials.path;
+      uptime-kuma.enable = true;
+      traefik = {
+        enable = true;
+        listenAddress = config.homelab.networks.local.lan.cidr;
+        acme = {
+          email = config.email.fromAddress;
+          dnsChallenge.credentialsFile = config.age.secrets.cloudflareDnsApiCredentials.path;
+        };
       };
     };
   };

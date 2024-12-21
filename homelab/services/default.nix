@@ -36,5 +36,6 @@
     ./paperless-ngx
     ./homepage
     ./immich
+    ./uptime-kuma
   ];
 }
