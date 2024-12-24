@@ -1,4 +1,4 @@
-{ config, vars, pkgs, ... }:
+{ vars, pkgs, ... }:
 let
   directories = [
     "${vars.serviceConfigRoot}/ccu"

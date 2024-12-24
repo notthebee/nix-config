@@ -60,7 +60,6 @@ in
         inputs.agenix.nixosModules.default
         ./users/notthebee
         (homeManagerCfg false [ ])
-        inputs.home-manager.nixosModules.home-manager
       ] ++ extraModules;
     };
   };

@@ -3,26 +3,34 @@ let
   directories = [
     "${vars.cacheArray}/Media/Nextcloud"
     "${vars.serviceConfigRoot}/nextcloud"
+    "${vars.serviceConfigRoot}/nextcloud/config"
+    "${vars.serviceConfigRoot}/nextcloud/mariadb"
   ];
 in
 {
   systemd.tmpfiles.rules = map (x: "d ${x} 0775 share share - -") directories;
   virtualisation.oci-containers = {
     containers = {
-      nextloud-redis = {
+      nextcloud-redis = {
         image = "redis";
         autoStart = true;
-        extraOptions = [ "--network=container:nextcloud" ];
+        dependsOn = [
+          "nextcloud-cloudflared"
+        ];
+        extraOptions = [ "--network=container:nextcloud-cloudflared" ];
       };
       nextcloud-db = {
         image = "mariadb";
         autoStart = true;
+        dependsOn = [
+          "nextcloud-cloudflared"
+        ];
         volumes = [
           "${vars.serviceConfigRoot}/nextcloud/mariadb:/var/lib/mysql"
         ];
         extraOptions = [
           "--pull=newer"
-          "--network=container:nextcloud"
+          "--network=container:nextcloud-cloudflared"
         ];
         environmentFiles = [
           config.age.secrets.nextcloud.path
@@ -33,12 +41,10 @@ in
         };
       };
       nextcloud = {
-        image = "nextcloud:stable-fpm-alpine";
+        image = "lscr.io/linuxserver/nextcloud:latest";
         autoStart = true;
         dependsOn = [
           "nextcloud-cloudflared"
-          "nextcloud-db"
-          "nextcloud-redis"
         ];
         environmentFiles = [
           config.age.secrets.nextcloud.path
@@ -53,21 +59,13 @@ in
           "-l=homepage.description=Personal cloud"
         ];
         volumes = [
-          "${vars.serviceConfigRoot}/nextcloud:/var/www/html"
-          "${vars.cacheArray}/Nextcloud:/var/www/html/data"
+          "${vars.serviceConfigRoot}/nextcloud/config:/config"
+          "${vars.cacheArray}/Media/Nextcloud:/data"
         ];
         environment = {
           TZ = vars.timeZone;
           PUID = "994";
-          GUID = "993";
-          NEXTCLOUD_ADMIN_USER = "notthebee";
-          NEXTCLOUD_TRUSTED_DOMAINS = "cloud.${vars.domainName}";
-          SMTP_HOST = config.email.smtpServer;
-          MAIL_FROM_ADDRESS = config.email.fromAddress;
-          SMTP_NAME = config.email.smtpUsername;
-          SMTP_SECURE = "tls";
-          MYSQL_HOST = "nextcloud-db";
-          REDIS_HOST = "nextcloud-redis";
+          PGID = "993";
         };
       };
       nextcloud-cloudflared = {

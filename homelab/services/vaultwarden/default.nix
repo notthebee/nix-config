@@ -1,4 +1,9 @@
-{ config, vars, ... }:
+{
+  config,
+  pkgs,
+  vars,
+  ...
+}:
 let
   directories = [ "${vars.serviceConfigRoot}/vaultwarden" ];
 in
@@ -24,6 +29,9 @@ in
           DOMAIN = "https://pass.${vars.domainName}";
           WEBSOCKET_ENABLED = "true";
           SIGNUPS_ALLOWED = "false";
+          LOG_FILE = "data/vaultwarden.log";
+          LOG_LEVEL = "warn";
+          IP_HEADER = "CF-Connecting-IP";
         };
       };
       vaultwarden-cloudflared = {

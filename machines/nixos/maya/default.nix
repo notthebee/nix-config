@@ -77,6 +77,7 @@ in
   jovian = {
     hardware = {
       has.amd.gpu = true;
+      amd.gpu.enableBacklightControl = false;
     };
     steam = {
       updater.splash = "vendor";
