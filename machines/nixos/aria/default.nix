@@ -95,7 +95,7 @@
 
   homelab = {
     enable = true;
-    baseDomainName = "aria.goose.party";
+    baseDomain = "aria.goose.party";
     timeZone = "Europe/Berlin";
     mounts = {
       slow = "/mnt/mergerfs_slow";

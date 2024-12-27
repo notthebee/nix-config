@@ -1,8 +1,9 @@
-{ inputs, config, ... }:
+{ config, ... }:
 {
   homelab = {
     enable = true;
-    baseDomainName = "goose.party";
+    baseDomain = "goose.party";
+    cloudflare.dnsCredentialsFile = config.age.secrets.cloudflareDnsApiCredentials.path;
     timeZone = "Europe/Berlin";
     mounts = {
       config = "/persist/opt/services";
@@ -12,49 +13,39 @@
     };
     services = {
       enable = true;
-      homepage = {
-        enable = true;
-      };
-      jellyfin = {
-        enable = true;
-        apiKeyFile = config.age.secrets.jellyfinApiKey.path;
-      };
+      homepage.enable = true;
+      jellyfin.enable = true;
       paperless = {
         enable = true;
-        apiKeyFile = config.age.secrets.paperlessApiKey.path;
-        secretsFile = config.age.secrets.paperless.path;
-        adminUser = "notthebee";
+        passwordFile = config.age.secrets.paperlessPassword.path;
       };
-      traefik = {
+      sabnzbd.enable = true;
+      sonarr.enable = true;
+      radarr.enable = true;
+      bazarr.enable = true;
+      prowlarr.enable = true;
+      nextcloud = {
         enable = true;
-        acme = {
-          email = config.email.fromAddress;
-          dnsChallenge.credentialsFile = config.age.secrets.cloudflareDnsApiCredentials.path;
+        adminpassFile = config.age.secrets.nextcloudAdminPassword.path;
+        cloudflared = {
+          tunnelId = "cc246d42-a03d-41d4-97e2-48aa15d47297";
+          credentialsFile = config.age.secrets.nextcloudCloudflared.path;
         };
       };
-      arr = {
+      vaultwarden = {
         enable = true;
-        recyclarr = {
-          configPath = inputs.recyclarr-configs;
-        };
-        sonarr = {
-          apiKeyFile = config.age.secrets.sonarrApiKey.path;
-        };
-        radarr = {
-          apiKeyFile = config.age.secrets.radarrApiKey.path;
+        cloudflared = {
+          tunnelId = "3bcbbc74-3667-4504-9258-f272ce006a18";
+          credentialsFile = config.age.secrets.vaultwardenCloudflared.path;
         };
       };
-      audiobookshelf = {
-        enable = true;
-      };
-      calibre-web = {
-        enable = true;
-      };
+      audiobookshelf.enable = true;
       delugevpn = {
         enable = true;
-        gluetun = {
-          enable = true;
-          wireguardCredentialsFile = config.age.secrets.wireguardCredentials.path;
+        wireguard = {
+          configFile = config.age.secrets.wireguardCredentials.path;
+          privateIP = "10.100.0.2";
+          dnsIP = "10.100.0.1";
         };
       };
     };

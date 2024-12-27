@@ -28,11 +28,11 @@ in
         Path to the Immich photos
       '';
     };
-    baseDomainName = lib.mkOption {
-      default = config.homelab.baseDomainName;
+    baseDomain = lib.mkOption {
+      default = config.homelab.baseDomain;
       type = lib.types.str;
       description = ''
-        Base domain name to be used for Traefik reverse proxy (e.g. photos.baseDomainName)
+        Base domain name to be used for Traefik reverse proxy (e.g. photos.baseDomain)
       '';
     };
     user = lib.mkOption {
@@ -127,7 +127,7 @@ in
         extraOptions = [
           "--pull=newer"
           "-l=traefik.enable=true"
-          "-l=traefik.http.routers.immich.rule=Host(`photos.${cfg.baseDomainName}`)"
+          "-l=traefik.http.routers.immich.rule=Host(`photos.${cfg.baseDomain}`)"
           "-l=traefik.http.routers.immich.service=immich"
           "-l=traefik.http.services.immich.loadbalancer.server.port=8080"
         ];

@@ -1,55 +1,49 @@
-{
-  config,
-  pkgs,
-  vars,
-  ...
-}:
+{ config, lib, ... }:
 let
-  directories = [ "${vars.serviceConfigRoot}/vaultwarden" ];
+  service = "vaultwarden";
+  cfg = config.homelab.services.${service};
+  homelab = config.homelab;
 in
 {
-  systemd.tmpfiles.rules = map (x: "d ${x} 0775 share share - -") directories;
-  virtualisation.oci-containers = {
-    containers = {
-      vaultwarden = {
-        image = "vaultwarden/server:latest";
-        autoStart = true;
-        dependsOn = [ "vaultwarden-cloudflared" ];
-        extraOptions = [
-          "--pull=newer"
-          "--network=container:vaultwarden-cloudflared"
-          "-l=homepage.group=Services"
-          "-l=homepage.name=Vaultwarden"
-          "-l=homepage.icon=bitwarden.svg"
-          "-l=homepage.href=https://pass.${vars.domainName}"
-          "-l=homepage.description=Password manager"
-        ];
-        volumes = [ "${vars.serviceConfigRoot}/vaultwarden:/data" ];
-        environment = {
-          DOMAIN = "https://pass.${vars.domainName}";
-          WEBSOCKET_ENABLED = "true";
-          SIGNUPS_ALLOWED = "false";
-          LOG_FILE = "data/vaultwarden.log";
-          LOG_LEVEL = "warn";
-          IP_HEADER = "CF-Connecting-IP";
+  options.homelab.services.${service} = {
+    enable = lib.mkEnableOption {
+      description = "Enable ${service}";
+    };
+    cloudflared.credentialsFile = lib.mkOption {
+      type = lib.types.str;
+      example = lib.literalExpression ''
+        pkgs.writeText "cloudflare-credentials.json" '''
+        {"AccountTag":"secret"."TunnelSecret":"secret","TunnelID":"secret"}
+        '''
+      '';
+    };
+    cloudflared.tunnelId = lib.mkOption {
+      type = lib.types.str;
+      example = "00000000-0000-0000-0000-000000000000";
+    };
+  };
+  config = lib.mkIf cfg.enable {
+    services = {
+      ${service} = {
+        enable = true;
+        config = {
+          DOMAIN = "https://pass.${homelab.baseDomain}";
+          SIGNUPS_ALLOWED = false;
+          ROCKET_ADDRESS = "127.0.0.1";
+          ROCKET_PORT = 8222;
         };
       };
-      vaultwarden-cloudflared = {
-        image = "cloudflare/cloudflared:latest";
-        autoStart = true;
-        cmd = [
-          "tunnel"
-          "--no-autoupdate"
-          "run"
-        ];
-        environment = {
-          TZ = vars.timeZone;
-          PUID = "994";
-          GUID = "993";
+      cloudflared = {
+        enable = true;
+        tunnels.${cfg.cloudflared.tunnelId} = {
+          credentialsFile = cfg.cloudflared.credentialsFile;
+          default = "http_status:404";
+          ingress."pass.${homelab.baseDomain}".service = "http://${
+            config.services.${service}.config.ROCKET_ADDRESS
+          }:${toString config.services.${service}.config.ROCKET_PORT}";
         };
-        environmentFiles = [ config.age.secrets.vaultwardenCloudflared.path ];
-        extraOptions = [ "--pull=newer" ];
       };
     };
   };
+
 }

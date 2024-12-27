@@ -1,4 +1,4 @@
-{ lib, config, ... }:
+{ lib, ... }:
 {
   options.homelab = {
     enable = lib.mkEnableOption "The homelab services and configuration variables";
@@ -36,7 +36,7 @@
       description = ''
         User to run the homelab services as
       '';
-      apply = old: builtins.toString config.users.users."${old}".uid;
+      #apply = old: builtins.toString config.users.users."${old}".uid;
     };
     group = lib.mkOption {
       default = "share";
@@ -44,7 +44,7 @@
       description = ''
         Group to run the homelab services as
       '';
-      apply = old: builtins.toString config.users.groups."${old}".gid;
+      #apply = old: builtins.toString config.users.groups."${old}".gid;
     };
     timeZone = lib.mkOption {
       default = "Europe/Berlin";
@@ -53,12 +53,15 @@
         Time zone to be used for the homelab services
       '';
     };
-    baseDomainName = lib.mkOption {
+    baseDomain = lib.mkOption {
       default = "";
       type = lib.types.str;
       description = ''
         Base domain name to be used to access the homelab services via Traefik reverse proxy
       '';
+    };
+    cloudflare.dnsCredentialsFile = lib.mkOption {
+      type = lib.types.path;
     };
   };
   imports = [
