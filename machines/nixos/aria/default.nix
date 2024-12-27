@@ -95,6 +95,7 @@
 
   homelab = {
     enable = true;
+    cloudflare.dnsCredentialsFile = config.age.secrets.cloudflareDnsApiCredentials.path;
     baseDomain = "aria.goose.party";
     timeZone = "Europe/Berlin";
     mounts = {
@@ -104,18 +105,7 @@
     };
     services = {
       enable = true;
-      immich = {
-        enable = true;
-        mounts.photos = "${config.homelab.mounts.fast}/Photos";
-        dbCredentialsFile = config.age.secrets.ariaImmichDatabase.path;
-      };
-      traefik = {
-        enable = true;
-        acme = {
-          email = config.email.fromAddress;
-          dnsChallenge.credentialsFile = config.age.secrets.cloudflareDnsApiCredentials.path;
-        };
-      };
+      immich.enable = true;
     };
   };
 
