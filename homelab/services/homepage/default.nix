@@ -1,180 +1,117 @@
 {
   config,
-  pkgs,
   lib,
   ...
 }:
 let
+  service = "homepage-dashboard";
   cfg = config.homelab.services.homepage;
-  directories = [
-    "${cfg.mounts.config}"
-    "${cfg.mounts.config}/config"
-  ];
-  settingsFormat = pkgs.formats.yaml { };
-  homepageSettings = {
-    docker = settingsFormat.generate "docker.yaml" (import ./docker.nix);
-    services = pkgs.writeTextFile {
-      name = "services.yaml";
-      text = builtins.readFile ./services.yaml;
-    };
-    settings = pkgs.writeTextFile {
-      name = "settings.yaml";
-      text = builtins.readFile ./settings.yaml;
-    };
-    bookmarks = settingsFormat.generate "bookmarks.yaml" (import ./bookmarks.nix);
-    widgets = pkgs.writeTextFile {
-      name = "widgets.yaml";
-      text = builtins.readFile ./widgets.yaml;
-    };
-  };
-  homepageCustomCss = pkgs.writeTextFile {
-    name = "custom.css";
-    text = builtins.readFile ./custom.css;
-  };
+  homelab = config.homelab;
 in
 {
   options.homelab.services.homepage = {
-    enable = lib.mkEnableOption "A modern, fully static, fast, secure, fully proxied, highly customizable application dashboard";
-    mounts.config = lib.mkOption {
-      default = "${config.homelab.mounts.config}/homelab";
-      type = lib.types.path;
-      description = ''
-        Base path of the Homepage config files
-      '';
-    };
-    user = lib.mkOption {
-      default = config.homelab.user;
-      type = lib.types.str;
-      description = ''
-        User to run the Arr stack as
-      '';
-    };
-    group = lib.mkOption {
-      default = config.homelab.group;
-      type = lib.types.str;
-      description = ''
-        Group to run the Arr stack as
-      '';
-    };
-    timeZone = lib.mkOption {
-      default = config.homelab.timeZone;
-      type = lib.types.str;
-      description = ''
-        Time zone to be used inside the Arr containers
-      '';
-    };
-    baseDomainName = lib.mkOption {
-      default = config.homelab.baseDomainName;
-      type = lib.types.str;
-      description = ''
-        Base domain name to be used for Traefik reverse proxy (e.g. baseDomainName)
-      '';
-    };
-    integrations.glances = lib.mkOption {
-      default = true;
-      type = lib.types.bool;
-      description = ''
-        Enable Glances integration
-      '';
-    };
-    integrations.sonarr = lib.mkOption {
-      default = config.homelab.services.arr.sonarr.enable;
-      type = lib.types.bool;
-      description = ''
-        Enable Sonarr integration
-      '';
-    };
-    integrations.radarr = lib.mkOption {
-      default = config.homelab.services.arr.radarr.enable;
-      type = lib.types.bool;
-      description = ''
-        Enable Radarr integration
-      '';
-    };
-    integrations.jellyfin = lib.mkOption {
-      default = config.homelab.services.jellyfin.enable;
-      type = lib.types.bool;
-      description = ''
-        Enable Jellyfin integration
-      '';
-    };
-    integrations.paperless = lib.mkOption {
-      default = config.homelab.services.paperless.enable;
-      type = lib.types.bool;
-      description = ''
-        Enable Paperless integration
-      '';
+    enable = lib.mkEnableOption {
+      description = "Enable ${service}";
     };
   };
   config = lib.mkIf cfg.enable {
-    environment.systemPackages = with pkgs; [ glances ];
-    networking.firewall.interfaces.podman0.allowedTCPPorts = [ 61208 ];
-    systemd.services.glances = {
-      description = "Glances";
-      wantedBy = [ "multi-user.target" ];
-      serviceConfig = {
-        ExecStart = "${pkgs.glances}/bin/glances -w";
-        Type = "simple";
+    services.${service} = {
+      enable = true;
+      settings = {
+        headerStyle = "clean";
+        statusStyle = "dot";
+        hideVersion = "true";
+        customCSS = ''
+          * {
+            font-family: SF Pro Display, Helvetica, Arial, sans-serif !important;
+          }
+          .font-medium {
+            font-weight: 700 !important;
+          }
+          .font-light {
+            font-weight: 500 !important;
+          }
+          .font-thin {
+            font-weight: 400 !important;
+          }
+          #information-widgets {
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+          }
+          div#footer {
+            display: none;
+          }
+          .services-group.basis-full.flex-1.px-1.-my-1 {
+            padding-bottom: 3rem;
+          };
+        '';
+        services = [
+          {
+            Glances = [
+              {
+                Info = {
+                  widget = {
+                    type = "glances";
+                    url = "http://localhost:61208";
+                    metric = "info";
+                    chart = false;
+                  };
+                };
+              }
+              {
+                "CPU Temp" = {
+                  widget = {
+                    type = "glances";
+                    url = "http://localhost:61208";
+                    metric = "sensor:Package id 0";
+                    chart = false;
+                  };
+                };
+              }
+              {
+                Processes = {
+                  widget = {
+                    type = "glances";
+                    url = "http://localhost:61208";
+                    metric = "process";
+                    chart = false;
+                  };
+                };
+              }
+              {
+                Network = {
+                  widget = {
+                    type = "glances";
+                    url = "http://localhost:61208";
+                    metric = "network:enp1s0";
+                    chart = false;
+                  };
+                };
+              }
+            ];
+          }
+        ];
+        layout = [
+          {
+            Glances = {
+              header = false;
+              style = "row";
+              columns = 4;
+            };
+          }
+          { Arr = { }; }
+          { Downloads = { }; }
+          { Media = { }; }
+          { Services = { }; }
+        ];
       };
     };
-    systemd.tmpfiles.rules = map (x: "d ${x} 0775 share share - -") directories;
-    virtualisation.oci-containers = {
-      containers = {
-        homepage-socket-proxy = {
-          image = "ghcr.io/tecnativa/docker-socket-proxy:0.3.0";
-          autoStart = true;
-          dependsOn = [ "homepage" ];
-          extraOptions = [
-            "--pull=newer"
-            "--network=container:homepage"
-          ];
-          volumes = [ "/var/run/podman/podman.sock:/var/run/docker.sock:ro" ];
-          environment = {
-            CONTAINERS = "1";
-            POST = "0";
-          };
-        };
-        homepage = {
-          image = "ghcr.io/gethomepage/homepage:latest";
-          autoStart = true;
-          extraOptions = [
-            "--pull=newer"
-            "-l=traefik.enable=true"
-            "-l=traefik.http.routers.home.rule=Host(`${cfg.baseDomainName}`)"
-            "-l=traefik.http.services.home.loadbalancer.server.port=3000"
-          ];
-          volumes =
-            [
-              "${cfg.mounts.config}/config:/app/config"
-              "${homepageSettings.docker}:/app/config/docker.yaml"
-              "${homepageSettings.bookmarks}:/app/config/bookmarks.yaml"
-              "${homepageSettings.services}:/app/config/services.yaml"
-              "${homepageSettings.settings}:/app/config/settings.yaml"
-              "${homepageSettings.widgets}:/app/config/widgets.yaml"
-              "${homepageCustomCss}:/app/config/custom.css"
-            ]
-            ++ lib.lists.optional cfg.integrations.sonarr "${config.homelab.services.arr.sonarr.apiKeyFile}:/app/config/sonarr.key"
-            ++ lib.lists.optional cfg.integrations.radarr "${config.homelab.services.arr.radarr.apiKeyFile}:/app/config/radarr.key"
-            ++ lib.lists.optional cfg.integrations.jellyfin "${config.homelab.services.jellyfin.apiKeyFile}:/app/config/jellyfin.key"
-            ++ lib.lists.optional cfg.integrations.paperless "${config.homelab.services.paperless.apiKeyFile}:/app/config/paperless.key";
-          environment =
-            {
-              TZ = cfg.timeZone;
-            }
-            // lib.attrsets.optionalAttrs cfg.integrations.sonarr {
-              HOMEPAGE_FILE_SONARR_KEY = "/app/config/sonarr.key";
-            }
-            // lib.attrsets.optionalAttrs cfg.integrations.radarr {
-              HOMEPAGE_FILE_RADARR_KEY = "/app/config/radarr.key";
-            }
-            // lib.attrsets.optionalAttrs cfg.integrations.jellyfin {
-              HOMEPAGE_FILE_JELLYFIN_KEY = "/app/config/jellyfin.key";
-            }
-            // lib.attrsets.optionalAttrs cfg.integrations.paperless {
-              HOMEPAGE_FILE_PAPERLESS_KEY = "/app/config/paperless.key";
-            };
-        };
-      };
+    services.caddy.virtualHosts."${homelab.baseDomain}" = {
+      useACMEHost = homelab.baseDomain;
+      extraConfig = ''
+        reverse_proxy http://127.0.0.1:${toString config.services.${service}.listenPort}
+      '';
     };
   };
+
 }

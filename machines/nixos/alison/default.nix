@@ -65,7 +65,7 @@
 
   homelab = {
     enable = true;
-    baseDomainName = "goose.party";
+    baseDomain = "goose.party";
     timeZone = "Europe/Berlin";
     mounts = {
       config = "/persist/opt/services";

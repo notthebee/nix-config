@@ -1,6 +1,6 @@
 { config, lib, ... }:
 let
-  service = "uptime-kuma";
+  service = "prowlarr";
   cfg = config.homelab.services.${service};
   homelab = config.homelab;
 in
@@ -9,15 +9,19 @@ in
     enable = lib.mkEnableOption {
       description = "Enable ${service}";
     };
+    configDir = lib.mkEnableOption {
+      type = lib.types.path;
+      default = "/var/lib/${service}";
+    };
   };
   config = lib.mkIf cfg.enable {
     services.${service} = {
       enable = true;
     };
-    services.caddy.virtualHosts."uptime.${homelab.baseDomain}" = {
+    services.caddy.virtualHosts."${service}.${homelab.baseDomain}" = {
       useACMEHost = homelab.baseDomain;
       extraConfig = ''
-        reverse_proxy http://127.0.0.1:3001
+        reverse_proxy http://127.0.0.1:9696
       '';
     };
   };

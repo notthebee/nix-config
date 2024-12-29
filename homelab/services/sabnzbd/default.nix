@@ -1,42 +1,31 @@
-{ pkgs, vars, ... }:
+{ config, lib, ... }:
 let
-  directories = [
-    "${vars.serviceConfigRoot}/sabnzbd"
-    "${vars.mainArray}/Media/Downloads"
-    "${vars.cacheArray}/Media/Downloads"
-    "${vars.serviceConfigRoot}/sabnzbd:/config"
-  ];
+  service = "sabnzbd";
+  cfg = config.homelab.services.${service};
+  homelab = config.homelab;
 in
 {
-  systemd.tmpfiles.rules = map (x: "d ${x} 0775 share share - -") directories;
-  virtualisation.oci-containers = {
-    containers = {
-      sabnzbd = {
-        image = "linuxserver/sabnzbd:latest";
-        autoStart = true;
-        extraOptions = [
-          "--pull=newer"
-          "-l=homepage.group=Downloads"
-          "-l=homepage.name=sabnzbd"
-          "-l=homepage.icon=sabnzbd.svg"
-          "-l=homepage.href=https://sabnzbd.${vars.domainName}"
-          "-l=homepage.description=Newsgroup client"
-          "-l=traefik.enable=true"
-          "-l=traefik.http.routers.sabnzbd.rule=Host(`sabnzbd.${vars.domainName}`)"
-          "-l=traefik.http.routers.sabnzbd.service=sabnzbd"
-          "-l=traefik.http.services.sabnzbd.loadbalancer.server.port=8080"
-        ];
-        volumes = [
-          "${vars.mainArray}/Media/Downloads:/data/completed"
-          "${vars.cacheArray}/Media/Downloads.tmp:/data/incomplete"
-          "${vars.serviceConfigRoot}/sabnzbd:/config"
-        ];
-        environment = {
-          TZ = vars.timeZone;
-          PUID = "994";
-          GUID = "993";
-        };
-      };
+  options.homelab.services.${service} = {
+    enable = lib.mkEnableOption {
+      description = "Enable ${service}";
+    };
+    configDir = lib.mkEnableOption {
+      type = lib.types.path;
+      default = "/var/lib/${service}";
     };
   };
+  config = lib.mkIf cfg.enable {
+    services.${service} = {
+      enable = true;
+      user = homelab.user;
+      group = homelab.group;
+    };
+    services.caddy.virtualHosts."${service}.${homelab.baseDomain}" = {
+      useACMEHost = homelab.baseDomain;
+      extraConfig = ''
+        reverse_proxy http://127.0.0.1:8080
+      '';
+    };
+  };
+
 }

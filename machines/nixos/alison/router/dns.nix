@@ -30,7 +30,7 @@ in
             x:
             (lib.concatStrings [
               (lib.concatMapStrings (x: "/" + x) [
-                ("${x}." + config.homelab.baseDomainName)
+                ("${x}." + config.homelab.baseDomain)
                 ownAddress
               ])
             ])
