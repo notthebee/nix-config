@@ -37,7 +37,8 @@ in
     excludedPaths = mkOption {
       description = "List of paths that should be excluded from moving";
       type = types.listOf types.str;
-      apply = old: lib.strings.concatStringsSep " " (map (x: config.mover.cacheArray + "/" + x) old);
+      apply =
+        old: lib.strings.concatStringsSep " " (map (x: config.services.mover.cacheArray + "/" + x) old);
       default = [ ];
     };
     user = mkOption {
@@ -61,26 +62,26 @@ in
 
     security.sudo.extraRules = [
       {
-        users = [ config.mover.user ];
+        users = [ config.services.mover.user ];
         commands = [
           {
             command = "/run/current-system/sw/bin/journalctl --unit=mergerfs-uncache.service *";
             options = [ "NOPASSWD" ];
           }
           {
-            command = "/run/current-system/sw/bin/chown -R ${config.mover.user}\\:${config.mover.group} ${config.mover.backingArray}";
+            command = "/run/current-system/sw/bin/chown -R ${config.services.mover.user}\\:${config.services.mover.group} ${config.services.mover.backingArray}";
             options = [ "NOPASSWD" ];
           }
           {
-            command = "/run/current-system/sw/bin/chown -R ${config.mover.user}\\:${config.mover.group} ${config.mover.cacheArray}";
+            command = "/run/current-system/sw/bin/chown -R ${config.services.mover.user}\\:${config.services.mover.group} ${config.services.mover.cacheArray}";
             options = [ "NOPASSWD" ];
           }
           {
-            command = "/run/current-system/sw/bin/chmod -R u=rwX\\,go=rX ${config.mover.backingArray}";
+            command = "/run/current-system/sw/bin/chmod -R u=rwX\\,go=rX ${config.services.mover.backingArray}";
             options = [ "NOPASSWD" ];
           }
           {
-            command = "/run/current-system/sw/bin/chmod -R u=rwX\\,go=rX ${config.mover.cacheArray}";
+            command = "/run/current-system/sw/bin/chmod -R u=rwX\\,go=rX ${config.services.mover.cacheArray}";
             options = [ "NOPASSWD" ];
           }
         ];
@@ -99,9 +100,9 @@ in
         ];
         serviceConfig = {
           Type = "oneshot";
-          ExecStart = "/run/current-system/sw/bin/mergerfs-uncache -s ${config.mover.cacheArray} -d ${config.mover.backingArray} -t ${config.mover.percentageFree} --exclude ${config.mover.excludedPaths} -u ${config.mover.user} -g ${config.mover.group}";
-          User = config.mover.user;
-          Group = config.mover.group;
+          ExecStart = "/run/current-system/sw/bin/mergerfs-uncache -s ${config.services.mover.cacheArray} -d ${config.services.mover.backingArray} -t ${config.services.mover.percentageFree} --exclude ${config.services.mover.excludedPaths} -u ${config.services.mover.user} -g ${config.services.mover.group}";
+          User = config.services.mover.user;
+          Group = config.services.mover.group;
         };
         postStop = ''
           message=$(/run/wrappers/bin/sudo /run/current-system/sw/bin/journalctl --unit=mergerfs-uncache.service -n 20 --no-pager)

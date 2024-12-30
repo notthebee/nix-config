@@ -20,8 +20,8 @@ in
     passwordFile = lib.mkOption {
       type = lib.types.path;
     };
-    configDir = lib.mkEnableOption {
-      type = lib.types.path;
+    configDir = lib.mkOption {
+      type = lib.types.str;
       default = "/var/lib/${service}";
     };
   };

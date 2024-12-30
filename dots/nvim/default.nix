@@ -88,7 +88,7 @@ in
       vim-surround = {
         enable = true;
       };
-      nvim-colorizer = {
+      colorizer = {
         enable = true;
       };
       which-key = {

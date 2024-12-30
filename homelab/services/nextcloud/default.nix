@@ -21,12 +21,8 @@ in
       type = lib.types.str;
       default = "notthebee";
     };
-    dataDir = lib.mkOption {
+    configDir = lib.mkOption {
       type = lib.types.str;
-      default = "${homelab.mounts.fast}/Media/Nextcloud";
-    };
-    configDir = lib.mkEnableOption {
-      type = lib.types.path;
       default = "/var/lib/${service}";
     };
     cloudflared.credentialsFile = lib.mkOption {

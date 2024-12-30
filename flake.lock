@@ -419,11 +419,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1735470496,
-        "narHash": "sha256-Kx2ungOLiOXw+A/GDeeWGF91pu4Pxtf51A9VTJQKG1U=",
+        "lastModified": 1735478292,
+        "narHash": "sha256-Ys9pSP9ch0SthhpbjnkCSJ9ZLfaNKnt/dcy7swjmS1A=",
         "owner": "LnL7",
         "repo": "nix-darwin",
-        "rev": "713da7b75b9ed86b1aeef25981dc73f99ea0477f",
+        "rev": "71a3a075e3229a7518d76636bb762aef2bcb73ac",
         "type": "github"
       },
       "original": {
@@ -552,11 +552,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1735469218,
-        "narHash": "sha256-ajAa3g32jQTrqq88GyGkve/JV0q7zxObypg+KG6u2yY=",
+        "lastModified": 1735489232,
+        "narHash": "sha256-hYtB4qxUjdvYTfh0tuzDYvVZH3+5MfNuinzj4IL6NEs=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "2fafce59deb76669f74d5d82419ca9962efe7b99",
+        "rev": "89567c0d2b46ca0ffa8a7ac0224b9efb00ae5241",
         "type": "github"
       },
       "original": {
@@ -648,11 +648,11 @@
     "recyclarr-configs": {
       "flake": false,
       "locked": {
-        "lastModified": 1735411997,
-        "narHash": "sha256-+wmX36lYImdy8GMs0z2NIa55v20yVE4NEYq/l/KMovg=",
+        "lastModified": 1735478164,
+        "narHash": "sha256-Afu2wba4u7SrMyqPzuAKwoLPeCW+uGhaGUQDTsXmigU=",
         "owner": "recyclarr",
         "repo": "config-templates",
-        "rev": "be7ffba2127a66f6541decf155a68978805b9ee6",
+        "rev": "79e91361094254d854280f5e81de0e7a56f76567",
         "type": "github"
       },
       "original": {
@@ -701,11 +701,11 @@
     "secrets": {
       "flake": false,
       "locked": {
-        "lastModified": 1735304371,
-        "narHash": "sha256-ZrR2NJrB7ceay/Q259BPkcYzd5E7Lok0/DrHXbwVrio=",
+        "lastModified": 1735586790,
+        "narHash": "sha256-ALfPKBW9AQx1UO7PBszBC6Jc/0SinDy+zhucKh4fEB0=",
         "ref": "refs/heads/main",
-        "rev": "10d930b0b3aa808b1828d37fa66e37139e163bf4",
-        "revCount": 27,
+        "rev": "fca8951c57423e767683e947e0bc387f55c98486",
+        "revCount": 35,
         "type": "git",
         "url": "ssh://git@github.com/notthebee/nix-private.git"
       },

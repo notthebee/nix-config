@@ -9,6 +9,10 @@ in
     enable = lib.mkEnableOption {
       description = "Enable ${service}";
     };
+    configDir = lib.mkOption {
+      type = lib.types.str;
+      default = "/var/lib/uptime-kuma";
+    };
   };
   config = lib.mkIf cfg.enable {
     services.${service} = {

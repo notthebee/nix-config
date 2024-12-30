@@ -11,6 +11,10 @@ in
 {
   options.homelab.services.delugevpn = {
     enable = lib.mkEnableOption "Deluge torrent client (bound to a Wireguard VPN network)";
+    configDir = lib.mkOption {
+      type = lib.types.str;
+      default = "/var/lib/deluge";
+    };
     wireguard.configFile = lib.mkOption {
       type = lib.types.path;
       description = "Path to a file with Wireguard config";

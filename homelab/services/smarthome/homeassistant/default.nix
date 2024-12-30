@@ -8,9 +8,13 @@ in
     enable = lib.mkEnableOption {
       description = "Enable Home Assistant";
     };
+    configDir = lib.mkOption {
+      type = lib.types.str;
+      default = "/persist/opt/services/homeassistant";
+    };
   };
   config = lib.mkIf cfg.enable {
-    systemd.tmpfiles.rules = [ "d /var/lib/homeassistant 0775 ${homelab.user} ${homelab.group} - -" ];
+    systemd.tmpfiles.rules = [ "d ${cfg.configDir} 0775 ${homelab.user} ${homelab.group} - -" ];
     services.caddy.virtualHosts."home.${homelab.baseDomain}" = {
       useACMEHost = homelab.baseDomain;
       extraConfig = ''
@@ -29,7 +33,7 @@ in
               "--network=host"
             ];
             volumes = [
-              "/var/lib/homeassistant:/config"
+              "${cfg.configDir}:/config"
             ];
             environment = {
               TZ = homelab.timeZone;

@@ -104,6 +104,13 @@
       config = "/persist/opt/services";
     };
     services = {
+      backup = {
+        enable = true;
+        passwordFile = config.age.secrets.resticPassword.path;
+        s3.enable = true;
+        s3.environmentFile = config.age.secrets.resticBackblazeEnv.path;
+        local.enable = false;
+      };
       enable = true;
       immich.enable = true;
     };

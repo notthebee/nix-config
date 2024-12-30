@@ -13,6 +13,14 @@
     };
     services = {
       enable = true;
+      backup = {
+        enable = true;
+        passwordFile = config.age.secrets.resticPassword.path;
+        s3.enable = true;
+        s3.url = "https://s3.eu-central-003.backblazeb2.com/notthebee-ojfca-backups";
+        s3.environmentFile = config.age.secrets.resticBackblazeEnv.path;
+        local.enable = true;
+      };
       homepage.enable = true;
       jellyfin.enable = true;
       paperless = {

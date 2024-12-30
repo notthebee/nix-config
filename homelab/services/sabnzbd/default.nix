@@ -9,8 +9,8 @@ in
     enable = lib.mkEnableOption {
       description = "Enable ${service}";
     };
-    configDir = lib.mkEnableOption {
-      type = lib.types.path;
+    configDir = lib.mkOption {
+      type = lib.types.str;
       default = "/var/lib/${service}";
     };
   };

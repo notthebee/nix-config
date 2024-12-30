@@ -80,8 +80,7 @@
         ./modules/zfs-root
         ./modules/monitoring_stats
         ./modules/monitoring
-        ./homelab/services/smarthome
-        ./homelab/services/grafana
+        ./homelab
         inputs.home-manager.nixosModules.home-manager
       ])
       (mkNixos "emily" inputs.nixpkgs [
@@ -93,9 +92,6 @@
         ./modules/monitoring_stats
         ./modules/adios-bot
         ./modules/duckdns
-        ./homelab/services/sabnzbd
-        ./homelab/services/vaultwarden
-        ./homelab/services/nextcloud
         ./homelab
         inputs.home-manager.nixosModules.home-manager
       ])

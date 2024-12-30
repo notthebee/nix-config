@@ -110,6 +110,7 @@
   system.autoUpgrade.enable = true;
 
   services.mover = {
+    enable = true;
     cacheArray = vars.cacheArray;
     backingArray = vars.slowArray;
     percentageFree = 60;
