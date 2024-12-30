@@ -20,10 +20,6 @@ in
         Group to run the Immich container as
       '';
     };
-    configDir = lib.mkOption {
-      type = lib.types.path;
-      default = "/var/lib/immich";
-    };
     mediaDir = lib.mkOption {
       type = lib.types.path;
       default = "${config.homelab.mounts.fast}/Photos/Immich";

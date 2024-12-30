@@ -69,6 +69,7 @@
   };
 
   imports = [
+    ./backup
     ./arr/prowlarr
     ./arr/bazarr
     ./arr/sonarr

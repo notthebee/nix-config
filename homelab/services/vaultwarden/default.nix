@@ -9,6 +9,10 @@ in
     enable = lib.mkEnableOption {
       description = "Enable ${service}";
     };
+    configDir = lib.mkOption {
+      type = lib.types.str;
+      default = "/var/lib/bitwarden_rs";
+    };
     cloudflared.credentialsFile = lib.mkOption {
       type = lib.types.str;
       example = lib.literalExpression ''
