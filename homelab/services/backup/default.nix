@@ -19,6 +19,11 @@ in
       type = lib.types.bool;
       default = false;
     };
+    configDir = lib.mkOption {
+      description = "Folder with database dump backups (called configDir for compatibility reasons)";
+      type = lib.types.str;
+      default = "/var/backup";
+    };
     paperless.enable = lib.mkOption {
       description = "Enable backups for Paperless documents";
       type = lib.types.bool;
@@ -79,12 +84,20 @@ in
     in
     lib.mkIf (cfg.enable && enabledServices != { }) {
       systemd.tmpfiles.rules = lib.lists.optionals cfg.local.enable [
-        "d ${cfg.local.targetDir} 0770 hl.user hl.group - -"
+        "d ${cfg.local.targetDir} 0770 ${hl.user} ${hl.group} - -"
       ];
       users.users.restic.createHome = lib.mkForce false;
       systemd.services.restic-rest-server.serviceConfig = lib.attrsets.optionalAttrs cfg.local.enable {
         User = lib.mkForce hl.user;
         Group = lib.mkForce hl.group;
+      };
+      services.postgresqlBackup = {
+        enable = config.services.postgresql.enable;
+        databases = config.services.postgresql.ensureDatabases;
+      };
+      services.mysqlBackup = {
+        enable = config.services.mysql.enable;
+        databases = config.services.mysql.ensureDatabases;
       };
       services.restic = {
         server = lib.attrsets.optionalAttrs cfg.local.enable {
@@ -112,10 +125,16 @@ in
               paths = [
                 "/tmp/appdata-local-${config.networking.hostName}.tar"
               ];
-              backupPrepareCommand = ''
-                ${pkgs.gnutar}/bin/tar -cf /tmp/appdata-local-${config.networking.hostName}.tar ${stateDirs}
-                ${pkgs.restic}/bin/restic -r "${config.services.restic.backups.appdata-local.repository}" -p ${cfg.passwordFile} unlock
-              '';
+              backupPrepareCommand =
+                let
+                  restic = "${pkgs.restic}/bin/restic -r '${config.services.restic.backups.appdata-s3.repository}' -p ${cfg.passwordFile}";
+                in
+                ''
+                  ${restic} stats || ${restic} init
+                  ${pkgs.restic}/bin/restic forget --prune --no-cache --keep-last 5
+                  ${pkgs.gnutar}/bin/tar -cf /tmp/appdata-local-${config.networking.hostName}.tar ${stateDirs}
+                  ${restic} unlock
+                '';
             };
           }
           // lib.attrsets.optionalAttrs cfg.s3.enable {
@@ -142,7 +161,7 @@ in
                 ];
                 backupPrepareCommand =
                   let
-                    restic = "${pkgs.restic}/bin/restic -r '${config.services.restic.backups.appdata-s3.repository}' -p ${config.age.secrets.resticPassword.path}";
+                    restic = "${pkgs.restic}/bin/restic -r '${config.services.restic.backups.appdata-s3.repository}' -p ${cfg.passwordFile}";
                   in
                   ''
                     ${restic} stats || ${restic} init
@@ -151,6 +170,8 @@ in
                     ${restic} unlock
                   '';
               };
+          }
+          // lib.attrsets.optionalAttrs (cfg.s3.enable && hl.services.paperless.enable) {
             paperless-s3 =
               let
                 backupFolder = "paperless-${config.networking.hostName}";
