@@ -47,6 +47,14 @@
               icon = "avmfritzbox.svg";
             };
           }
+          {
+            "Immich (Parents)" = {
+              href = "https://photos.aria.goose.party";
+              description = "Self-hosted photo and video management solution";
+              icon = "immich.svg";
+              siteMonitor = "";
+            };
+          }
         ];
       };
       jellyfin.enable = true;
