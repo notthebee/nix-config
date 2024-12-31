@@ -24,6 +24,10 @@ in
       type = lib.types.path;
       default = "${config.homelab.mounts.fast}/Photos/Immich";
     };
+    url = lib.mkOption {
+      type = lib.types.str;
+      default = "photos.${homelab.baseDomain}";
+    };
   };
   config = lib.mkIf cfg.enable {
     systemd.tmpfiles.rules = [ "d ${cfg.mediaDir} 0775 immich ${homelab.group} - -" ];
@@ -37,11 +41,12 @@ in
       port = 2283;
       mediaLocation = "${cfg.mediaDir}";
     };
-    services.caddy.virtualHosts."photos.${homelab.baseDomain}" = {
+    services.caddy.virtualHosts."${cfg.url}" = {
       useACMEHost = homelab.baseDomain;
       extraConfig = ''
         reverse_proxy http://${config.services.immich.host}:${toString config.services.immich.port}
       '';
     };
   };
+
 }

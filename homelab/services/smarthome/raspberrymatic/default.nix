@@ -17,9 +17,35 @@ in
       type = lib.types.str;
       default = "/persist/opt/services/ccu";
     };
+    url = lib.mkOption {
+      type = lib.types.str;
+      default = "ccu.${homelab.baseDomain}";
+    };
+    homepage.name = lib.mkOption {
+      type = lib.types.str;
+      default = "RaspberryMatic";
+    };
+    homepage.description = lib.mkOption {
+      type = lib.types.str;
+      default = "Homematic IP CCU";
+    };
+    homepage.icon = lib.mkOption {
+      type = lib.types.str;
+      default = "raspberrymatic.png";
+    };
+    homepage.category = lib.mkOption {
+      type = lib.types.str;
+      default = "Smart Home";
+    };
   };
   config = lib.mkIf cfg.enable {
     systemd.tmpfiles.rules = [ "d ${cfg.configDir} 0775 ${homelab.user} ${homelab.group} - -" ];
+    services.caddy.virtualHosts."${cfg.url}" = {
+      useACMEHost = homelab.baseDomain;
+      extraConfig = ''
+        reverse_proxy http://127.0.0.1:8124
+      '';
+    };
     services.udev.extraRules = ''
       ACTION=="add", ATTRS{idVendor}=="1b1f", ATTRS{idProduct}=="c020", RUN+="${pkgs.kmod}/bin/modprobe cp210x" RUN+="${pkgs.bash}/bin/bash -c 'echo 1b1f c020 > /sys/bus/usb-serial/drivers/cp210x/new_id'"
     '';
@@ -33,13 +59,15 @@ in
             hostname = "ccu";
             extraOptions = [
               "--pull=newer"
-              "--network=host"
               "--privileged"
               "--device=/dev/ttyUSB0:/dev/ttyUSB0"
             ];
             volumes = [
               "${cfg.configDir}:/usr/local:rw"
               "/run/current-system/kernel-modules:/lib/modules:ro"
+            ];
+            ports = [
+              "80:8124"
             ];
             environment = {
               APP_NAME = "CCU";

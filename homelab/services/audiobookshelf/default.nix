@@ -13,6 +13,26 @@ in
       type = lib.types.str;
       default = "/var/lib/${service}";
     };
+    url = lib.mkOption {
+      type = lib.types.str;
+      default = "audiobooks.${homelab.baseDomain}";
+    };
+    homepage.name = lib.mkOption {
+      type = lib.types.str;
+      default = "Audiobookshelf";
+    };
+    homepage.description = lib.mkOption {
+      type = lib.types.str;
+      default = "Audiobook and podcast player";
+    };
+    homepage.icon = lib.mkOption {
+      type = lib.types.str;
+      default = "audiobookshelf.svg";
+    };
+    homepage.category = lib.mkOption {
+      type = lib.types.str;
+      default = "Media";
+    };
   };
   config = lib.mkIf cfg.enable {
     services.${service} = {
@@ -21,7 +41,7 @@ in
       group = homelab.group;
       port = 8113;
     };
-    services.caddy.virtualHosts."audiobooks.${homelab.baseDomain}" = {
+    services.caddy.virtualHosts."${cfg.url}" = {
       useACMEHost = homelab.baseDomain;
       extraConfig = ''
         reverse_proxy http://127.0.0.1:${toString config.services.${service}.port}

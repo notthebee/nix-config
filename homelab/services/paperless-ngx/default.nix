@@ -24,6 +24,27 @@ in
       type = lib.types.str;
       default = "/var/lib/${service}";
     };
+    url = lib.mkOption {
+      type = lib.types.str;
+      default = "paperless.${homelab.baseDomain}";
+    };
+    homepage.name = lib.mkOption {
+      type = lib.types.str;
+      default = "Paperless-ngx";
+    };
+    homepage.description = lib.mkOption {
+      type = lib.types.str;
+      default = "Document management system";
+    };
+    homepage.icon = lib.mkOption {
+      type = lib.types.str;
+      default = "paperless.svg";
+    };
+    homepage.category = lib.mkOption {
+      type = lib.types.str;
+      default = "Services";
+    };
+
   };
   config = lib.mkIf cfg.enable {
     services = {
@@ -46,7 +67,7 @@ in
           };
         };
       };
-      caddy.virtualHosts."${service}.${homelab.baseDomain}" = {
+      caddy.virtualHosts."${cfg.url}" = {
         useACMEHost = homelab.baseDomain;
         extraConfig = ''
           reverse_proxy http://127.0.0.1:${toString config.services.${service}.port}

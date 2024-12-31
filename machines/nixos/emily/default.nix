@@ -101,7 +101,10 @@
     networkmanager.enable = false;
     firewall = {
       allowPing = true;
-      trustedInterfaces = [ "enp2s0" ];
+      trustedInterfaces = [
+        "enp2s0"
+        "tailscale0"
+      ];
     };
   };
 

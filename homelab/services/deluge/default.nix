@@ -15,6 +15,26 @@ in
       type = lib.types.str;
       default = "/var/lib/deluge";
     };
+    url = lib.mkOption {
+      type = lib.types.str;
+      default = "deluge.${homelab.baseDomain}";
+    };
+    homepage.name = lib.mkOption {
+      type = lib.types.str;
+      default = "Deluge";
+    };
+    homepage.description = lib.mkOption {
+      type = lib.types.str;
+      default = "Torrent client";
+    };
+    homepage.icon = lib.mkOption {
+      type = lib.types.str;
+      default = "deluge.svg";
+    };
+    homepage.category = lib.mkOption {
+      type = lib.types.str;
+      default = "Downloads";
+    };
     wireguard.configFile = lib.mkOption {
       type = lib.types.path;
       description = "Path to a file with Wireguard config";
@@ -48,7 +68,7 @@ in
       };
     };
 
-    services.caddy.virtualHosts."deluge.${homelab.baseDomain}" = {
+    services.caddy.virtualHosts."${cfg.url}" = {
       useACMEHost = homelab.baseDomain;
       extraConfig = ''
         reverse_proxy http://127.0.0.1:8112

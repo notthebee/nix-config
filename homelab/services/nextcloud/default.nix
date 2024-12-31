@@ -25,6 +25,26 @@ in
       type = lib.types.str;
       default = "/var/lib/${service}";
     };
+    url = lib.mkOption {
+      type = lib.types.str;
+      default = "cloud.${homelab.baseDomain}";
+    };
+    homepage.name = lib.mkOption {
+      type = lib.types.str;
+      default = "Nextcloud";
+    };
+    homepage.description = lib.mkOption {
+      type = lib.types.str;
+      default = "A safe home for all your data";
+    };
+    homepage.icon = lib.mkOption {
+      type = lib.types.str;
+      default = "nextcloud.svg";
+    };
+    homepage.category = lib.mkOption {
+      type = lib.types.str;
+      default = "Services";
+    };
     cloudflared.credentialsFile = lib.mkOption {
       type = lib.types.str;
       example = lib.literalExpression ''
@@ -50,7 +70,7 @@ in
       tunnels.${cfg.cloudflared.tunnelId} = {
         credentialsFile = cfg.cloudflared.credentialsFile;
         default = "http_status:404";
-        ingress."cloud.${homelab.baseDomain}".service = "http://127.0.0.1:8083";
+        ingress."${cfg.url}".service = "http://127.0.0.1:8083";
       };
     };
 

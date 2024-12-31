@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, lib, ... }:
 {
   homelab = {
     enable = true;
@@ -21,7 +21,34 @@
         s3.environmentFile = config.age.secrets.resticBackblazeEnv.path;
         local.enable = true;
       };
-      homepage.enable = true;
+      homepage = {
+        enable = true;
+        misc = [
+          {
+            PiKVM =
+              let
+                ip =
+                  (lib.lists.findSingle (
+                    x: x.hostname == "pikvm"
+                  ) false false config.homelab.networks.local.lan.reservations).ip-address;
+              in
+              {
+                href = "https://${ip}";
+                siteMonitor = "https://${ip}";
+                description = "Open-source KVM solution";
+                icon = "pikvm.svg";
+              };
+          }
+          {
+            FritzBox = {
+              href = "http://192.168.178.1";
+              siteMonitor = "http://192.168.178.1";
+              description = "Cable Modem WebUI";
+              icon = "avmfritzbox.svg";
+            };
+          }
+        ];
+      };
       jellyfin.enable = true;
       paperless = {
         enable = true;
