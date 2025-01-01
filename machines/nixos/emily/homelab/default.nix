@@ -83,7 +83,7 @@
         };
       };
       audiobookshelf.enable = true;
-      delugevpn = {
+      deluge = {
         enable = true;
         wireguard = {
           configFile = config.age.secrets.wireguardCredentials.path;

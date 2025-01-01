@@ -10,7 +10,10 @@
   hardware.enableRedistributableFirmware = true;
   hardware.graphics.enable = true;
   boot.zfs.forceImportRoot = true;
-  motd.networkInterfaces = lib.lists.singleton config.homelab.networks.external.aria.interface;
+  motd = {
+    networkInterfaces = lib.lists.singleton config.homelab.networks.external.aria.interface;
+    enable = true;
+  };
   zfs-root = {
     boot = {
       devNodes = "/dev/disk/by-id/";

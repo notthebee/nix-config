@@ -65,7 +65,7 @@
       inherit (helpers) mkMerge mkNixos mkDarwin;
     in
     mkMerge [
-      (helpers.mkNixos "spencer" inputs.nixpkgs [
+      (mkNixos "spencer" inputs.nixpkgs [
         ./modules/tg-notify
         ./modules/notthebe.ee
       ])

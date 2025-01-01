@@ -5,11 +5,11 @@
   ...
 }:
 let
-  cfg = config.homelab.services.delugevpn;
+  cfg = config.homelab.services.deluge;
   homelab = config.homelab;
 in
 {
-  options.homelab.services.delugevpn = {
+  options.homelab.services.deluge = {
     enable = lib.mkEnableOption "Deluge torrent client (bound to a Wireguard VPN network)";
     configDir = lib.mkOption {
       type = lib.types.str;

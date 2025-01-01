@@ -28,7 +28,10 @@
     ];
   };
   boot.zfs.forceImportRoot = true;
-  motd.networkInterfaces = lib.lists.singleton "enp1s0";
+  motd = {
+    networkInterfaces = lib.lists.singleton "enp2s0";
+    enable = true;
+  };
   zfs-root = {
     boot = {
       devNodes = "/dev/disk/by-id/";
