@@ -127,7 +127,7 @@ in
               ];
               backupPrepareCommand =
                 let
-                  restic = "${pkgs.restic}/bin/restic -r '${config.services.restic.backups.appdata-s3.repository}' -p ${cfg.passwordFile}";
+                  restic = "${pkgs.restic}/bin/restic -r '${config.services.restic.backups.appdata-local.repository}' -p ${cfg.passwordFile}";
                 in
                 ''
                   ${restic} stats || ${restic} init
