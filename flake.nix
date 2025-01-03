@@ -66,8 +66,9 @@
     in
     mkMerge [
       (mkNixos "spencer" inputs.nixpkgs [
-        ./modules/tg-notify
         ./modules/notthebe.ee
+        ./homelab
+        inputs.home-manager.nixosModules.home-manager
       ])
       (mkNixos "maya" inputs.nixpkgs-unstable [
         ./modules/ryzen-undervolt
@@ -76,29 +77,19 @@
         inputs.home-manager-unstable.nixosModules.home-manager
       ])
       (mkNixos "alison" inputs.nixpkgs [
-        ./modules/motd
         ./modules/zfs-root
-        ./modules/monitoring_stats
-        ./modules/monitoring
         ./homelab
         inputs.home-manager.nixosModules.home-manager
       ])
       (mkNixos "emily" inputs.nixpkgs [
         ./modules/zfs-root
-        ./modules/tg-notify
-        ./modules/mover
-        ./modules/motd
         ./modules/tailscale
-        ./modules/monitoring_stats
         ./modules/adios-bot
-        ./modules/duckdns
         ./homelab
         inputs.home-manager.nixosModules.home-manager
       ])
       (mkNixos "aria" inputs.nixpkgs [
         ./modules/zfs-root
-        ./modules/tg-notify
-        ./modules/motd
         ./modules/tailscale
         ./homelab
         inputs.home-manager.nixosModules.home-manager

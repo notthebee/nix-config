@@ -10,6 +10,12 @@ let
       name: value: value ? configDir && value ? enable && value.enable
     ) config.homelab.services
   );
+
+  networkInterface =
+    if lib.attrsets.hasAttrByPath [ config.networking.hostName ] config.homelab.networks.external then
+      config.homelab.networks.external.${config.networking.hostName}.interface
+    else
+      "";
   motd = pkgs.writeShellScriptBin "motd" ''
     #! /usr/bin/env bash
     source /etc/os-release
@@ -43,10 +49,24 @@ let
 
     printf "$BOLD Welcome to $(hostname)!$ENDCOLOR\n"
     printf "\n"
-    ${lib.strings.concatStrings (
-      lib.lists.forEach config.motd.networkInterfaces (
+    ${lib.strings.concatMapStrings (x: "${x}\n") (
+      lib.lists.forEach config.homelab.motd.networkInterfaces (
         x:
-        "printf \"$BOLD  * %-20s$ENDCOLOR %s\\n\" \"IPv4 ${x}\" \"$(ip -4 addr show ${x} | grep -oP '(?<=inet\\s)\\d+(\\.\\d+){3}')\"\n"
+        lib.strings.concatMapStrings (x: "${x}\n") ([
+          (
+            if x == "" then
+              ''
+                NETDEV=$(ip -o route get 8.8.8.8 | cut -f 5 -d " ")
+              ''
+            else
+              ''
+                NETDEV=${x}
+              ''
+          )
+          ''
+            printf "$BOLD  * %-20s$ENDCOLOR %s\n" "IPv4 $NETDEV" "$(ip -4 addr show $NETDEV | grep -oP '(?<=inet\s)\d+(\.\d+){3}')"
+          ''
+        ])
       )
     )}
     printf "$BOLD  * %-20s$ENDCOLOR %s\n" "Release" "$PRETTY_NAME"
@@ -77,17 +97,17 @@ let
   '';
 in
 {
-  options.motd = {
+  options.homelab.motd = {
     enable = lib.mkEnableOption {
       description = "motd Greeting";
     };
     networkInterfaces = lib.mkOption {
       description = "Network interfaces to monitor";
       type = lib.types.listOf lib.types.str;
-      default = lib.mapAttrsToList (_: val: val.interface) config.homelab.networks.local;
+      default = [ networkInterface ];
     };
   };
-  config = lib.mkIf config.motd.enable {
+  config = lib.mkIf config.homelab.motd.enable {
     environment.systemPackages = [ motd ];
   };
 }

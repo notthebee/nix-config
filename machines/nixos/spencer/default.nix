@@ -25,7 +25,6 @@
   imports = [
     ./matrix.nix
     ./wireguard.nix
-    ../../networks.nix
     (modulesPath + "/profiles/qemu-guest.nix")
   ];
 

@@ -14,7 +14,6 @@ let
   ) networks;
 in
 {
-
   _module.args = {
     externalInterface = externalInterface;
     internalInterfaces = internalInterfaces;
@@ -24,13 +23,16 @@ in
     ./dns.nix
     ./firewall.nix
     ./wireguard.nix
-    ../../../networks.nix
   ];
 
   boot.kernel.sysctl = {
     "net.ipv6.conf.all.forwarding" = true;
     "net.ipv6.conf.${externalInterface}.accept_ra" = 2;
   };
+
+  homelab.motd.networkInterfaces = lib.mapAttrsToList (
+    _: v: v.interface
+  ) config.homelab.networks.local;
 
   networking = {
     hostName = "alison";

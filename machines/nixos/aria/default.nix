@@ -10,10 +10,6 @@
   hardware.enableRedistributableFirmware = true;
   hardware.graphics.enable = true;
   boot.zfs.forceImportRoot = true;
-  motd = {
-    networkInterfaces = lib.lists.singleton config.homelab.networks.external.aria.interface;
-    enable = true;
-  };
   zfs-root = {
     boot = {
       devNodes = "/dev/disk/by-id/";
@@ -48,7 +44,6 @@
     ./syncthing
     ./backup
     ./shares
-    ../../networks.nix
   ];
 
   services.auto-aspm.enable = true;
@@ -121,4 +116,8 @@
     };
   };
 
+  tg-notify = {
+    enable = true;
+    credentialsFile = config.age.secrets.tgNotifyCredentials.path;
+  };
 }

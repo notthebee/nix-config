@@ -19,7 +19,6 @@ in
     ./lact.nix
     ./boot.nix
     ./no-rgb.nix
-    ../../networks.nix
   ];
 
   environment.systemPackages = [

@@ -43,7 +43,6 @@
   imports = [
     ./router
     ./filesystems
-    ../../networks.nix
   ];
 
   virtualisation.docker.storageDriver = "overlay2";

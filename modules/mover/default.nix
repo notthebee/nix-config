@@ -104,10 +104,9 @@ in
           User = config.services.mover.user;
           Group = config.services.mover.group;
         };
-        postStop = ''
-          message=$(/run/wrappers/bin/sudo /run/current-system/sw/bin/journalctl --unit=mergerfs-uncache.service -n 20 --no-pager)
-          /run/current-system/sw/bin/notify -s "$SERVICE_RESULT" -t "mergerfs-uncache Mover" -m "$message"
-        '';
+        onFailure = lib.lists.optionals (config ? tg-notify && config.tg-notify.enable) [
+          "tg-notify@%i.service"
+        ];
       };
       timers.mergerfs-uncache = {
         wantedBy = [ "multi-user.target" ];

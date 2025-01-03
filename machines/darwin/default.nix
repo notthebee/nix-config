@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ ... }:
 {
   nixpkgs = {
     config = {

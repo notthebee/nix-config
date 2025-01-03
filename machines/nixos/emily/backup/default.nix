@@ -1,18 +1,9 @@
 {
   vars,
-  pkgs,
   config,
   ...
 }:
 {
-  systemd.tmpfiles.rules = [
-    "d ${vars.mainArray}/Backups/restic 0775 share share - -"
-  ];
-
-  environment.systemPackages = with pkgs; [
-    restic
-  ];
-
   services.borgbackup.jobs.parents-backup = {
     doInit = false;
     paths = [

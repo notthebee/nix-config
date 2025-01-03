@@ -16,7 +16,6 @@ let
     strings
     ;
   inherit (builtins)
-    head
     toString
     map
     tail

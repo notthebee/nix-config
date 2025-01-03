@@ -7,15 +7,6 @@
 }:
 {
   system.stateVersion = "22.11";
-
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-    options = "--delete-older-than 30d";
-  };
-  nix.optimise.automatic = true;
-  nix.optimise.dates = [ "weekly" ];
-
   system.autoUpgrade = {
     enable = true;
     flake = "/etc/nixos\\?submodules=1";
@@ -29,12 +20,11 @@
     allowReboot = true;
   };
 
-  nixpkgs = {
-    config = {
-      allowUnfree = true;
-      allowUnfreePredicate = (_: true);
-    };
-  };
+  imports = [
+    ./filesystems
+    ./nix
+    ./networks
+  ];
 
   users.users = {
     root = {
@@ -62,15 +52,9 @@
     ];
   };
 
-  nix.settings.experimental-features = lib.mkDefault [
-    "nix-command"
-    "flakes"
-  ];
-
   programs.git.enable = true;
   programs.mosh.enable = true;
   programs.htop.enable = true;
-
   programs.neovim = {
     enable = true;
     viAlias = true;
@@ -94,11 +78,14 @@
       wheelNeedsPassword = lib.mkDefault false;
     };
   };
+
+  homelab.motd.enable = true;
+
   environment.systemPackages = with pkgs; [
     wget
     iperf3
     eza
-    neofetch
+    fastfetch
     (python312.withPackages (ps: with ps; [ pip ]))
     tmux
     rsync

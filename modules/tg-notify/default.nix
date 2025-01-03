@@ -2,15 +2,12 @@
   config,
   lib,
   pkgs,
-  inputs,
   ...
 }:
 let
-  notify = pkgs.writeShellScriptBin "notify" ''
+  cfg = config.tg-notify;
+  tg-notify = pkgs.writeShellScriptBin "tg-notify" ''
     #!/bin/bash
-    api_key=$(cat ${config.age.secrets.telegramApiKey.path})
-    channel_id=$(cat ${config.age.secrets.telegramChannelId.path})
-
 
     POSITIONAL_ARGS=()
 
@@ -26,11 +23,6 @@ let
           shift # past argument
           shift # past value
           ;;
-        -s)
-          severity="$2"
-          shift # past argument
-          shift # past value
-          ;;
         -*|--*)
           echo "Unknown option $1"
           exit 1
@@ -42,8 +34,6 @@ let
       esac
     done
 
-    set -- "''${POSITIONAL_ARGS[@]}"
-
     declare -a error_messages=(
     "Permanent errors have been detected"
     "UNAVAIL"
@@ -52,59 +42,61 @@ let
     "unrecoverable error"
     )
 
-    if [ -z "''${message}" ] || [ "''${message}" == " " ]; then
-      message=$(</dev/stdin)
-    fi
+    set -- "''${POSITIONAL_ARGS[@]}"
 
-    if [ -z "''${severity}" ] || [ "''${severity}" == " " ]; then
+    hostname=$(${pkgs.systemd}/bin/hostnamectl hostname)
+    if [[ $title =~ "service" ]]; then
+      final_title="❌ Service $title failed on $hostname"
+      final_message=$(${pkgs.systemd}/bin/journalctl --unit=$title -n 20 --no-pager)
+    else
       emoji="✅"
       for i in "''${error_messages[@]}"; do
         if [[ "$message" == *"$i"* ]]; then
           emoji="❌"
         fi
       done
-    else
-      case ''${severity} in
-      "success")
-        emoji="✅"
-        ;;
-      "info")
-        emoji="ℹ️"
-        ;;
-      *)
-        emoji="❌"
-        ;;
-      esac
-      status="Status: ''$severity"
+      final_title="$emoji $title on $hostname"
+      final_message=$message
     fi
 
     text="
-    $emoji <b>$title on $(${pkgs.systemd}/bin/hostnamectl hostname)</b>
-    $status
-    $(date)
+    <b>$final_title</b>
 
-    <code>$message</code>
+    <code>$final_message</code>
     "
-    /run/current-system/sw/bin/curl -s --data "chat_id=$channel_id" \
+    /run/current-system/sw/bin/curl --data "chat_id=$CHANNEL_ID" \
             --data-urlencode "text=$text" \
             --data-urlencode "parse_mode=HTML" \
-            https://api.telegram.org/$api_key/sendMessage > /dev/null
+            https://api.telegram.org/$API_KEY/sendMessage
+
   '';
 in
 {
-  environment.systemPackages = [ notify ];
-
-  age.secrets.telegramApiKey = lib.mkDefault {
-    file = "${inputs.secrets}/telegramApiKey.age";
-    mode = "770";
-    owner = "share";
-    group = "share";
+  options.tg-notify = {
+    enable = lib.mkEnableOption {
+      description = "Send a Telegram notification on service failure";
+    };
+    credentialsFile = lib.mkOption {
+      type = lib.types.path;
+      description = "Path to a file with the Telegram API key and channel ID";
+      example = lib.literalExpression ''
+        pkgs.writeText "telegram-credentials" '''
+          API_KEY=secret
+          CHANNEL_ID=secret
+        '''
+      '';
+    };
   };
-  age.secrets.telegramChannelId = lib.mkDefault {
-    file = "${inputs.secrets}/telegramChannelId.age";
-    mode = "770";
-    owner = "share";
-    group = "share";
-  };
 
+  config = lib.mkIf cfg.enable {
+    systemd.services."tg-notify@" = {
+      description = "Send a Telegram notification on service failure";
+      serviceConfig = {
+        Type = "oneshot";
+        ExecStart = "${lib.getExe tg-notify} -t %i.service";
+        EnvironmentFile = cfg.credentialsFile;
+      };
+    };
+    environment.systemPackages = [ tg-notify ];
+  };
 }

@@ -28,10 +28,6 @@
     ];
   };
   boot.zfs.forceImportRoot = true;
-  motd = {
-    networkInterfaces = lib.lists.singleton "enp2s0";
-    enable = true;
-  };
   zfs-root = {
     boot = {
       devNodes = "/dev/disk/by-id/";
@@ -74,7 +70,6 @@
     ./backup
     ./shares
     ./homelab
-    ../../networks.nix
   ];
 
   services.adiosBot = {
@@ -155,4 +150,9 @@
     intel-gpu-tools
     powertop
   ];
+
+  tg-notify = {
+    enable = true;
+    credentialsFile = config.age.secrets.tgNotifyCredentials.path;
+  };
 }

@@ -52,10 +52,13 @@ in
       };
       modules = [
         ./homelab
-        ./machines/nixos
+        ./machines/nixos/common
         ./machines/nixos/${machineHostname}
         ./modules/email
+        ./modules/tg-notify
+        ./modules/duckdns
         ./modules/auto-aspm
+        ./modules/mover
         "${inputs.secrets}/default.nix"
         inputs.agenix.nixosModules.default
         ./users/notthebee

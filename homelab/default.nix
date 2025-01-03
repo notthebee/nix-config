@@ -67,5 +67,6 @@
   imports = [
     ./services
     ./networks
+    ./motd
   ];
 }
