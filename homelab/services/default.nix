@@ -79,6 +79,7 @@
     ./homepage
     ./immich
     ./jellyfin
+    ./microbin
     ./nextcloud
     ./smarthome/homeassistant
     ./smarthome/raspberrymatic

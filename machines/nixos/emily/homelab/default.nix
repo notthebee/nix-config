@@ -82,6 +82,13 @@
           credentialsFile = config.age.secrets.vaultwardenCloudflared.path;
         };
       };
+      microbin = {
+        enable = true;
+        cloudflared = {
+          tunnelId = "216d72b6-6b2b-412f-90bc-1a44c1264871";
+          credentialsFile = config.age.secrets.microbinCloudflared.path;
+        };
+      };
       audiobookshelf.enable = true;
       deluge = {
         enable = true;
