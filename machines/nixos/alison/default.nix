@@ -51,19 +51,9 @@
     allowReboot = lib.mkForce false;
   };
 
-  users = {
-    groups.share = {
-      gid = 993;
-    };
-    users.share = {
-      uid = 994;
-      isSystemUser = true;
-      group = "share";
-    };
-  };
-
   homelab = {
     enable = true;
+    cloudflare.dnsCredentialsFile = config.age.secrets.cloudflareDnsApiCredentials.path;
     baseDomain = "goose.party";
     timeZone = "Europe/Berlin";
     mounts = {
@@ -71,17 +61,13 @@
     };
     services = {
       enable = true;
-      uptime-kuma.enable = true;
-      traefik = {
-        enable = true;
-        listenAddress = config.homelab.networks.local.lan.cidr;
-        acme = {
-          email = config.email.fromAddress;
-          dnsChallenge.credentialsFile = config.age.secrets.cloudflareDnsApiCredentials.path;
-        };
-      };
+      homeassistant.enable = true;
+      raspberrymatic.enable = true;
     };
   };
+  services.caddy.globalConfig = ''
+    default_bind ${config.homelab.networks.local.lan.cidr}
+  '';
   environment.systemPackages = with pkgs; [
     pciutils
     smartmontools

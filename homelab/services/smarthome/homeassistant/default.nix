@@ -50,15 +50,18 @@ in
             autoStart = true;
             extraOptions = [
               "--pull=newer"
-              "--network=host"
             ];
             volumes = [
               "${cfg.configDir}:/config"
             ];
+            ports = [
+              "127.0.0.1:8123:8123"
+              "127.0.0.1:8124:8124"
+            ];
             environment = {
               TZ = homelab.timeZone;
-              PUID = "994";
-              PGID = "993";
+              PUID = toString config.users.users.${homelab.user}.uid;
+              PGID = toString config.users.groups.${homelab.group}.gid;
             };
           };
         };

@@ -68,7 +68,6 @@
   imports = [
     ./filesystems
     ./backup
-    ./shares
     ./homelab
   ];
 
@@ -114,6 +113,8 @@
     enable = true;
     cacheArray = vars.cacheArray;
     backingArray = vars.slowArray;
+    user = config.homelab.user;
+    group = config.homelab.group;
     percentageFree = 60;
     excludedPaths = [
       "YoutubeCurrent"
