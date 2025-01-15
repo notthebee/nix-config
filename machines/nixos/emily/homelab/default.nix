@@ -1,4 +1,7 @@
 { config, lib, ... }:
+let
+  hl = config.homelab;
+in
 {
   homelab = {
     enable = true;
@@ -10,6 +13,34 @@
       slow = "/mnt/mergerfs_slow";
       fast = "/mnt/cache";
       merged = "/mnt/user";
+    };
+    samba = {
+      enable = true;
+      passwordFile = config.age.secrets.sambaPassword.path;
+      shares = {
+        Backups = {
+          path = "${hl.mounts.merged}/Backups";
+        };
+        Documents = {
+          path = "${hl.mounts.fast}/Documents";
+        };
+        Media = {
+          path = "${hl.mounts.merged}/Media";
+        };
+        Misc = {
+          path = "${hl.mounts.merged}/Misc";
+        };
+        TimeMachine = {
+          path = "${hl.mounts.fast}/TimeMachine";
+          "fruit:time machine" = "yes";
+        };
+        YoutubeArchive = {
+          path = "${hl.mounts.merged}/YoutubeArchive";
+        };
+        YoutubeCurrent = {
+          path = "${hl.mounts.fast}/YoutubeCurrent";
+        };
+      };
     };
     services = {
       enable = true;

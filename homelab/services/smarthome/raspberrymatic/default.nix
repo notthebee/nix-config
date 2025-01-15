@@ -57,23 +57,22 @@ in
             image = "ghcr.io/jens-maus/raspberrymatic:latest";
             autoStart = true;
             hostname = "ccu";
+            dependsOn = [ "homeassistant" ];
             extraOptions = [
               "--pull=newer"
               "--privileged"
               "--device=/dev/ttyUSB0:/dev/ttyUSB0"
+              "--network=container:homeassistant"
             ];
             volumes = [
               "${cfg.configDir}:/usr/local:rw"
               "/run/current-system/kernel-modules:/lib/modules:ro"
             ];
-            ports = [
-              "80:8124"
-            ];
             environment = {
               APP_NAME = "CCU";
               TZ = homelab.timeZone;
-              UID = homelab.user;
-              GID = homelab.group;
+              UID = toString config.users.users.${homelab.user}.uid;
+              GID = toString config.users.groups.${homelab.group}.gid;
             };
           };
         };
