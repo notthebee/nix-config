@@ -63,6 +63,7 @@
       enable = true;
       homeassistant.enable = true;
       raspberrymatic.enable = true;
+      uptime-kuma.enable = true;
     };
   };
   services.caddy.globalConfig = ''
