@@ -16,14 +16,15 @@ passwd
 From your host, copy the public SSH key to the server
 
 ```bash
+export NIXOS_HOST=192.168.2.xxx
 ssh-add ~/.ssh/notthebee
-ssh-copy-id -i ~/.ssh/notthebee root@<NIXOS-IP>
+ssh-copy-id -i ~/.ssh/notthebee root@$NIXOS_HOST
 ```
 
 SSH into the host with agent forwarding enabled (for the secrets repo access)
 
 ```bash
-ssh -A root@<NIXOS-IP>
+ssh -A root@$NIXOS_HOST
 ```
 
 Enable flakes
@@ -65,9 +66,9 @@ Put the private and GPG key into place (required for secret management)
 ```bash
 mkdir -p /mnt/home/notthebee/.ssh
 exit
-scp ~/.ssh/id_ed25519 root@<NIXOS-IP>:/mnt/home/notthebee/.ssh
-scp ~/.ssh/git-crypt-nix root@<NIXOS-IP>:/mnt/home/notthebee/.ssh
-ssh root@<NIXOS-IP>
+scp ~/.ssh/notthebee root@$NIXOS_HOST:/mnt/home/notthebee/.ssh
+scp ~/.ssh/git-crypt-nix root@$NIXOS_HOST:/mnt/home/notthebee/.ssh
+ssh root@$NIXOS_HOST
 chmod 700 /mnt/home/notthebee/.ssh
 chmod 600 /mnt/home/notthebee/.ssh/*
 ```
@@ -76,6 +77,7 @@ Unlock the git-crypt vault
 
 ```bash
 cd /mnt/etc/nixos
+chown -R root:root .
 git-crypt unlock /mnt/home/notthebee/.ssh/git-crypt-nix
 ```
 
@@ -91,7 +93,7 @@ nixos-install \
 Unmount the filesystems
 
 ```bash
-umount "/mnt/boot/esp"
+umount "/mnt/boot/efis/*"
 umount -Rl "/mnt"
 zpool export -a
 ```
