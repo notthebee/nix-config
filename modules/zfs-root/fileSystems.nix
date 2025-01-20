@@ -57,7 +57,7 @@ in
       };
     }) cfg.bindmounts
     ++ map (esp: {
-      "/boot/esp" = {
+      "/boot/efis/${esp}" = {
         device = "${config.zfs-root.boot.devNodes}/${esp}";
         fsType = "vfat";
         options = [

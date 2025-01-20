@@ -1,9 +1,9 @@
 {
-  disko.devices = {
+  disko.devices = rec {
     disk = {
       main = {
         type = "disk";
-        device = "to-be-filled-during-installation";
+        device = "/dev/disk/by-id/to-be-filled-during-installation";
         content = {
           type = "gpt";
           partitions = {
@@ -13,7 +13,7 @@
               content = {
                 type = "filesystem";
                 format = "vfat";
-                mountpoint = "/boot/esp";
+                mountpoint = "/boot/efis/to-be-filled-during-installation-part2";
               };
             };
             bpool = {
@@ -39,7 +39,7 @@
       };
       mirror = {
         type = "disk";
-        device = "to-be-filled-during-installation";
+        device = "/dev/disk/by-id/to-be-filled-during-installation";
         content = {
           type = "gpt";
           partitions = {
@@ -49,7 +49,7 @@
               content = {
                 type = "filesystem";
                 format = "vfat";
-                mountpoint = "/boot/esp2";
+                mountpoint = "/boot/efis/to-be-filled-during-installation-part2";
               };
             };
             bpool = {

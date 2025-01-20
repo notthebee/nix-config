@@ -139,7 +139,6 @@ in
         lib.attrsets.filterAttrs (n: v: v.dhcp) networks
       ))
       ++ [
-        "guest-netdev.service"
         "network-pre.target"
       ];
     after = config.systemd.services.kea-dhcp4-server.wants;
@@ -160,9 +159,9 @@ in
         enable = true;
         settings = {
           interfaces-config = {
-            interfaces =
-              (lib.mapAttrsToList (_: val: val.interface) (lib.attrsets.filterAttrs (n: v: v.dhcp) networks))
-              ++ [ "guest" ];
+            interfaces = lib.mapAttrsToList (_: val: val.interface) (
+              lib.attrsets.filterAttrs (n: v: v.dhcp) networks
+            );
           };
           lease-database = {
             name = "/var/lib/kea/dhcp4.leases";
