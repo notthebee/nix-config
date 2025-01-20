@@ -14,9 +14,8 @@
   boot.zfs.forceImportRoot = true;
   zfs-root = {
     boot = {
-      devNodes = "/dev/disk/by-id/";
+      devNodes = "/dev/disk/by-id";
       bootDevices = [
-        "nvme-PC602_NVMe_SK_hynix_256GB_AI97N00681CA38E2W"
         "nvme-Vi3000_Internal_PCIe_NVMe_M.2_SSD_256GB_493733094834956"
       ];
       immutable = false;

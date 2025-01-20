@@ -7,31 +7,37 @@ Very much a work in progress.
 ## Installation runbook (NixOS)
 
 Create a root password using the TTY
+
 ```bash
 sudo su
 passwd
 ```
 
 From your host, copy the public SSH key to the server
+
 ```bash
 ssh-add ~/.ssh/notthebee
 ssh-copy-id -i ~/.ssh/notthebee root@<NIXOS-IP>
 ```
 
 SSH into the host with agent forwarding enabled (for the secrets repo access)
+
 ```bash
 ssh -A root@<NIXOS-IP>
 ```
 
 Enable flakes
+
 ```bash
 mkdir -p ~/.config/nix
 echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
 ```
 
 Partition and mount the drives using [disko](https://github.com/nix-community/disko)
+
 ```bash
 DISK='/dev/disk/by-id/ata-Samsung_SSD_870_EVO_250GB_S6PENL0T902873K'
+DISK2='/dev/disk/by-id/ata-Samsung_SSD_870_EVO_250GB_S6PE58S586SAER'
 
 curl https://raw.githubusercontent.com/notthebee/nix-config/main/disko/zfs-root/default.nix \
     -o /tmp/disko.nix
@@ -41,18 +47,21 @@ nix --experimental-features "nix-command flakes" run github:nix-community/disko 
 ```
 
 Install git and git-crypt
+
 ```bash
 nix-env -f '<nixpkgs>' -iA git
 nix-env -f '<nixpkgs>' -iA git-crypt
 ```
 
 Clone this repository
+
 ```bash
 mkdir -p /mnt/etc/nixos
 git clone https://github.com/notthebee/nix-config.git /mnt/etc/nixos
 ```
 
 Put the private and GPG key into place (required for secret management)
+
 ```bash
 mkdir -p /mnt/home/notthebee/.ssh
 exit
@@ -64,12 +73,14 @@ chmod 600 /mnt/home/notthebee/.ssh/*
 ```
 
 Unlock the git-crypt vault
+
 ```bash
 cd /mnt/etc/nixos
 git-crypt unlock /mnt/home/notthebee/.ssh/git-crypt-nix
 ```
 
 Install the system
+
 ```bash
 nixos-install \
 --root "/mnt" \
@@ -78,6 +89,7 @@ nixos-install \
 ```
 
 Unmount the filesystems
+
 ```bash
 umount "/mnt/boot/esp"
 umount -Rl "/mnt"
@@ -85,6 +97,7 @@ zpool export -a
 ```
 
 Reboot
+
 ```bash
 reboot
 ```

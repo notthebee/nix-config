@@ -49,7 +49,7 @@
               content = {
                 type = "filesystem";
                 format = "vfat";
-                mountpoint = "/boot/esp";
+                mountpoint = "/boot/esp2";
               };
             };
             bpool = {
