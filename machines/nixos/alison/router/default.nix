@@ -6,7 +6,7 @@
   ...
 }:
 let
-  externalInterface = "enp2s0";
+  externalInterface = "enp7s0";
   networks = config.homelab.networks.local;
   internalInterfaces = lib.mapAttrsToList (_: val: val.interface) networks;
   internalIPs = lib.mapAttrsToList (
@@ -44,8 +44,8 @@ in
     };
     bridges = {
       br0.interfaces = [
-        "enp1s0"
-        "eno1"
+        "enp6s0"
+        "enp5s0"
       ];
       br1.interfaces = [
         "enp4s0"

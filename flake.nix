@@ -1,6 +1,7 @@
 {
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/release-24.11";
+    nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-24.11-darwin";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     nixvim = {
       url = "github:nix-community/nixvim";
@@ -31,8 +32,8 @@
       flake = false;
     };
     nix-darwin = {
-      url = "github:LnL7/nix-darwin/master";
-      inputs.nixpkgs.follows = "nixpkgs";
+      url = "github:LnL7/nix-darwin/nix-darwin-24.11";
+      inputs.nixpkgs.follows = "nixpkgs-darwin";
     };
     adios-bot = {
       url = "github:notthebee/adiosbot";

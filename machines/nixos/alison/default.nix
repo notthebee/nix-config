@@ -15,7 +15,10 @@
   zfs-root = {
     boot = {
       devNodes = "/dev/disk/by-id/";
-      bootDevices = [ "nvme-WD_BLACK_SN770_500GB_22453P805347" ];
+      bootDevices = [
+        "nvme-PC602_NVMe_SK_hynix_256GB_AI97N00681CA38E2W"
+        "nvme-Vi3000_Internal_PCIe_NVMe_M.2_SSD_256GB_493733094834956"
+      ];
       immutable = false;
       availableKernelModules = [
         "uhci_hcd"
