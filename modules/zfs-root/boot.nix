@@ -66,8 +66,8 @@ in
     partitionScheme = mkOption {
       default = {
         biosBoot = "-part4";
-        efiBoot = "-part1";
-        bootPool = "-part2";
+        efiBoot = "-part2";
+        bootPool = "-part1";
         rootPool = "-part3";
       };
       description = "Describe on disk partitions";
@@ -132,13 +132,16 @@ in
         loader = {
           efi = {
             canTouchEfiVariables = (if cfg.removableEfi then false else true);
-            efiSysMountPoint = "/boot/esp";
+            efiSysMountPoint = ("/boot/efis/" + (builtins.head cfg.bootDevices) + cfg.partitionScheme.efiBoot);
           };
           generationsDir.copyKernels = true;
           grub = {
             enable = true;
-            #devices = (map (diskName: cfg.devNodes + diskName) cfg.bootDevices);
-            device = "nodev";
+            mirroredBoots = map (diskName: {
+              devices = [ "nodev" ];
+              path = "/boot/efis/${diskName}${cfg.partitionScheme.efiBoot}";
+            }) cfg.bootDevices;
+            #device = "nodev";
             efiInstallAsRemovable = cfg.removableEfi;
             copyKernels = true;
             efiSupport = true;
@@ -147,7 +150,7 @@ in
               toString (
                 map (diskName: ''
                   set -x
-                  ${pkgs.coreutils-full}/bin/cp -r ${config.boot.loader.efi.efiSysMountPoint}/EFI /boot/esp
+                  ${pkgs.coreutils-full}/bin/cp -r ${config.boot.loader.efi.efiSysMountPoint}/EFI /boot/efis/${diskName}${cfg.partitionScheme.efiBoot}
                   set +x
                 '') (tail cfg.bootDevices)
               )

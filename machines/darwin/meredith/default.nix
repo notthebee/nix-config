@@ -39,74 +39,72 @@
       "zen-browser"
     ];
   };
-  environment.systemPackages =
-    with pkgs;
-    [
-      (python312Full.withPackages (
-        ps: with ps; [
-          pip
-          jmespath
-          requests
-          setuptools
-          pyyaml
-          pyopenssl
-        ]
-      ))
-      ansible-language-server
-      yq
-      git-lfs
-      pre-commit
-      bfg-repo-cleaner
-      go
-      gotools
-      gopls
-      go-outline
-      gopls
-      gopkgs
-      gocode-gomod
-      godef
-      golint
-      colima
-      docker
-      docker-compose
-      utm
-      wget
-      git-crypt
-      iperf3
-      eza
-      neofetch
-      tmux
-      rsync
-      nmap
-      jq
-      yq
-      ripgrep
-      sqlite
-      pwgen
-      gnupg
-      inputs.agenix.packages."${system}".default
-      yt-dlp
-      ffmpeg
-      discord
-      git-filter-repo
-      spotify
-      slack
-      mattermost
-      google-cloud-sdk
-      pinentry.curses
-      deploy-rs
-      nixpkgs-fmt
-      nil
-      nss
-      nss.tools
-      mkcert
-      karabiner-elements
-      pulumi-bin
-      devenv
-      nixfmt-rfc-style
-      opentofu
-    ]
-    ++ [ inputs.nixpkgs-envoy.legacyPackages.${pkgs.system}.envoy ];
+  environment.systemPackages = with pkgs; [
+    (python312Full.withPackages (
+      ps: with ps; [
+        pip
+        jmespath
+        requests
+        setuptools
+        pyyaml
+        pyopenssl
+      ]
+    ))
+    ansible-language-server
+    yq
+    git-lfs
+    pre-commit
+    bfg-repo-cleaner
+    go
+    gotools
+    gopls
+    go-outline
+    gopls
+    gopkgs
+    gocode-gomod
+    godef
+    golint
+    colima
+    docker
+    docker-compose
+    utm
+    wget
+    git-crypt
+    iperf3
+    eza
+    neofetch
+    tmux
+    rsync
+    nmap
+    jq
+    yq
+    just
+    ripgrep
+    sqlite
+    pwgen
+    gnupg
+    inputs.agenix.packages."${system}".default
+    yt-dlp
+    ffmpeg
+    discord
+    git-filter-repo
+    spotify
+    slack
+    mattermost
+    google-cloud-sdk
+    pinentry.curses
+    deploy-rs
+    nixpkgs-fmt
+    nil
+    nss
+    nss.tools
+    mkcert
+    karabiner-elements
+    pulumi-bin
+    devenv
+    nixfmt-rfc-style
+    opentofu
+  ];
 
   services.nix-daemon.enable = lib.mkForce true;
 

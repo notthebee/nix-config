@@ -52,7 +52,7 @@ in
       };
       modules = [
         ./homelab
-        ./machines/nixos/common
+        ./machines/nixos/_common
         ./machines/nixos/${machineHostname}
         ./modules/email
         ./modules/tg-notify
