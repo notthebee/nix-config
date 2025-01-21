@@ -6,7 +6,7 @@
   ...
 }:
 let
-  externalInterface = "enp7s0";
+  externalInterface = "wan0";
   networks = config.homelab.networks.local;
   internalInterfaces = lib.mapAttrsToList (_: val: val.interface) networks;
   internalIPs = lib.mapAttrsToList (
@@ -24,6 +24,13 @@ in
     ./firewall.nix
     ./wireguard.nix
   ];
+
+  services.udev.extraRules = ''
+    SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="00:e2:69:63:e7:57", ATTR{type}=="1", NAME="wan0"
+    SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="00:e2:69:63:e7:56", ATTR{type}=="1", NAME="lan0"
+    SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="00:e2:69:63:e7:55", ATTR{type}=="1", NAME="lan1"
+    SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="00:e2:69:63:e7:54", ATTR{type}=="1", NAME="lan2"
+  '';
 
   boot.kernel.sysctl = {
     "net.ipv6.conf.all.forwarding" = true;
@@ -44,11 +51,11 @@ in
     };
     bridges = {
       br0.interfaces = [
-        "enp6s0"
-        "enp5s0"
+        "lan0"
+        "lan1"
       ];
       br1.interfaces = [
-        "enp4s0"
+        "lan2"
         "guest"
       ];
     };
