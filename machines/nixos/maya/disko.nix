@@ -2,7 +2,7 @@
   disko.devices = {
     disk = {
       main = {
-        device = "to-be-filled-during-installation";
+        device = "nvme-CT1000P1SSD8_202629273359_1";
         type = "disk";
         content = {
           type = "gpt";

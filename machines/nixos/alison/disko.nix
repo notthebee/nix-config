@@ -1,9 +1,14 @@
+{ config, builtins, ... }:
+let
+  diskMain = builtins.head config.zfs-root.bootDevices;
+  diskMirror = builtins.tail config.zfs-root.bootDevices;
+in
 {
-  disko.devices = rec {
+  disko.devices = {
     disk = {
       main = {
         type = "disk";
-        device = "/dev/disk/by-id/to-be-filled-during-installation";
+        device = "/dev/disk/by-id/${diskMain}";
         content = {
           type = "gpt";
           partitions = {
@@ -13,7 +18,7 @@
               content = {
                 type = "filesystem";
                 format = "vfat";
-                mountpoint = "/boot/efis/to-be-filled-during-installation-part2";
+                mountpoint = "/boot/efis/${diskMain}-part2";
               };
             };
             bpool = {
@@ -39,7 +44,7 @@
       };
       mirror = {
         type = "disk";
-        device = "/dev/disk/by-id/to-be-filled-during-installation";
+        device = "/dev/disk/by-id/${diskMirror}";
         content = {
           type = "gpt";
           partitions = {
@@ -49,7 +54,7 @@
               content = {
                 type = "filesystem";
                 format = "vfat";
-                mountpoint = "/boot/efis/to-be-filled-during-installation-part2";
+                mountpoint = "/boot/efis/${diskMirror}-part2";
               };
             };
             bpool = {
@@ -151,7 +156,8 @@
           };
           "nixos/var/lib" = {
             type = "zfs_fs";
-            options.mountpoint = "none";
+            options.mountpoint = "legacy";
+            mountpoint = "/var/lib";
           };
           "nixos/config" = {
             type = "zfs_fs";

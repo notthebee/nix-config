@@ -26,6 +26,8 @@
     ./networks
   ];
 
+  time.timeZone = "Europe/Berlin";
+
   users.users = {
     root = {
       initialHashedPassword = config.age.secrets.hashedUserPassword.path;
