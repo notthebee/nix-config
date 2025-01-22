@@ -1,5 +1,4 @@
 {
-  lib,
   config,
   pkgs,
   ...
@@ -10,6 +9,17 @@
   hardware.enableRedistributableFirmware = true;
   hardware.graphics.enable = true;
   boot.zfs.forceImportRoot = true;
+  boot.kernelParams = [
+    "pcie_aspm=force"
+    "consoleblank=60"
+  ];
+  networking = {
+    hostName = "aria";
+    hostId = "35cd8bc5";
+    firewall = {
+      enable = true;
+    };
+  };
   zfs-root = {
     boot = {
       devNodes = "/dev/disk/by-id/";
@@ -23,19 +33,6 @@
         "sr_mod"
       ];
       removableEfi = true;
-      kernelParams = [
-        "pcie_aspm=force"
-        "consoleblank=60"
-      ];
-      sshUnlock = {
-        enable = false;
-        authorizedKeys = [ ];
-      };
-    };
-    networking = {
-      hostName = "aria";
-      timeZone = "Europe/Berlin";
-      hostId = "35cd8bc5";
     };
   };
 

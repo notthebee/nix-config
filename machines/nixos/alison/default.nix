@@ -12,6 +12,18 @@
   hardware.cpu.intel.updateMicrocode = true;
   hardware.enableRedistributableFirmware = true;
   boot.zfs.forceImportRoot = true;
+  boot.kernelParams = [
+    "pcie_aspm=force"
+    "consoleblank=60"
+  ];
+  networking = {
+    hostName = "alison";
+    hostId = "73cd46a7";
+    firewall = {
+      enable = true;
+    };
+  };
+
   zfs-root = {
     boot = {
       bootDevices = [
@@ -27,18 +39,6 @@
         "sr_mod"
       ];
       removableEfi = true;
-      kernelParams = [
-        "pcie_aspm=force"
-        "consoleblank=60"
-      ];
-      sshUnlock = {
-        enable = false;
-        authorizedKeys = [ ];
-      };
-    };
-    networking = {
-      hostName = "alison";
-      hostId = "73cd46a7";
     };
   };
 
