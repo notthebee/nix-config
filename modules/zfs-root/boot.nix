@@ -7,63 +7,46 @@
 
 let
   cfg = config.zfs-root.boot;
-  inherit (lib)
-    mkIf
-    types
-    mkDefault
-    mkOption
-    mkMerge
-    strings
-    ;
-  inherit (builtins)
-    toString
-    map
-    tail
-    ;
 in
 {
   options.zfs-root.boot = {
-    enable = mkOption {
+    enable = lib.mkOption {
       description = "Enable root on ZFS support";
-      type = types.bool;
+      type = lib.types.bool;
       default = true;
     };
-    devNodes = mkOption {
+    devNodes = lib.mkOption {
       description = "Specify where to discover ZFS pools";
-      type = types.str;
+      type = lib.types.str;
       apply =
         x:
-        assert (strings.hasSuffix "/" x || abort "devNodes '${x}' must have trailing slash!");
+        assert (lib.strings.hasSuffix "/" x || abort "devNodes '${x}' must have trailing slash!");
         x;
       default = "/dev/disk/by-id/";
     };
-    bootDevices = mkOption {
+    bootDevices = lib.mkOption {
       description = "Specify boot devices";
-      type = types.nonEmptyListOf types.str;
+      type = lib.types.nonEmptyListOf lib.types.str;
     };
-    availableKernelModules = mkOption {
-      type = types.nonEmptyListOf types.str;
+    availableKernelModules = lib.mkOption {
+      type = lib.types.nonEmptyListOf lib.types.str;
       default = [
         "uas"
         "nvme"
         "ahci"
       ];
     };
-    kernelParams = mkOption {
-      type = types.listOf types.str;
-      default = [ ];
-    };
-    immutable = mkOption {
+    immutable = lib.mkOption {
       description = "Enable root on ZFS immutable root support";
-      type = types.bool;
-      default = false;
-    };
-    removableEfi = mkOption {
-      description = "install bootloader to fallback location";
-      type = types.bool;
+      type = lib.types.bool;
       default = true;
     };
-    partitionScheme = mkOption {
+    removableEfi = lib.mkOption {
+      description = "install bootloader to fallback location";
+      type = lib.types.bool;
+      default = true;
+    };
+    partitionScheme = lib.mkOption {
       default = {
         biosBoot = "-part4";
         efiBoot = "-part2";
@@ -71,115 +54,99 @@ in
         rootPool = "-part3";
       };
       description = "Describe on disk partitions";
-      type = types.attrsOf types.str;
-    };
-    sshUnlock = {
-      enable = mkOption {
-        type = types.bool;
-        default = false;
-      };
-      authorizedKeys = mkOption {
-        type = types.listOf types.str;
-        default = [ ];
-      };
+      type = lib.types.attrsOf lib.types.str;
     };
   };
-  config = mkIf (cfg.enable) (mkMerge [
-    {
-      zfs-root.fileSystems.datasets = {
-        "rpool/nixos/home" = mkDefault "/home";
-        "rpool/nixos/var/lib" = mkDefault "/var/lib";
-        "rpool/nixos/var/log" = mkDefault "/var/log";
-        "bpool/nixos/root" = "/boot";
-      };
-    }
-    (mkIf (!cfg.immutable) {
-      zfs-root.fileSystems.datasets = {
-        "rpool/nixos/root" = "/";
-      };
-    })
-    (mkIf cfg.immutable {
-      zfs-root.fileSystems = {
-        datasets = {
-          "rpool/nixos/empty" = "/";
-          "rpool/nixos/root" = "/oldroot";
+  config = lib.mkIf (cfg.enable) (
+    lib.mkMerge [
+      (lib.mkIf (!cfg.immutable) {
+        zfs-root.fileSystems.datasets = {
+          "rpool/nixos/root" = "/";
         };
-        bindmounts = {
-          "/oldroot/nix" = "/nix";
-          "/oldroot/etc/nixos" = "/etc/nixos";
-        };
-      };
-      boot.initrd.postDeviceCommands = ''
-        if ! grep -q zfs_no_rollback /proc/cmdline; then
-          zpool import -N rpool
-          zfs rollback -r rpool/nixos/empty@start
-          zpool export -a
-        fi
-      '';
-    })
-    {
-      zfs-root.fileSystems = {
-        efiSystemPartitions = (map (diskName: diskName + cfg.partitionScheme.efiBoot) cfg.bootDevices);
-      };
-      boot = {
-        initrd.availableKernelModules = cfg.availableKernelModules;
-        kernelParams = cfg.kernelParams;
-        supportedFilesystems = [ "zfs" ];
-        zfs = {
-          devNodes = cfg.devNodes;
-          forceImportRoot = mkDefault false;
-        };
-        loader = {
-          efi = {
-            canTouchEfiVariables = (if cfg.removableEfi then false else true);
-            efiSysMountPoint = ("/boot/efis/" + (builtins.head cfg.bootDevices) + cfg.partitionScheme.efiBoot);
-          };
-          generationsDir.copyKernels = true;
-          grub = {
-            enable = true;
-            mirroredBoots = map (diskName: {
-              devices = [ "nodev" ];
-              path = "/boot/efis/${diskName}${cfg.partitionScheme.efiBoot}";
-            }) cfg.bootDevices;
-            #device = "nodev";
-            efiInstallAsRemovable = cfg.removableEfi;
-            copyKernels = true;
-            efiSupport = true;
-            zfsSupport = true;
-            extraInstallCommands = (
-              toString (
-                map (diskName: ''
-                  set -x
-                  ${pkgs.coreutils-full}/bin/cp -r ${config.boot.loader.efi.efiSysMountPoint}/EFI /boot/efis/${diskName}${cfg.partitionScheme.efiBoot}
-                  set +x
-                '') (tail cfg.bootDevices)
-              )
-            );
+      })
+      (lib.mkIf cfg.immutable {
+        zfs-root.fileSystems = {
+          datasets = {
+            "rpool/nixos/empty" = "/";
           };
         };
-      };
-    }
-    (mkIf cfg.sshUnlock.enable {
-      boot.initrd = {
-        network = {
+        boot.initrd.systemd = {
           enable = true;
-          ssh = {
-            enable = true;
-            hostKeys = [
-              "/var/lib/ssh_unlock_zfs_ed25519_key"
-              "/var/lib/ssh_unlock_zfs_rsa_key"
+          services.initrd-rollback-root = {
+            after = [ "zfs-import-rpool.service" ];
+            wantedBy = [ "initrd.target" ];
+            before = [
+              "sysroot.mount"
             ];
-            authorizedKeys = cfg.sshUnlock.authorizedKeys;
+            path = [ pkgs.zfs ];
+            description = "Rollback root fs";
+            unitConfig.DefaultDependencies = "no";
+            serviceConfig.Type = "oneshot";
+            script = "zfs rollback -r rpool/nixos/empty@start && echo '  >> >> rollback complete << <<'";
           };
-          postCommands = ''
-            tee -a /root/.profile >/dev/null <<EOF
-            if zfs load-key rpool/nixos; then
-               pkill zfs
-            fi
-            exit
-            EOF'';
         };
-      };
-    })
-  ]);
+      })
+      {
+        zfs-root.fileSystems = {
+          efiSystemPartitions = (map (diskName: diskName + cfg.partitionScheme.efiBoot) cfg.bootDevices);
+          datasets = {
+            "bpool/nixos/root" = "/boot";
+            "rpool/nixos/config" = "/etc/nixos";
+            "rpool/nixos/nix" = "/nix";
+            "rpool/nixos/home" = "/home";
+            "rpool/nixos/persist" = "/persist";
+            "rpool/nixos/var/log" = "/var/log";
+            "rpool/nixos/var/lib" = "/var/lib";
+          };
+        };
+        boot = {
+          initrd.availableKernelModules = cfg.availableKernelModules;
+          supportedFilesystems = [ "zfs" ];
+          zfs = {
+            devNodes = cfg.devNodes;
+            forceImportRoot = lib.mkDefault false;
+          };
+          loader = {
+            efi = {
+              canTouchEfiVariables = (if cfg.removableEfi then false else true);
+              efiSysMountPoint = ("/boot/efis/" + (builtins.head cfg.bootDevices) + cfg.partitionScheme.efiBoot);
+            };
+            generationsDir.copyKernels = true;
+            grub =
+              {
+                enable = true;
+                mirroredBoots = map (diskName: {
+                  devices = [ "nodev" ];
+                  path = "/boot/efis/${diskName}${cfg.partitionScheme.efiBoot}";
+                }) cfg.bootDevices;
+                efiInstallAsRemovable = cfg.removableEfi;
+                copyKernels = true;
+                efiSupport = true;
+                zfsSupport = true;
+              }
+              // (
+                if (builtins.lessThan 2 (builtins.length cfg.bootDevices)) then
+                  {
+                    mirroredBoots = map (diskName: {
+                      devices = [ "nodev" ];
+                      path = "/boot/efis/${diskName}${cfg.partitionScheme.efiBoot}";
+                    }) cfg.bootDevices;
+                    extraInstallCommands = (
+                      toString (
+                        map (diskName: ''
+                          set -x
+                          ${pkgs.coreutils-full}/bin/cp -r ${config.boot.loader.efi.efiSysMountPoint}/EFI /boot/efis/${diskName}${cfg.partitionScheme.efiBoot}
+                          set +x
+                        '') (builtins.tail cfg.bootDevices)
+                      )
+                    );
+                  }
+                else
+                  { device = "nodev"; }
+              );
+          };
+        };
+      }
+    ]
+  );
 }
