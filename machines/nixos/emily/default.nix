@@ -1,9 +1,17 @@
 {
   config,
-  vars,
+  lib,
   pkgs,
+  vars,
   ...
 }:
+let
+  emilyIpAddress =
+    (lib.lists.findSingle (
+      x: x.hostname == "emily"
+    ) false false config.homelab.networks.local.lan.reservations).ip-address;
+  gatewayIpAddress = config.homelab.networks.local.lan.cidr;
+in
 {
   nixpkgs.config.packageOverrides = pkgs: {
     vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
@@ -40,12 +48,24 @@
     useDHCP = true;
     networkmanager.enable = false;
     hostName = "emily";
+    interfaces.enp1s0f1 = {
+      ipv4.addresses = [
+        {
+          address = emilyIpAddress;
+          prefixLength = 24;
+        }
+      ];
+    };
+    defaultGateway = {
+      address = gatewayIpAddress;
+      interface = "enp1s0f1";
+    };
     hostId = "0730ae51";
     firewall = {
       enable = true;
       allowPing = true;
       trustedInterfaces = [
-        "enp2s0"
+        "enp1s0f1"
         "tailscale0"
       ];
     };
@@ -94,7 +114,7 @@
       "/dev/disk/by-label/Data2"
       "/dev/disk/by-label/Parity1"
     ];
-    pwmPaths = [ "/sys/class/hwmon/hwmon1/device/pwm2" ];
+    pwmPaths = [ "/sys/class/hwmon/hwmon2/device/pwm2" ];
     extraArgs = [
       "--pwm-start-value=50"
       "--pwm-stop-value=50"
@@ -116,6 +136,7 @@
     group = config.homelab.group;
     percentageFree = 60;
     excludedPaths = [
+      "Media/Music"
       "YoutubeCurrent"
       "Downloads.tmp"
       "Media/Kiwix"
