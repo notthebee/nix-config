@@ -80,12 +80,15 @@
     ./immich
     ./jellyfin
     ./microbin
+    ./navidrome
     ./nextcloud
     ./smarthome/homeassistant
     ./smarthome/raspberrymatic
     ./paperless-ngx
     ./sabnzbd
+    ./slskd
     ./uptime-kuma
     ./vaultwarden
+    ./wireguard-netns
   ];
 }

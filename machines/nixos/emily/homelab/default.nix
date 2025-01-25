@@ -98,6 +98,10 @@ in
       radarr.enable = true;
       bazarr.enable = true;
       prowlarr.enable = true;
+      navidrome = {
+        enable = true;
+        environmentFile = config.age.secrets.navidromeEnv.path;
+      };
       nextcloud = {
         enable = true;
         adminpassFile = config.age.secrets.nextcloudAdminPassword.path;
@@ -123,11 +127,16 @@ in
       audiobookshelf.enable = true;
       deluge = {
         enable = true;
-        wireguard = {
-          configFile = config.age.secrets.wireguardCredentials.path;
-          privateIP = "10.100.0.2";
-          dnsIP = "10.100.0.1";
-        };
+      };
+      slskd = {
+        enable = true;
+        environmentFile = config.age.secrets.slskdEnv.path;
+      };
+      wireguard-netns = {
+        enable = true;
+        configFile = config.age.secrets.wireguardCredentials.path;
+        privateIP = "10.100.0.2";
+        dnsIP = "10.100.0.1";
       };
     };
   };
