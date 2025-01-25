@@ -1,6 +1,18 @@
 {
+  nixConfig = {
+    trusted-substituters = [
+      "https://cachix.cachix.org"
+      "https://nixpkgs.cachix.org"
+      "https://nix-community.cachix.org"
+    ];
+    trusted-public-keys = [
+      "cachix.cachix.org-1:eWNHQldwUO7G2VkjpnjDbWwy4KQ/HNxht7H4SSoMckM="
+      "nixpkgs.cachix.org-1:q91R6hxbwFvDqTSDKwDAV4T5PxqXGxswD8vhONFMeOE="
+      "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+    ];
+  };
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/release-24.11";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
     nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-24.11-darwin";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     nixvim = {
@@ -10,6 +22,10 @@
     home-manager = {
       url = "github:nix-community/home-manager/release-24.11";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+    home-manager-darwin = {
+      url = "github:nix-community/home-manager/release-24.11";
+      inputs.nixpkgs.follows = "nixpkgs-darwin";
     };
     home-manager-unstable = {
       url = "github:nix-community/home-manager/master";
@@ -95,7 +111,7 @@
         ./homelab
         inputs.home-manager.nixosModules.home-manager
       ])
-      (mkDarwin "meredith" inputs.nixpkgs
+      (mkDarwin "meredith" inputs.nixpkgs-darwin
         [
           dots/tmux
           dots/kitty

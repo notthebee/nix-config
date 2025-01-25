@@ -28,9 +28,10 @@ in
         inputs.agenix.darwinModules.default
         ./machines/darwin
         ./machines/darwin/${machineHostname}
-        inputs.home-manager.darwinModules.home-manager
-        (inputs.nixpkgs.lib.attrsets.recursiveUpdate (homeManagerCfg true extraHmModules) {
-          home-manager.users.notthebee.home.homeDirectory = inputs.nixpkgs.lib.mkForce "/Users/notthebee";
+        inputs.home-manager-darwin.darwinModules.home-manager
+        (inputs.nixpkgs-darwin.lib.attrsets.recursiveUpdate (homeManagerCfg true extraHmModules) {
+          home-manager.users.notthebee.home.homeDirectory =
+            inputs.nixpkgs-darwin.lib.mkForce "/Users/notthebee";
         })
       ];
     };
