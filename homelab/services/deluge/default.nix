@@ -5,8 +5,9 @@
   ...
 }:
 let
-  cfg = config.homelab.services.deluge;
-  homelab = config.homelab;
+  hl = config.homelab;
+  cfg = hl.services.deluge;
+  ns = hl.services.wireguard-netns.namespace;
 in
 {
   options.homelab.services.deluge = {
@@ -17,7 +18,7 @@ in
     };
     url = lib.mkOption {
       type = lib.types.str;
-      default = "deluge.${homelab.baseDomain}";
+      default = "deluge.${hl.baseDomain}";
     };
     homepage.name = lib.mkOption {
       type = lib.types.str;
@@ -35,124 +36,57 @@ in
       type = lib.types.str;
       default = "Downloads";
     };
-    wireguard.configFile = lib.mkOption {
-      type = lib.types.path;
-      description = "Path to a file with Wireguard config";
-      example = lib.literalExpression ''
-        pkgs.writeText "wg0.conf" '''
-          [Interface]
-          Address = 192.168.2.2
-          PrivateKey = <client's privatekey>
-          ListenPort = 21841
-
-          [Peer]
-          PublicKey = <server's publickey>
-          Endpoint = <server's ip>:51820
-        '''
-      '';
-    };
-    wireguard.privateIP = lib.mkOption {
-      type = lib.types.str;
-    };
-    wireguard.dnsIP = lib.mkOption {
-      type = lib.types.str;
-    };
   };
   config = lib.mkIf cfg.enable {
     services.deluge = {
       enable = true;
-      user = homelab.user;
-      group = homelab.group;
+      user = hl.user;
+      group = hl.group;
       web = {
         enable = true;
       };
     };
 
     services.caddy.virtualHosts."${cfg.url}" = {
-      useACMEHost = homelab.baseDomain;
+      useACMEHost = hl.baseDomain;
       extraConfig = ''
         reverse_proxy http://127.0.0.1:8112
       '';
     };
 
-    systemd.services."netns@" = {
-      description = "%I network namespace";
-      before = [ "network.target" ];
-      serviceConfig = {
-        Type = "oneshot";
-        RemainAfterExit = true;
-        ExecStart = "${pkgs.iproute2}/bin/ip netns add %I";
-        ExecStop = "${pkgs.iproute2}/bin/ip netns del %I";
-      };
-    };
-    environment.etc."netns/deluge/resolv.conf".text = "nameserver ${cfg.wireguard.dnsIP}";
-
-    systemd.services.deluged.bindsTo = [ "netns@deluge.service" ];
-    systemd.services.deluged.requires = [
-      "network-online.target"
-      "wg-deluge.service"
-    ];
-    systemd.services.deluged.serviceConfig.NetworkNamespacePath = [ "/var/run/netns/deluge" ];
-
-    # allowing delugeweb to access deluged in network namespace, a socket is necesarry
-    systemd.sockets."deluged-proxy" = {
-      enable = true;
-      description = "Socket for Proxy to Deluge WebUI";
-      listenStreams = [ "58846" ];
-      wantedBy = [ "sockets.target" ];
-    };
-
-    systemd.services."deluged-proxy" = {
-      enable = true;
-      description = "Proxy to Deluge Daemon in Network Namespace";
-      requires = [
-        "deluged.service"
-        "deluged-proxy.socket"
+    systemd = lib.mkIf hl.services.wireguard-netns.enable {
+      services.deluged.bindsTo = [ "netns@${ns}.service" ];
+      services.deluged.requires = [
+        "network-online.target"
+        "${ns}.service"
       ];
-      after = [
-        "deluged.service"
-        "deluged-proxy.socket"
-      ];
-      unitConfig = {
-        JoinsNamespaceOf = "deluged.service";
+      services.deluged.serviceConfig.NetworkNamespacePath = [ "/var/run/netns/${ns}" ];
+      sockets."deluged-proxy" = {
+        enable = true;
+        description = "Socket for Proxy to Deluge WebUI";
+        listenStreams = [ "58846" ];
+        wantedBy = [ "sockets.target" ];
       };
-      serviceConfig = {
-        User = config.services.deluge.user;
-        Group = config.services.deluge.group;
-        ExecStart = "${pkgs.systemd}/lib/systemd/systemd-socket-proxyd --exit-idle-time=5min 127.0.0.1:58846";
-        PrivateNetwork = "yes";
-      };
-    };
-
-    systemd.services.wg-deluge = {
-      description = "wg network interface (Deluge)";
-      bindsTo = [ "netns@deluge.service" ];
-      requires = [ "network-online.target" ];
-      after = [ "netns@deluge.service" ];
-      wantedBy = [ "multi-user.target" ];
-      serviceConfig = {
-        Type = "oneshot";
-        RemainAfterExit = true;
-        ExecStart =
-          with pkgs;
-          writers.writeBash "wg-up" ''
-            see -e
-            ${iproute2}/bin/ip link add wg0 type wireguard
-            ${iproute2}/bin/ip link set wg0 netns deluge
-            ${iproute2}/bin/ip -n deluge address add ${cfg.wireguard.privateIP} dev wg0
-            ${iproute2}/bin/ip netns exec deluge \
-            ${pkgs.wireguard-tools}/bin/wg setconf wg0 ${cfg.wireguard.configFile}
-            ${iproute2}/bin/ip -n deluge link set wg0 up
-            ${iproute2}/bin/ip -n deluge link set lo up
-            ${iproute2}/bin/ip -n deluge route add default dev wg0
-          '';
-        ExecStop =
-          with pkgs;
-          writers.writeBash "wg-down" ''
-            see -e
-            ${iproute2}/bin/ip -n deluge route del default dev wg0
-            ${iproute2}/bin/ip -n deluge link del wg0
-          '';
+      services."deluged-proxy" = {
+        enable = true;
+        description = "Proxy to Deluge Daemon in Network Namespace";
+        requires = [
+          "deluged.service"
+          "deluged-proxy.socket"
+        ];
+        after = [
+          "deluged.service"
+          "deluged-proxy.socket"
+        ];
+        unitConfig = {
+          JoinsNamespaceOf = "deluged.service";
+        };
+        serviceConfig = {
+          User = config.services.deluge.user;
+          Group = config.services.deluge.group;
+          ExecStart = "${pkgs.systemd}/lib/systemd/systemd-socket-proxyd --exit-idle-time=5min 127.0.0.1:58846";
+          PrivateNetwork = "yes";
+        };
       };
     };
   };
