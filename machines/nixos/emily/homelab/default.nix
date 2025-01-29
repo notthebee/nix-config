@@ -27,6 +27,9 @@ in
         Media = {
           path = "${hl.mounts.merged}/Media";
         };
+        Music = {
+          path = "${hl.mounts.fast}/Media/Music";
+        };
         Misc = {
           path = "${hl.mounts.merged}/Misc";
         };
@@ -125,9 +128,8 @@ in
         };
       };
       audiobookshelf.enable = true;
-      deluge = {
-        enable = true;
-      };
+      deluge.enable = true;
+      deemix.enable = true;
       slskd = {
         enable = true;
         environmentFile = config.age.secrets.slskdEnv.path;
