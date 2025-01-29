@@ -7,7 +7,7 @@
 let
   settingsFormat = pkgs.formats.yaml { };
   beet-wrapped = pkgs.writeScriptBin "beet-wrapped" ''
-    sudo -u share BEETSDIR=/var/lib/slskd-import-files ${lib.getExe pkgs.beets} -c ${config.homelab.services.slskd.beetsConfigFile} $1
+    sudo -u share BEETSDIR=/var/lib/slskd-import-files ${lib.getExe pkgs.beets} -c ${config.homelab.services.slskd.beetsConfigFile} "$@"
   '';
   beetsConfig = {
     directory = "${config.homelab.services.slskd.musicDir}";
@@ -31,8 +31,8 @@ let
 
     import = {
       write = true;
-      copy = false;
-      move = true;
+      copy = true;
+      move = false;
       autotag = true;
       bell = true;
       log = "/dev/null";
@@ -48,8 +48,9 @@ let
     };
 
     paths = {
-      default = "$albumartist/($year) $album%aunique{}/$track $title";
-      singleton = "$albumartist/($year) $album%aunique{}/$track $title";
+      default = "$albumartist/($year) $album %aunique{}/$track $title %aunique{}";
+      singleton = "$albumartist/($year) $album %aunique{}/$track $title %aunique{}";
+      comp = "Compilations/$album %aunique{}/$track $title %aunique{}";
     };
 
     aunique = {

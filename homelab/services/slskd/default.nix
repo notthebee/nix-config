@@ -22,15 +22,15 @@ in
     };
     musicDir = lib.mkOption {
       type = lib.types.str;
-      default = "${hl.mounts.fast}/Media/Music";
+      default = "${hl.mounts.fast}/Media/Music/Library";
     };
     downloadDir = lib.mkOption {
       type = lib.types.str;
-      default = "${hl.mounts.fast}/Media/Downloads/Soulseek";
+      default = "${hl.mounts.fast}/Media/Music/Import";
     };
     incompleteDownloadDir = lib.mkOption {
       type = lib.types.str;
-      default = "${hl.mounts.fast}/Media/Downloads.tmp/Soulseek";
+      default = "${hl.mounts.fast}/Media/Music/Import.tmp";
     };
     url = lib.mkOption {
       type = lib.types.str;
@@ -155,7 +155,16 @@ in
               ];
               User = config.services.slskd.user;
               Group = config.services.slskd.group;
-              ExecStart = "${lib.getExe pkgs.beets} -c ${cfg.beetsConfigFile} import -s -q ${cfg.downloadDir}";
+              ExecStart =
+                let
+                  slskd-import-files = pkgs.writeScriptBin "slskd-import-files" ''
+                    #!${lib.getExe pkgs.bash}
+                    ${lib.getExe pkgs.beets} -c ${cfg.beetsConfigFile} update &&
+                    ${lib.getExe pkgs.beets} -c ${cfg.beetsConfigFile} import -s -q ${cfg.downloadDir}
+                    ${lib.getExe pkgs.tmpwatch} 6h ${cfg.downloadDir}
+                  '';
+                in
+                lib.getExe slskd-import-files;
             };
           };
       }
