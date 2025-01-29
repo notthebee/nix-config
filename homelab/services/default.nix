@@ -74,8 +74,10 @@
     ./arr/bazarr
     ./arr/sonarr
     ./arr/radarr
+    ./arr/lidarr
     ./audiobookshelf
     ./deluge
+    ./deemix
     ./homepage
     ./immich
     ./jellyfin
