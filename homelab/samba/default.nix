@@ -54,6 +54,8 @@ in
         old:
         lib.attrsets.mergeAttrsList [
           {
+            "preserve case" = "yes";
+            "short preserve case" = "yes";
             "browseable" = "yes";
             "writeable" = "yes";
             "read only" = "no";
