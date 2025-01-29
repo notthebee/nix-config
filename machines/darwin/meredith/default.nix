@@ -22,6 +22,9 @@
     caskArgs = {
       no_quarantine = true;
     };
+    brews = [
+      "pulumi"
+    ];
     casks = [
       "notion"
       "telegram"
@@ -100,7 +103,6 @@
     nss.tools
     mkcert
     karabiner-elements
-    pulumi-bin
     devenv
     nixfmt-rfc-style
     opentofu
