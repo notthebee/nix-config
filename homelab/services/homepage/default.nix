@@ -116,7 +116,7 @@ in
           homepageServices =
             x:
             (lib.attrsets.filterAttrs (
-              name: value: value ? homepage && value.homepage.category == x
+              name: value: value ? enable && value.enable && value ? homepage && value.homepage.category == x
             ) homelab.services);
         in
         lib.lists.forEach homepageCategories (cat: {
