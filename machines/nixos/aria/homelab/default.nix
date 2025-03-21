@@ -1,4 +1,4 @@
-{ config }:
+{ config, ... }:
 let
   hl = config.homelab;
 in

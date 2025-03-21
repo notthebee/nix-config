@@ -4,7 +4,7 @@
   ...
 }:
 let
-  service = "navidrome";
+  service = "miniflux";
   hl = config.homelab;
   cfg = hl.services.${service};
 in
@@ -17,38 +17,29 @@ in
       type = lib.types.str;
       default = "/var/lib/${service}";
     };
-    musicDir = lib.mkOption {
-      type = lib.types.str;
-      default = "${hl.mounts.fast}/Media/Music/Library";
-    };
     url = lib.mkOption {
       type = lib.types.str;
-      default = "music.${hl.baseDomain}";
-    };
-    environmentFile = lib.mkOption {
-      type = lib.types.path;
-      example = lib.literalExpression ''
-        pkgs.writeText "navidrome-env" '''
-          ND_LASTFM_APIKEY=abcabc
-          ND_LASTFM_SECRET=abcabc
-        '''
-      '';
+      default = "news.${hl.baseDomain}";
     };
     homepage.name = lib.mkOption {
       type = lib.types.str;
-      default = "Navidrome";
+      default = "Miniflux";
     };
     homepage.description = lib.mkOption {
       type = lib.types.str;
-      default = "Self-hosted music streaming service";
+      default = "Minimalist and opinionated feed reader";
     };
     homepage.icon = lib.mkOption {
       type = lib.types.str;
-      default = "navidrome.svg";
+      default = "miniflux.svg";
     };
     homepage.category = lib.mkOption {
       type = lib.types.str;
-      default = "Media";
+      default = "Services";
+    };
+    adminCredentialsFile = lib.mkOption {
+      description = "File with admin credentials";
+      type = lib.types.path;
     };
     cloudflared.credentialsFile = lib.mkOption {
       type = lib.types.str;
@@ -64,19 +55,13 @@ in
     };
   };
   config = lib.mkIf cfg.enable {
-    systemd.tmpfiles.rules = [
-      "d ${cfg.musicDir} 0775 ${hl.user} ${hl.group} - -"
-    ];
-    systemd.services.navidrome.serviceConfig.EnvironmentFile = lib.mkIf (
-      cfg.environmentFile != null
-    ) cfg.environmentFile;
     services.${service} = {
       enable = true;
-      user = hl.user;
-      group = hl.group;
-      settings = {
-        MusicFolder = "${cfg.musicDir}";
-        DefaultDownsamplingFormat = "aac";
+      adminCredentialsFile = cfg.adminCredentialsFile;
+      config = {
+        BASE_URL = "https://${cfg.url}";
+        CREATE_ADMIN = "1";
+        LISTEN_ADDR = "127.0.0.1:8067";
       };
     };
     services.cloudflared = {
@@ -84,9 +69,7 @@ in
       tunnels.${cfg.cloudflared.tunnelId} = {
         credentialsFile = cfg.cloudflared.credentialsFile;
         default = "http_status:404";
-        ingress."${cfg.url}".service = "http://${config.services.${service}.settings.Address}:${
-          toString config.services.${service}.settings.Port
-        }";
+        ingress."${cfg.url}".service = "http://${config.services.${service}.config.LISTEN_ADDR}";
       };
     };
   };

@@ -55,6 +55,14 @@ in
         s3.environmentFile = config.age.secrets.resticBackblazeEnv.path;
         local.enable = true;
       };
+      radicale = {
+        enable = true;
+        passwordFile = config.age.secrets.radicaleHtpasswd.path;
+      };
+      immich = {
+        enable = true;
+        mediaDir = "${hl.mounts.fast}/Media/Photos";
+      };
       homepage = {
         enable = true;
         misc = [
@@ -70,7 +78,7 @@ in
                 href = "https://${ip}";
                 siteMonitor = "https://${ip}";
                 description = "Open-source KVM solution";
-                icon = "pikvm.svg";
+                icon = "pikvm.png";
               };
           }
           {
@@ -78,7 +86,7 @@ in
               href = "http://192.168.178.1";
               siteMonitor = "http://192.168.178.1";
               description = "Cable Modem WebUI";
-              icon = "avmfritzbox.svg";
+              icon = "avm-fritzbox.png";
             };
           }
           {
@@ -101,10 +109,6 @@ in
       radarr.enable = true;
       bazarr.enable = true;
       prowlarr.enable = true;
-      navidrome = {
-        enable = true;
-        environmentFile = config.age.secrets.navidromeEnv.path;
-      };
       nextcloud = {
         enable = true;
         adminpassFile = config.age.secrets.nextcloudAdminPassword.path;
@@ -127,13 +131,16 @@ in
           credentialsFile = config.age.secrets.microbinCloudflared.path;
         };
       };
+      miniflux = {
+        enable = true;
+        cloudflared = {
+          tunnelId = "9b2cac61-a439-4b1f-a979-f8519ea00e58";
+          credentialsFile = config.age.secrets.minifluxCloudflared.path;
+        };
+        adminCredentialsFile = config.age.secrets.minifluxAdminPassword.path;
+      };
       audiobookshelf.enable = true;
       deluge.enable = true;
-      deemix.enable = true;
-      slskd = {
-        enable = true;
-        environmentFile = config.age.secrets.slskdEnv.path;
-      };
       wireguard-netns = {
         enable = true;
         configFile = config.age.secrets.wireguardCredentials.path;

@@ -24,6 +24,7 @@ in
   environment.systemPackages = [
     pkgs.s-tui
     pkgs.stress
+    pkgs.firefox-bin
   ];
   fileSystems."/" = {
     device = "/dev/disk/by-id/nvme-CT1000P1SSD8_202629273359_1-part2";

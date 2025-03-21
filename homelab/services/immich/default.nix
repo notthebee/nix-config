@@ -28,6 +28,22 @@ in
       type = lib.types.str;
       default = "photos.${homelab.baseDomain}";
     };
+    homepage.name = lib.mkOption {
+      type = lib.types.str;
+      default = "Immich";
+    };
+    homepage.description = lib.mkOption {
+      type = lib.types.str;
+      default = "Self-hosted photo and video management solution";
+    };
+    homepage.icon = lib.mkOption {
+      type = lib.types.str;
+      default = "immich.svg";
+    };
+    homepage.category = lib.mkOption {
+      type = lib.types.str;
+      default = "Media";
+    };
   };
   config = lib.mkIf cfg.enable {
     systemd.tmpfiles.rules = [ "d ${cfg.mediaDir} 0775 immich ${homelab.group} - -" ];

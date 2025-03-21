@@ -74,21 +74,23 @@
     ./arr/bazarr
     ./arr/sonarr
     ./arr/radarr
-    ./arr/lidarr
+    #./arr/lidarr
     ./audiobookshelf
     ./deluge
-    ./deemix
+    #./deemix
     ./homepage
     ./immich
     ./jellyfin
     ./microbin
-    ./navidrome
+    ./miniflux
+    #./navidrome
     ./nextcloud
     ./smarthome/homeassistant
     ./smarthome/raspberrymatic
     ./paperless-ngx
+    ./radicale
     ./sabnzbd
-    ./slskd
+    #./slskd
     ./uptime-kuma
     ./vaultwarden
     ./wireguard-netns

@@ -61,6 +61,13 @@ in
       fugitive = {
         enable = true;
       };
+      trim = {
+        enable = true;
+        settings = {
+          ft_blocklist = [ "coc-explorer" ];
+          highlight = false;
+        };
+      };
       lualine = {
         enable = true;
         settings = {
@@ -120,7 +127,7 @@ in
       laststatus = 2;
       scrolloff = 10;
       expandtab = true;
-      shell = "fish";
+      shell = "zsh";
       backupskip = "/tmp/*,/private/tmp/*";
       inccommand = "split";
       ruler = false;

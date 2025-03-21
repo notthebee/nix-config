@@ -22,9 +22,6 @@
     caskArgs = {
       no_quarantine = true;
     };
-    brews = [
-      "pulumi"
-    ];
     casks = [
       "notion"
       "telegram"
@@ -40,6 +37,9 @@
       "monitorcontrol"
       "raycast"
       "zen-browser"
+    ];
+    brews = [
+      "pulumi"
     ];
   };
   environment.systemPackages = with pkgs; [

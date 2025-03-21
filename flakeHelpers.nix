@@ -57,7 +57,6 @@ in
         ./machines/nixos/${machineHostname}
         ./modules/email
         ./modules/tg-notify
-        ./modules/duckdns
         ./modules/auto-aspm
         ./modules/mover
         "${inputs.secrets}/default.nix"

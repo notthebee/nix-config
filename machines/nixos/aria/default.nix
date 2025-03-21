@@ -13,13 +13,6 @@
     "pcie_aspm=force"
     "consoleblank=60"
   ];
-  networking = {
-    hostName = "aria";
-    hostId = "35cd8bc5";
-    firewall = {
-      enable = true;
-    };
-  };
   zfs-root = {
     boot = {
       devNodes = "/dev/disk/by-id/";
@@ -65,7 +58,10 @@
   networking = {
     useDHCP = true;
     networkmanager.enable = false;
+    hostName = "aria";
+    hostId = "35cd8bc5";
     firewall = {
+      enable = true;
       allowPing = true;
     };
   };

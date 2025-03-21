@@ -176,4 +176,9 @@ in
     enable = true;
     credentialsFile = config.age.secrets.tgNotifyCredentials.path;
   };
+
+  programs.nix-ld.enable = true;
+  programs.nix-ld.libraries = with pkgs; [
+    stdenv.cc.cc.lib
+  ];
 }
