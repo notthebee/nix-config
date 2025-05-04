@@ -48,6 +48,14 @@ in
   };
   config = lib.mkIf cfg.enable {
     services = {
+      fail2ban-cloudflare = lib.mkIf config.services.fail2ban-cloudflare.enable {
+        jails = {
+          vaultwarden = {
+            serviceName = "vaultwarden";
+            failRegex = "^.*Username or password is incorrect. Try again. IP: <HOST>. Username: <F-USER>.*</F-USER>.$";
+          };
+        };
+      };
       ${service} = {
         enable = true;
         config = {
@@ -55,6 +63,9 @@ in
           SIGNUPS_ALLOWED = false;
           ROCKET_ADDRESS = "127.0.0.1";
           ROCKET_PORT = 8222;
+          EXTENDED_LOGGING = true;
+          LOG_LEVEL = "warn";
+          IP_HEADER = "CF-Connecting-IP";
         };
       };
       cloudflared = {

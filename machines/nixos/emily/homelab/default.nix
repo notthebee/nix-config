@@ -3,6 +3,12 @@ let
   hl = config.homelab;
 in
 {
+  services.fail2ban-cloudflare = {
+    enable = true;
+    apiKeyFile = config.age.secrets.cloudflareFirewallApiKey.path;
+    zoneId = "5a125e72bca5869bfb929db157d89d96";
+
+  };
   homelab = {
     enable = true;
     baseDomain = "goose.party";
