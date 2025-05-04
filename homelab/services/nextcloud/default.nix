@@ -119,6 +119,9 @@ in
         overwrite.cli.url = "https://cloud.${homelab.baseDomain}";
         mail_smtpmode = "sendmail";
         mail_sendmailmode = "pipe";
+        user_oidc = {
+          allow_multiple_user_backends = 0;
+        };
         forwarded_for_headers = [
           "HTTP_CF_CONNECTING_IP"
         ];
