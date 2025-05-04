@@ -52,7 +52,10 @@ in
   config = lib.mkIf cfg.enable {
     services.fail2ban = {
       enable = true;
-      extraPackages = [ pkgs.curl ];
+      extraPackages = [
+        pkgs.curl
+        pkgs.jq
+      ];
 
       jails = lib.attrsets.mapAttrs (name: value: {
         settings = {
@@ -81,16 +84,27 @@ in
         }))
       ) cfg.jails)
       {
-        "fail2ban/action.d/cloudflare-token-agenix.conf".text = ''
-          [Definition]
-          actionstart =
-          actionstop =
-          actioncheck =
-          actionunban =
-          actionban = curl -X POST "https://api.cloudflare.com/client/v4/zones/${cfg.zoneId}/firewall/access_rules/rules" -H @${cfg.apiKeyFile} -H "Content-Type: application/json" --data '{"mode":"block","configuration":{"target":"ip","value":"<ip>"},"notes":"Fail2Ban on ${config.networking.hostName}"}'
-          [Init]
-          name = cloudflare-token-agenix
-        '';
+        "fail2ban/action.d/cloudflare-token-agenix.conf".text =
+          let
+            notes = "Fail2Ban on ${config.networking.hostName}";
+            cfapi = "https://api.cloudflare.com/client/v4/zones/${cfg.zoneId}/firewall/access_rules/rules";
+          in
+          ''
+            [Definition]
+            actionstart =
+            actionstop =
+            actioncheck =
+            actionunban = id=$(curl -s -X GET "${cfapi}" \
+                -H @${cfg.apiKeyFile} -H "Content-Type: application/json" \
+                    | jq -r '.result[] | select(.notes == "${notes}" and .configuration.target == "ip" and .configuration.value == "<ip>") | .id')
+                if [ -z "$id" ]; then echo "id for <ip> cannot be found"; exit 0; fi; \
+                curl -s -X DELETE "${cfapi}/$id" \
+                    -H @${cfg.apiKeyFile} -H "Content-Type: application/json" \
+                    --data '{"cascade": "none"}'
+            actionban = curl -X POST "${cfapi}" -H @${cfg.apiKeyFile} -H "Content-Type: application/json" --data '{"mode":"block","configuration":{"target":"ip","value":"<ip>"},"notes":"${notes}"}'
+            [Init]
+            name = cloudflare-token-agenix
+          '';
       }
     ];
   };
