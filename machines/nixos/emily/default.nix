@@ -48,7 +48,7 @@ in
     useDHCP = true;
     networkmanager.enable = false;
     hostName = "emily";
-    interfaces.enp1s0f1 = {
+    interfaces.enp2s0f1 = {
       ipv4.addresses = [
         {
           address = emilyIpAddress;
@@ -58,14 +58,14 @@ in
     };
     defaultGateway = {
       address = gatewayIpAddress;
-      interface = "enp1s0f1";
+      interface = "enp2s0f1";
     };
     hostId = "0730ae51";
     firewall = {
       enable = true;
       allowPing = true;
       trustedInterfaces = [
-        "enp1s0f1"
+        "enp2s0f1"
         "tailscale0"
       ];
     };
@@ -114,7 +114,7 @@ in
       "/dev/disk/by-label/Data2"
       "/dev/disk/by-label/Parity1"
     ];
-    pwmPaths = [ "/sys/class/hwmon/hwmon2/device/pwm2" ];
+    pwmPaths = [ "/sys/class/hwmon/hwmon1/device/pwm2" ];
     extraArgs = [
       "--pwm-start-value=50"
       "--pwm-stop-value=50"
@@ -137,6 +137,7 @@ in
     percentageFree = 60;
     excludedPaths = [
       "Media/Music"
+      "Media/Photos"
       "YoutubeCurrent"
       "Downloads.tmp"
       "Media/Kiwix"
@@ -157,14 +158,6 @@ in
     hd-idle
     hddtemp
     smartmontools
-    go
-    gotools
-    gopls
-    go-outline
-    gopkgs
-    gocode-gomod
-    godef
-    golint
     cpufrequtils
     gnumake
     gcc
@@ -177,8 +170,4 @@ in
     credentialsFile = config.age.secrets.tgNotifyCredentials.path;
   };
 
-  programs.nix-ld.enable = true;
-  programs.nix-ld.libraries = with pkgs; [
-    stdenv.cc.cc.lib
-  ];
 }
