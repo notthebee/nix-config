@@ -108,6 +108,9 @@ in
       package = pkgs.nextcloud30;
       hostName = "nextcloud";
       configureRedis = true;
+      caching = {
+        redis = true;
+      };
       maxUploadSize = "50G";
       settings = {
         trusted_proxies = [ "127.0.0.1" ];

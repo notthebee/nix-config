@@ -81,6 +81,7 @@
     ./homepage
     ./immich
     ./jellyfin
+    ./keycloak
     ./microbin
     ./miniflux
     #./navidrome

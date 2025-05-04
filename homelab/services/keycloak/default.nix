@@ -4,41 +4,36 @@
   ...
 }:
 let
-  service = "miniflux";
-  hl = config.homelab;
-  cfg = hl.services.${service};
+  service = "keycloak";
+  cfg = config.homelab.services.${service};
+  homelab = config.homelab;
 in
 {
   options.homelab.services.${service} = {
     enable = lib.mkEnableOption {
       description = "Enable ${service}";
     };
-    configDir = lib.mkOption {
-      type = lib.types.str;
-      default = "/var/lib/${service}";
-    };
     url = lib.mkOption {
       type = lib.types.str;
-      default = "news.${hl.baseDomain}";
+      default = "login.${homelab.baseDomain}";
     };
     homepage.name = lib.mkOption {
       type = lib.types.str;
-      default = "Miniflux";
+      default = "Keycloak";
     };
     homepage.description = lib.mkOption {
       type = lib.types.str;
-      default = "Minimalist and opinionated feed reader";
+      default = "Open Source Identity and Access Management";
     };
     homepage.icon = lib.mkOption {
       type = lib.types.str;
-      default = "miniflux.svg";
+      default = "keycloak.svg";
     };
     homepage.category = lib.mkOption {
       type = lib.types.str;
       default = "Services";
     };
-    adminCredentialsFile = lib.mkOption {
-      description = "File with admin credentials";
+    dbPasswordFile = lib.mkOption {
       type = lib.types.path;
     };
     cloudflared.credentialsFile = lib.mkOption {
@@ -55,28 +50,30 @@ in
     };
   };
   config = lib.mkIf cfg.enable {
-    services.${service} = {
-      enable = true;
-      adminCredentialsFile = cfg.adminCredentialsFile;
-      config = {
-        BASE_URL = "https://${cfg.url}";
-        CREATE_ADMIN = "1";
-        LISTEN_ADDR = "127.0.0.1:8067";
-        OAUTH2_PROVIDER = "oidc";
-        OAUTH2_CLIENT_ID = "miniflux";
-        OAUTH2_REDIRECT_URL = "https://${cfg.url}/oauth2/oidc/callback";
-        OAUTH2_OIDC_DISCOVERY_ENDPOINT = "https://${hl.services.keycloak.url}/realms/master";
-        OAUTH2_USER_CREATION = "1";
-        DISABLE_LOCAL_AUTH = "true";
-      };
-    };
     services.cloudflared = {
       enable = true;
       tunnels.${cfg.cloudflared.tunnelId} = {
         credentialsFile = cfg.cloudflared.credentialsFile;
         default = "http_status:404";
-        ingress."${cfg.url}".service = "http://${config.services.${service}.config.LISTEN_ADDR}";
+        ingress."${cfg.url}".service = "http://127.0.0.1:${
+          toString config.services.${service}.settings.http-port
+        }";
+      };
+    };
+
+    services.${service} = {
+      enable = true;
+      initialAdminPassword = "schneke123";
+      database.passwordFile = cfg.dbPasswordFile;
+      settings = {
+        http-port = 8821;
+        hostname = cfg.url;
+        hostname-strict = false;
+        hostname-strict-https = false;
+        proxy-headers = "xforwarded";
+        http-enabled = true;
       };
     };
   };
+
 }
