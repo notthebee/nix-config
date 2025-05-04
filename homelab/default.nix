@@ -72,6 +72,7 @@ in
     ./samba
     ./networks
     ./motd
+    ./fail2ban-cloudflare
   ];
   config = lib.mkIf cfg.enable {
     users = {
