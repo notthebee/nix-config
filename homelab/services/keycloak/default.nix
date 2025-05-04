@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 let
@@ -61,11 +62,29 @@ in
       };
     };
 
+    environment.systemPackages = [
+      pkgs.keycloak
+      pkgs.custom_keycloak_themes.notthebee
+    ];
+    nixpkgs.overlays = [
+      (final: prev: {
+        custom_keycloak_themes = {
+          notthebee = pkgs.callPackage ./theme.nix { };
+        };
+      })
+    ];
+
     services.${service} = {
       enable = true;
       initialAdminPassword = "schneke123";
       database.passwordFile = cfg.dbPasswordFile;
+      themes = {
+        notthebee = pkgs.custom_keycloak_themes.notthebee;
+      };
       settings = {
+        spi-theme-static-max-age = "-1";
+        spi-theme-cache-themes = false;
+        spi-theme-cache-templates = false;
         http-port = 8821;
         hostname = cfg.url;
         hostname-strict = false;
