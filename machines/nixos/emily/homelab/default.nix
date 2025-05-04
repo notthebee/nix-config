@@ -61,6 +61,14 @@ in
         s3.environmentFile = config.age.secrets.resticBackblazeEnv.path;
         local.enable = true;
       };
+      keycloak = {
+        enable = true;
+        dbPasswordFile = config.age.secrets.keycloakDbPasswordFile.path;
+        cloudflared = {
+          tunnelId = "06b27fd2-4cb9-42e5-9d79-f4c4c44ca0c6";
+          credentialsFile = config.age.secrets.keycloakCloudflared.path;
+        };
+      };
       radicale = {
         enable = true;
         passwordFile = config.age.secrets.radicaleHtpasswd.path;

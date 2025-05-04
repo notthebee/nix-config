@@ -62,6 +62,12 @@ in
         BASE_URL = "https://${cfg.url}";
         CREATE_ADMIN = "1";
         LISTEN_ADDR = "127.0.0.1:8067";
+        OAUTH2_PROVIDER = "oidc";
+        OAUTH2_CLIENT_ID = "miniflux";
+        OAUTH2_REDIRECT_URL = "https://${cfg.url}/oauth2/oidc/callback";
+        OAUTH2_OIDC_DISCOVERY_ENDPOINT = "https://${hl.services.keycloak.url}/realms/master";
+        OAUTH2_USER_CREATION = "1";
+        DISABLE_LOCAL_AUTH = "true";
       };
     };
     services.cloudflared = {
