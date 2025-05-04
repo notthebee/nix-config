@@ -140,12 +140,12 @@ if __name__ == "__main__":
             syslog.syslog(
                     syslog.LOG_INFO, f"Fixing permissions on {cache_path}..."
                     )
-            subprocess.run(["/run/wrappers/bin/sudo", "/run/current-system/sw/bin/chown", "-R", f"{uid}:{gid}", f"{cache_path}"])
+            subprocess.run(["/run/wrappers/bin/sudo", "/run/current-system/sw/bin/chgrp", "-R", f"{gid}", f"{cache_path}"])
             subprocess.run(["/run/wrappers/bin/sudo", "/run/current-system/sw/bin/chmod", "-R", "u=rwX,go=rX", f"{cache_path}"])
             syslog.syslog(
                     syslog.LOG_INFO, f"Fixing permissions on {slow_path}..."
                     )
-            subprocess.run(["/run/wrappers/bin/sudo", "/run/current-system/sw/bin/chown", "-R", f"{uid}:{gid}", f"{slow_path}"])
+            subprocess.run(["/run/wrappers/bin/sudo", "/run/current-system/sw/bin/chgrp", "-R", f"{gid}", f"{slow_path}"])
             subprocess.run(["/run/wrappers/bin/sudo", "/run/current-system/sw/bin/chmod", "-R", "u=rwX,go=rX", f"{slow_path}"])
 
     fix_permissions(uid, gid, cache_path, slow_path)
@@ -188,7 +188,7 @@ if __name__ == "__main__":
                 async with aiofiles.open(c_path, 'rb'):
                     src = Path(cache_path) / Path(c_path.relative_to(cache_path))
                     dest = Path(slow_path) / Path(c_path.relative_to(cache_path))
-                    
+
                     os.chmod(os.path.dirname(src), mode=0o775)
                     os.makedirs(os.path.dirname(dest), exist_ok=True, mode=0o775)
 
@@ -252,4 +252,3 @@ if __name__ == "__main__":
             urllib.request.urlopen(args.hc_url, timeout=3)
         except socket.error as e:
             syslog.syslog(syslog.LOG_ERR, f"Failed to open {args.hc_url}.")
-

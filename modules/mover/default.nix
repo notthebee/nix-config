@@ -69,11 +69,11 @@ in
             options = [ "NOPASSWD" ];
           }
           {
-            command = "/run/current-system/sw/bin/chown -R ${config.services.mover.user}\\:${config.services.mover.group} ${config.services.mover.backingArray}";
+            command = "/run/current-system/sw/bin/chgrp -R ${config.services.mover.group} ${config.services.mover.backingArray}";
             options = [ "NOPASSWD" ];
           }
           {
-            command = "/run/current-system/sw/bin/chown -R ${config.services.mover.user}\\:${config.services.mover.group} ${config.services.mover.cacheArray}";
+            command = "/run/current-system/sw/bin/chgrp -R ${config.services.mover.group} ${config.services.mover.cacheArray}";
             options = [ "NOPASSWD" ];
           }
           {
