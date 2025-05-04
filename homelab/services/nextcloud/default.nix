@@ -59,12 +59,16 @@ in
     };
   };
   config = lib.mkIf cfg.enable {
-    services.nginx.virtualHosts."${config.services.nextcloud.hostName}".listen = [
-      {
-        addr = "127.0.0.1";
-        port = 8083;
-      }
-    ];
+    services.nginx = {
+      virtualHosts."${config.services.nextcloud.hostName}" = {
+        listen = [
+          {
+            addr = "127.0.0.1";
+            port = 8083;
+          }
+        ];
+      };
+    };
     services.cloudflared = {
       enable = true;
       tunnels.${cfg.cloudflared.tunnelId} = {
@@ -90,6 +94,15 @@ in
       after = [ "postgresql.service" ];
     };
 
+    services.fail2ban-cloudflare = lib.mkIf config.services.fail2ban-cloudflare.enable {
+      jails = {
+        nextcloud = {
+          serviceName = "phpfpm-nextcloud";
+          failRegex = "^.*Login failed:.*(Remote IP: <HOST>).*$";
+        };
+      };
+    };
+
     services.${service} = {
       enable = true;
       package = pkgs.nextcloud30;
@@ -97,11 +110,15 @@ in
       configureRedis = true;
       maxUploadSize = "50G";
       settings = {
+        trusted_proxies = [ "127.0.0.1" ];
         overwriteprotocol = "https";
         overwritehost = "cloud.${homelab.baseDomain}";
         overwrite.cli.url = "https://cloud.${homelab.baseDomain}";
         mail_smtpmode = "sendmail";
         mail_sendmailmode = "pipe";
+        forwarded_for_headers = [
+          "HTTP_CF_CONNECTING_IP"
+        ];
         enabledPreviewProviders = [
           "OC\\Preview\\BMP"
           "OC\\Preview\\GIF"
