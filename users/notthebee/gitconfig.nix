@@ -1,4 +1,9 @@
-{ inputs, lib, config, pkgs, ... }:
+{
+  inputs,
+  lib,
+  config,
+  ...
+}:
 {
   age.secrets.gitIncludes = {
     file = "${inputs.secrets}/gitIncludes.age";
