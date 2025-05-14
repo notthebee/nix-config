@@ -18,7 +18,7 @@ in
 {
 
   mkDarwin = machineHostname: nixpkgsVersion: extraHmModules: extraModules: {
-    darwinConfigurations.${machineHostname} = inputs.nix-darwin.lib.darwinSystem {
+    darwinConfigurations.${machineHostname} = nixpkgsVersion.lib.darwinSystem {
       system = "aarch64-darwin";
       specialArgs = {
         inherit inputs;
@@ -33,7 +33,7 @@ in
           home-manager.users.notthebee.home.homeDirectory =
             inputs.nixpkgs-darwin.lib.mkForce "/Users/notthebee";
         })
-      ];
+      ] ++ extraModules;
     };
   };
   mkNixos = machineHostname: nixpkgsVersion: extraModules: rec {
