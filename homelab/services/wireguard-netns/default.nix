@@ -66,7 +66,7 @@ in
         ExecStart =
           with pkgs;
           writers.writeBash "wg-up" ''
-            see -e
+            set -e
             ${iproute2}/bin/ip link add wg0 type wireguard
             ${iproute2}/bin/ip link set wg0 netns ${cfg.namespace}
             ${iproute2}/bin/ip -n ${cfg.namespace} address add ${cfg.privateIP} dev wg0
@@ -79,7 +79,7 @@ in
         ExecStop =
           with pkgs;
           writers.writeBash "wg-down" ''
-            see -e
+            set -e
             ${iproute2}/bin/ip -n ${cfg.namespace} route del default dev wg0
             ${iproute2}/bin/ip -n ${cfg.namespace} link del wg0
           '';
