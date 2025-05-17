@@ -71,6 +71,9 @@ in
         custom_keycloak_themes = {
           notthebee = pkgs.callPackage ./theme.nix { };
         };
+        custom_keycloak_plugins = {
+          keycloak_spi_trusted_device = pkgs.callPackage ./trusted-device.nix { };
+        };
       })
     ];
 
@@ -81,6 +84,7 @@ in
       themes = {
         notthebee = pkgs.custom_keycloak_themes.notthebee;
       };
+      plugins = [ pkgs.custom_keycloak_plugins.keycloak_spi_trusted_device ];
       settings = {
         spi-theme-static-max-age = "-1";
         spi-theme-cache-themes = false;
