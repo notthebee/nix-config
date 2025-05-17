@@ -1,0 +1,19 @@
+name: update-dependencies
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 3 * * *'
+
+jobs:
+  update-dependencies:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@v12
+      - id: update
+        uses: DeterminateSystems/update-flake-lock@v23
+      - name: Merge
+        run: gh pr merge --auto "${{ steps.update.outputs.pull-request-number }}" --rebase
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        if: ${{ steps.update.outputs.pull-request-number != '' }}
