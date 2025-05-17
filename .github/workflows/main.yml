@@ -12,8 +12,9 @@ jobs:
       - uses: DeterminateSystems/nix-installer-action@v12
       - id: update
         uses: DeterminateSystems/update-flake-lock@v23
-        env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        with:
+          nix-options: "--access-tokens github.com=${{secrets.GITHUB_TOKEN}}"
+          token: ${{secrets.GITHUB_TOKEN}}
       - name: Merge
         run: gh pr merge --auto "${{ steps.update.outputs.pull-request-number }}" --rebase
         env:
