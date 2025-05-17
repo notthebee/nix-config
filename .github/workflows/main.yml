@@ -7,14 +7,17 @@ on:
 jobs:
   update-dependencies:
     runs-on: ubuntu-latest
+    environment: production
     steps:
       - uses: actions/checkout@v4
       - uses: DeterminateSystems/nix-installer-action@v12
       - id: update
         uses: DeterminateSystems/update-flake-lock@v23
         with:
-          nix-options: "--access-tokens github.com=${{secrets.GITHUB_TOKEN}}"
-          token: ${{secrets.GITHUB_TOKEN}}
+          commit-msg: "chore(flake.lock): update"
+          pr-title: "chore(flake.lock): update"
+          nix-options: "--access-tokens github.com=${{secrets.FLAKE_UPDATE_GH_TOKEN}}"
+          token: ${{secrets.FLAKE_UPDATE_GH_TOKEN}}
       - name: Merge
         run: gh pr merge --auto "${{ steps.update.outputs.pull-request-number }}" --rebase
         env:
