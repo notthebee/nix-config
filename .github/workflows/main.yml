@@ -20,6 +20,7 @@ jobs:
         with:
           commit-msg: "chore(flake.lock): update"
           pr-title: "chore(flake.lock): update"
+          token: "${{ secrets.GITHUB_TOKEN }}"
       - name: Merge
         run: gh pr merge --auto "${{ steps.update.outputs.pull-request-number }}" --rebase
         env:
