@@ -10,10 +10,10 @@ jobs:
     environment: production
     steps:
       - uses: actions/checkout@v4
-      - run: sudo apt update && sudo apt install git git-crypt
+      - run: sudo apt-get update && sudo apt-get install git git-crypt
       - uses: DeterminateSystems/nix-installer-action@v12
       - run: git config --global --add safe.directory "${PWD}"
-      - run: echo "${GIT_CRYPT_KEY}" | base64 -d | git-crypt unlock -
+      - run: echo "$GIT_CRYPT_KEY" | base64 -d | git-crypt unlock -
         env:
-          GIT_CRYPT_KEY: "{{ secrets.GIT_CRYPT_KEY }}"
+          GIT_CRYPT_KEY: ${{ secrets.GIT_CRYPT_KEY }}
       - run: nix flake check
