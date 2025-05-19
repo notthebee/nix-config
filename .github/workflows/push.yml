@@ -1,0 +1,13 @@
+name: update-flake-lock
+on:
+  workflow_dispatch:
+  push:
+  pull_request_review:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@v12
+      - run: nix flake check

@@ -3,3 +3,4 @@
 ..bfg-report
 .DS_Store
 secrets
+.direnv

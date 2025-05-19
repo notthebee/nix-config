@@ -13,6 +13,7 @@
     ];
   };
   inputs = {
+    flake-utils.url = "github:numtide/flake-utils";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
     nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-24.11-darwin";
     nixpkgs-darwin-unstable.url = "github:nixos/nixpkgs/nixpkgs-unstable";
@@ -78,12 +79,26 @@
   };
 
   outputs =
-    { ... }@inputs:
+    { flake-utils, nixpkgs, ... }@inputs:
     let
       helpers = import ./flakeHelpers.nix inputs;
       inherit (helpers) mkMerge mkNixos mkDarwin;
     in
     mkMerge [
+      (flake-utils.lib.eachDefaultSystem (
+        system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+        in
+        {
+          packages.default = pkgs.mkShell {
+            packages = [
+              pkgs.just
+              pkgs.nixos-rebuild
+            ];
+          };
+        }
+      ))
       (mkNixos "spencer" inputs.nixpkgs [
         ./modules/notthebe.ee
         ./homelab
