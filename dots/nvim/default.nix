@@ -44,6 +44,7 @@ in
       };
     };
     plugins = {
+      hardtime.enable = true;
       web-devicons = {
         enable = true;
       };
