@@ -13,6 +13,24 @@
   };
 
   programs = {
+    fzf = {
+      enable = true;
+      enableZshIntegration = true;
+      colors = {
+        fg = "#D8DEE9";
+        bg = "#2E3440";
+        hl = "#A3BE8C";
+        "fg+" = "#D8DEE9";
+        "bg+" = "#434C5E";
+        "hl+" = "#A3BE8C";
+        pointer = "#BF616A";
+        info = "#4C566A";
+        spinner = "#4C566A";
+        header = "#4C566A";
+        prompt = "#81A1C1";
+        marker = "#EBCB8B";
+      };
+    };
     starship = {
       enable = true;
       settings = {
@@ -75,10 +93,10 @@
         zstyle ':completion:*' list-colors ''${(s.:.)LS_COLORS}
         zstyle ':completion:*' menu yes=long select
 
-          if [ $(uname) = "Darwin" ]; then 
+          if [ $(uname) = "Darwin" ]; then
             path=("$HOME/.nix-profile/bin" "/run/wrappers/bin" "/etc/profiles/per-user/$USER/bin" "/nix/var/nix/profiles/default/bin" "/run/current-system/sw/bin" "/opt/homebrew/bin" $path)
             export BW_SESSION=$(${pkgs.coreutils}/bin/cat ${config.age.secrets.bwSession.path})
-            export DOCKER_HOST="unix://$HOME/.colima/default/docker.sock" 
+            export DOCKER_HOST="unix://$HOME/.colima/default/docker.sock"
           fi
 
           export EDITOR=nvim || export EDITOR=vim
@@ -87,10 +105,10 @@
           export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
 
 
-          if [ $(uname) = "Darwin" ]; then 
+          if [ $(uname) = "Darwin" ]; then
             alias lsblk="diskutil list"
             ulimit -n 2048
-          fi 
+          fi
 
           source $ZPLUG_HOME/repos/unixorn/warhol.plugin.zsh/warhol.plugin.zsh
           bindkey '^[[A' history-substring-search-up
