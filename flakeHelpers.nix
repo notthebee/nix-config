@@ -25,13 +25,12 @@ in
       };
       modules = [
         "${inputs.secrets}/default.nix"
-        inputs.agenix.darwinModules.default
+        inputs.agenix-darwin.darwinModules.default
         ./machines/darwin
         ./machines/darwin/${machineHostname}
-        inputs.home-manager-darwin.darwinModules.home-manager
-        (inputs.nixpkgs-darwin.lib.attrsets.recursiveUpdate (homeManagerCfg true extraHmModules) {
-          home-manager.users.notthebee.home.homeDirectory =
-            inputs.nixpkgs-darwin.lib.mkForce "/Users/notthebee";
+        inputs.home-manager-unstable.darwinModules.home-manager
+        (nixpkgsVersion.lib.attrsets.recursiveUpdate (homeManagerCfg true extraHmModules) {
+          home-manager.users.notthebee.home.homeDirectory = nixpkgsVersion.lib.mkForce "/Users/notthebee";
         })
       ];
     };

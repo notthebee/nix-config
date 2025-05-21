@@ -1,10 +1,10 @@
 {
   inputs,
   pkgs,
-  lib,
   ...
 }:
 {
+  system.primaryUser = "notthebee";
   environment.shellInit = ''
     ulimit -n 2048
   '';
@@ -36,7 +36,7 @@
       "microsoft-outlook"
       "monitorcontrol"
       "raycast"
-      "zen-browser"
+      "mattermost"
     ];
     brews = [
       "pulumi"
@@ -93,7 +93,6 @@
     git-filter-repo
     spotify
     slack
-    mattermost
     google-cloud-sdk
     pinentry.curses
     deploy-rs
@@ -107,8 +106,6 @@
     nixfmt-rfc-style
     opentofu
   ];
-
-  services.nix-daemon.enable = lib.mkForce true;
 
   system.stateVersion = 4;
 }

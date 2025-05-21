@@ -7,6 +7,7 @@
     };
     overlays = [
       (self: super: {
+        nodejs = super.nodejs_22;
         karabiner-elements = super.karabiner-elements.overrideAttrs (old: {
           version = "14.13.0";
 
