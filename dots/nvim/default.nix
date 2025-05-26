@@ -45,7 +45,6 @@ in
     };
     plugins = {
       notify.enable = true;
-      hardtime.enable = true;
       web-devicons = {
         enable = true;
       };
