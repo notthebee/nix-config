@@ -105,7 +105,7 @@ in
 
     services.${service} = {
       enable = true;
-      package = pkgs.nextcloud30;
+      package = pkgs.nextcloud31;
       hostName = "nextcloud";
       configureRedis = true;
       caching = {

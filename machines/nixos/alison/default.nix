@@ -27,8 +27,8 @@
   zfs-root = {
     boot = {
       bootDevices = [
-        "nvme-PC601_NVMe_SK_hynix_256GB_AI97N00681CA38E2W"
-        "nvme-Vi3000_Internal_PCIe_NVMe_M.2_SSD_256GB_493733094834956"
+        "nvme-eui.ace42e0095548e4c2ee4ac0000000001"
+        "nvme-nvme.1e4b-343933373333303934383334393536-56693330303020496e7465726e616c2050434965204e564d65204d2e3220535344203235364742-00000001"
       ];
       immutable = false;
       availableKernelModules = [

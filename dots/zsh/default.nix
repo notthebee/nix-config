@@ -81,7 +81,7 @@
         deploy-nix = "f() { if [[ $(find . -mmin -60 -type f -name flake.lock | wc -c) -eq 0 ]]; then nix flake update; fi && deploy .#$1 --remote-build -s --auto-rollback false && rsync -ax --delete ./ $1:/etc/nixos/ };f";
       };
 
-      initExtra = ''
+      initContent = ''
         # Cycle back in the suggestions menu using Shift+Tab
         bindkey '^[[Z' reverse-menu-complete
 

@@ -11,6 +11,11 @@ let
       x: x.hostname == "emily"
     ) false false config.homelab.networks.local.lan.reservations).ip-address;
   gatewayIpAddress = config.homelab.networks.local.lan.cidr;
+  hardDrives = [
+    "/dev/disk/by-label/Data1"
+    "/dev/disk/by-label/Data2"
+    "/dev/disk/by-label/Parity1"
+  ];
 in
 {
   nixpkgs.config.packageOverrides = pkgs: {
@@ -44,11 +49,12 @@ in
       "f71882fg"
     ];
   };
+
   networking = {
     useDHCP = true;
     networkmanager.enable = false;
     hostName = "emily";
-    interfaces.enp2s0f1 = {
+    interfaces.enp1s0 = {
       ipv4.addresses = [
         {
           address = emilyIpAddress;
@@ -58,14 +64,14 @@ in
     };
     defaultGateway = {
       address = gatewayIpAddress;
-      interface = "enp2s0f1";
+      interface = "enp1s0";
     };
     hostId = "0730ae51";
     firewall = {
       enable = true;
       allowPing = true;
       trustedInterfaces = [
-        "enp2s0f1"
+        "enp1s0"
         "tailscale0"
       ];
     };
@@ -102,26 +108,31 @@ in
     tokenFile = config.age.secrets.duckDNSToken.path;
   };
 
-  services.adiosBot = {
-    enable = true;
-    botTokenFile = config.age.secrets.adiosBotToken.path;
+  systemd.services.hd-idle = {
+    description = "External HD spin down daemon";
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "simple";
+      ExecStart =
+        let
+          idleTime = toString 900;
+          hardDriveParameter = lib.strings.concatMapStringsSep " " (x: "-a ${x} -i ${idleTime}") hardDrives;
+        in
+        "${pkgs.hd-idle}/bin/hd-idle -i 0 ${hardDriveParameter}";
+    };
   };
 
   services.hddfancontrol = {
     enable = true;
-    disks = [
-      "/dev/disk/by-label/Data1"
-      "/dev/disk/by-label/Data2"
-      "/dev/disk/by-label/Parity1"
-    ];
-    pwmPaths = [ "/sys/class/hwmon/hwmon1/device/pwm2" ];
-    extraArgs = [
-      "--pwm-start-value=50"
-      "--pwm-stop-value=50"
-      "--smartctl"
-      "-i 30"
-      "--spin-down-time=900"
-    ];
+    settings = {
+      harddrives = {
+        disks = hardDrives;
+        pwmPaths = [ "/sys/class/hwmon/hwmon1/device/pwm2:50:50" ];
+        extraArgs = [
+          "-i 30sec"
+        ];
+      };
+    };
   };
 
   virtualisation.docker.storageDriver = "overlay2";
@@ -148,8 +159,8 @@ in
     ];
   };
 
-  services.auto-aspm.enable = true;
-  powerManagement.powertop.enable = true;
+  #services.auto-aspm.enable = true;
+  #powerManagement.powertop.enable = true;
 
   environment.systemPackages = with pkgs; [
     pciutils

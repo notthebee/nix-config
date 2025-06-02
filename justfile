@@ -10,4 +10,7 @@ dry-run $host:
 	nixos-rebuild dry-activate --flake .#{{host}} --target-host {{host}} --build-host {{host}} --fast --use-remote-sudo
 
 deploy $host:
-	nixos-rebuild switch --flake .#{{host}} --target-host {{host}} --build-host {{host}} --fast --use-remote-sudo && rsync -ax --delete --rsync-path="sudo rsync" ./ {{host}}:/etc/nixos/
+	nixos-rebuild switch --flake .#{{host}} --target-host {{host}} --build-host {{host}} --fast --use-remote-sudo; rsync -ax --delete --rsync-path="sudo rsync" ./ {{host}}:/etc/nixos/
+
+copy $host:
+	rsync -ax --delete --rsync-path="sudo rsync" ./ {{host}}:/etc/nixos/

@@ -29,7 +29,7 @@ in
   config = lib.mkIf cfg.enable {
     environment.systemPackages = [
       adiosBot
-      (pkgs.python312Full.withPackages (
+      (pkgs.python313Full.withPackages (
         ps: with ps; [
           discordpy
           pytz
@@ -42,7 +42,7 @@ in
       after = [ "network.target" ];
       wantedBy = [ "multi-user.target" ];
       path = [
-        (pkgs.python312Full.withPackages (
+        (pkgs.python313Full.withPackages (
           ps: with ps; [
             discordpy
             pytz

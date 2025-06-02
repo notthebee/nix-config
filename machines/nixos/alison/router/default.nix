@@ -140,16 +140,6 @@ in
     dnsutils
   ];
 
-  systemd.services.kea-dhcp4-server = {
-    wants =
-      (lib.mapAttrsToList (_: val: (val.interface + "-netdev.service")) (
-        lib.attrsets.filterAttrs (n: v: v.dhcp) networks
-      ))
-      ++ [
-        "network-pre.target"
-      ];
-    after = config.systemd.services.kea-dhcp4-server.wants;
-  };
   services = {
     avahi = {
       enable = true;
@@ -166,6 +156,7 @@ in
         enable = true;
         settings = {
           interfaces-config = {
+            service-sockets-require-all = true;
             interfaces = lib.mapAttrsToList (_: val: val.interface) (
               lib.attrsets.filterAttrs (n: v: v.dhcp) networks
             );

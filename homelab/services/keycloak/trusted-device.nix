@@ -6,12 +6,12 @@
 
 maven.buildMavenPackage rec {
   pname = "keycloak-spi-trusted-device";
-  version = "master"; # When updating also update mvnHash
+  version = "0.0.2";
 
   src = fetchFromGitHub {
     owner = "wouterh-dev";
     repo = "keycloak-spi-trusted-device";
-    rev = version;
+    rev = "v${version}";
     hash = "sha256-WNx4pUoaMx4SiksLi33Cofd5NrR38oD6sIapTNRJLEs=";
   };
 

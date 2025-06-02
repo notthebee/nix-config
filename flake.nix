@@ -14,7 +14,7 @@
   };
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
     nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     nixvim = {
@@ -22,7 +22,7 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     home-manager = {
-      url = "github:nix-community/home-manager/release-24.11";
+      url = "github:nix-community/home-manager/release-25.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     home-manager-unstable = {
@@ -117,8 +117,6 @@
       (mkNixos "emily" inputs.nixpkgs [
         ./modules/zfs-root
         ./modules/tailscale
-        ./modules/adios-bot
-        ./modules/duckdns
         ./homelab
         inputs.home-manager.nixosModules.home-manager
       ])
