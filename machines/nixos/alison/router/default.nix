@@ -9,6 +9,10 @@ let
   externalInterface = "wan0";
   networks = config.homelab.networks.local;
   internalInterfaces = lib.mapAttrsToList (_: val: val.interface) networks;
+  dhcpInterfaces = lib.mapAttrsToList (_: val: val.interface) (
+    lib.attrsets.filterAttrs (n: v: v.dhcp) networks
+  );
+  nonWireguardNetworks = lib.attrsets.filterAttrs (n: v: n != "wireguard") networks;
   internalIPs = lib.mapAttrsToList (
     _: val: lib.strings.removeSuffix ".1" val.cidr + ".0/24"
   ) networks;
@@ -37,13 +41,12 @@ in
     "net.ipv6.conf.${externalInterface}.accept_ra" = 2;
   };
 
-  homelab.motd.networkInterfaces = lib.mapAttrsToList (
-    _: v: v.interface
-  ) config.homelab.networks.local;
+  homelab.motd.networkInterfaces = lib.mapAttrsToList (_: v: v.interface) networks;
 
   networking = {
     hostName = "alison";
     domain = "${config.networking.hostName}.${vars.domainName}";
+    search = [ vars.domainName ];
     nameservers = [ "127.0.0.1" ];
     hosts = lib.mkForce {
       "127.0.0.1" = [ "localhost" ];
@@ -64,56 +67,32 @@ in
         interface = "${networks.lan.interface}";
         id = 3;
       };
-      app = {
-        interface = "${networks.lan.interface}";
-        id = 4;
-      };
       guest = {
         interface = "${networks.lan.interface}";
         id = 5;
       };
     };
-    interfaces = {
-      ${externalInterface} = {
-        useDHCP = true;
-      };
-      ${networks.lan.interface} = {
-        useDHCP = false;
-        ipv4.addresses = [
-          {
-            address = "${networks.lan.cidr}";
-            prefixLength = 24;
+    interfaces =
+      let
+        internalInterfaceDefinitions = lib.attrsets.mapAttrs' (
+          name: value:
+          lib.attrsets.nameValuePair value.interface {
+            useDHCP = false;
+            ipv4.addresses = [
+              {
+                address = value.cidr;
+                prefixLength = 24;
+              }
+            ];
           }
-        ];
-      };
-      ${networks.iot.interface} = {
-        useDHCP = false;
-        ipv4.addresses = [
-          {
-            address = "${networks.iot.cidr}";
-            prefixLength = 24;
-          }
-        ];
-      };
-      ${networks.app.interface} = {
-        useDHCP = false;
-        ipv4.addresses = [
-          {
-            address = "${networks.app.cidr}";
-            prefixLength = 24;
-          }
-        ];
-      };
-      ${networks.guest.interface} = {
-        useDHCP = false;
-        ipv4.addresses = [
-          {
-            address = "${networks.guest.cidr}";
-            prefixLength = 24;
-          }
-        ];
-      };
-    };
+        ) nonWireguardNetworks;
+      in
+      {
+        ${externalInterface} = {
+          useDHCP = true;
+        };
+      }
+      // internalInterfaceDefinitions;
     nat = {
       enable = true;
       externalInterface = externalInterface;
@@ -124,13 +103,21 @@ in
 
     dhcpcd = {
       persistent = true;
-      extraConfig = ''
-        noipv6rs
-        interface ${externalInterface}
-        ia_na 1
-        ia_pd 2/::/60 ${networks.lan.interface}/0/64 ${networks.iot.interface}/1/64 ${networks.guest.interface}/2/64 ${networks.app.interface}/4/64
-        vendorclassid nixos
-      '';
+      extraConfig =
+        let
+          pdDefinition = lib.strings.concatStringsSep " " (
+            lib.attrsets.mapAttrsToList (
+              name: value: "${value.interface}/${toString (value.id - 1)}/64"
+            ) nonWireguardNetworks
+          );
+        in
+        ''
+          noipv6rs
+          interface ${externalInterface}
+          ia_na 1
+          ia_pd 2/::/60 ${pdDefinition}
+          vendorclassid nixos
+        '';
     };
 
   };
@@ -140,6 +127,16 @@ in
     dnsutils
   ];
 
+  systemd.services.kea-dhcp4-server.after =
+    [
+      "network-setup.service"
+    ]
+    ++ lib.lists.flatten (
+      lib.lists.forEach dhcpInterfaces (x: [
+        "${x}-netdev.service"
+        "network-addresses-${x}.service"
+      ])
+    );
   services = {
     avahi = {
       enable = true;
@@ -157,9 +154,7 @@ in
         settings = {
           interfaces-config = {
             service-sockets-require-all = true;
-            interfaces = lib.mapAttrsToList (_: val: val.interface) (
-              lib.attrsets.filterAttrs (n: v: v.dhcp) networks
-            );
+            interfaces = dhcpInterfaces;
           };
           lease-database = {
             name = "/var/lib/kea/dhcp4.leases";
