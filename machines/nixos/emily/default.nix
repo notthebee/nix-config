@@ -54,7 +54,7 @@ in
     useDHCP = true;
     networkmanager.enable = false;
     hostName = "emily";
-    interfaces.enp1s0 = {
+    interfaces.enp3s0 = {
       ipv4.addresses = [
         {
           address = emilyIpAddress;
@@ -64,14 +64,14 @@ in
     };
     defaultGateway = {
       address = gatewayIpAddress;
-      interface = "enp1s0";
+      interface = "enp3s0";
     };
     hostId = "0730ae51";
     firewall = {
       enable = true;
       allowPing = true;
       trustedInterfaces = [
-        "enp1s0"
+        "enp3s0"
         "tailscale0"
       ];
     };
@@ -84,7 +84,7 @@ in
         bootPool = "-part2";
         rootPool = "-part3";
       };
-      bootDevices = [ "ata-Samsung_SSD_870_EVO_250GB_S6PENL0T902873K" ];
+      bootDevices = [ "nvme-WDC_PC_SN530_SDBPMPZ-256G-1101_221368801205" ];
       immutable = true;
       availableKernelModules = [
         "uhci_hcd"
@@ -159,8 +159,8 @@ in
     ];
   };
 
-  #services.auto-aspm.enable = true;
-  #powerManagement.powertop.enable = true;
+  services.auto-aspm.enable = true;
+  powerManagement.powertop.enable = true;
 
   environment.systemPackages = with pkgs; [
     pciutils
