@@ -18,11 +18,6 @@ let
   ) networks;
 in
 {
-  _module.args = {
-    externalInterface = externalInterface;
-    internalInterfaces = internalInterfaces;
-    internalIPs = internalIPs;
-  };
   imports = [
     ./dns.nix
     ./firewall.nix

@@ -2,7 +2,6 @@
   lib,
   config,
   pkgs,
-  externalInterface,
   ...
 }:
 let
@@ -27,11 +26,11 @@ in
       };
       # Necessary to flush all non nixos-* tables
       extraStopCommands = ''
-        iptables-save | ${pkgs.gawk}/bin/awk '/^[*]/ { print $1 } 
+        iptables-save | ${pkgs.gawk}/bin/awk '/^[*]/ { print $1 }
                        /^:[A-Z]+ [^-]/ { print $1 " ACCEPT" ; }
                        /COMMIT/ { print $0; }' | iptables-restore
 
-        ip6tables-save | ${pkgs.gawk}/bin/awk '/^[*]/ { print $1 } 
+        ip6tables-save | ${pkgs.gawk}/bin/awk '/^[*]/ { print $1 }
                        /^:[A-Z]+ [^-]/ { print $1 " ACCEPT" ; }
                        /COMMIT/ { print $0; }' | ip6tables-restore
 
@@ -79,7 +78,7 @@ in
         ))
         ''
           # Block IOT devices from connecting to the internet
-          ip46tables -A FORWARD -i ${networks.iot.interface} -o ${externalInterface} -j nixos-fw-log-refuse 
+          ip46tables -A FORWARD -i ${networks.iot.interface} -o ${config.networking.nat.externalInterface} -j nixos-fw-log-refuse
 
           # Isolate the guest network from the rest of the subnets
         ''
@@ -102,17 +101,17 @@ in
           ip46tables -A FORWARD -m state --state ESTABLISHED,RELATED -j nixos-fw-accept
           ip46tables -A INPUT -m state --state ESTABLISHED,RELATED -j nixos-fw-accept
 
-          # Allow traffic on Podman 
+          # Allow traffic on Podman
           ip46tables -A INPUT -i podman0 -p tcp --dport 9001 -j nixos-fw-accept
 
           # allow Wireguard
-          ip46tables -A INPUT -i ${externalInterface} -p udp --dport ${
+          ip46tables -A INPUT -i ${config.networking.nat.externalInterface} -p udp --dport ${
             toString config.networking.wireguard.interfaces."${networks.wireguard.interface}".listenPort
           } -j nixos-fw-accept
 
           # block forwarding and inputs from external interface
-          ip46tables -A FORWARD -i ${externalInterface} -j nixos-fw-log-refuse
-          ip46tables -A INPUT -i ${externalInterface} -j nixos-fw-log-refuse
+          ip46tables -A FORWARD -i ${config.networking.nat.externalInterface} -j nixos-fw-log-refuse
+          ip46tables -A INPUT -i ${config.networking.nat.externalInterface} -j nixos-fw-log-refuse
 
         ''
       ];
