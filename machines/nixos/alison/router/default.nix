@@ -181,7 +181,6 @@ in
       };
     };
     netdevs = {
-      # Create the bridge interface
       "50-br0" = {
         netdevConfig = {
           Kind = "bridge";
