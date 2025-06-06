@@ -5,6 +5,7 @@
   ...
 }:
 let
+  externalInterface = "wan0";
   networks = config.homelab.networks.local;
 in
 {
@@ -16,7 +17,7 @@ in
       trustedInterfaces = (
         lib.mapAttrsToList (_: val: val.interface) (lib.attrsets.filterAttrs (n: v: v.trusted) networks)
       );
-      interfaces."podman0".allowedUDPPorts = [ 53 ];
+      interfaces."podman+".allowedUDPPorts = [ 53 ];
       # These ports will be opened *publicly*, via WAN
       allowedTCPPorts = lib.mkForce [ ];
       allowedUDPPorts = lib.mkForce [ ];
@@ -78,7 +79,7 @@ in
         ))
         ''
           # Block IOT devices from connecting to the internet
-          ip46tables -A FORWARD -i ${networks.iot.interface} -o ${config.networking.nat.externalInterface} -j nixos-fw-log-refuse
+          ip46tables -A FORWARD -i ${networks.iot.interface} -o ${externalInterface} -j nixos-fw-log-refuse
 
           # Isolate the guest network from the rest of the subnets
         ''
@@ -105,13 +106,13 @@ in
           ip46tables -A INPUT -i podman0 -p tcp --dport 9001 -j nixos-fw-accept
 
           # allow Wireguard
-          ip46tables -A INPUT -i ${config.networking.nat.externalInterface} -p udp --dport ${
-            toString config.networking.wireguard.interfaces."${networks.wireguard.interface}".listenPort
+          ip46tables -A INPUT -i ${externalInterface} -p udp --dport ${
+            toString config.systemd.network.netdevs."50-wg0".wireguardConfig.ListenPort
           } -j nixos-fw-accept
 
           # block forwarding and inputs from external interface
-          ip46tables -A FORWARD -i ${config.networking.nat.externalInterface} -j nixos-fw-log-refuse
-          ip46tables -A INPUT -i ${config.networking.nat.externalInterface} -j nixos-fw-log-refuse
+          ip46tables -A FORWARD -i ${externalInterface} -j nixos-fw-log-refuse
+          ip46tables -A INPUT -i ${externalInterface} -j nixos-fw-log-refuse
 
         ''
       ];
