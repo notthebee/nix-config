@@ -18,7 +18,7 @@ in
 {
 
   mkDarwin = machineHostname: nixpkgsVersion: extraHmModules: extraModules: {
-    darwinConfigurations.${machineHostname} = inputs.nix-darwin.lib.darwinSystem {
+    darwinConfigurations.${machineHostname} = nixpkgsVersion.lib.darwinSystem {
       system = "aarch64-darwin";
       specialArgs = {
         inherit inputs;
@@ -32,7 +32,7 @@ in
         (nixpkgsVersion.lib.attrsets.recursiveUpdate (homeManagerCfg true extraHmModules) {
           home-manager.users.notthebee.home.homeDirectory = nixpkgsVersion.lib.mkForce "/Users/notthebee";
         })
-      ];
+      ] ++ extraModules;
     };
   };
   mkNixos = machineHostname: nixpkgsVersion: extraModules: rec {
