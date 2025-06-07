@@ -16,14 +16,14 @@ let
         networks.${x}.cidr.v6
       ]
     );
-    DNSSEC = "no";
-    DNSOverTLS = "no";
+    DNSSEC = false;
+    DNSOverTLS = false;
   };
   dhcpCfgCommon = x: {
-    EmitRouter = "yes";
-    EmitDNS = "yes";
+    EmitRouter = true;
+    EmitDNS = true;
     DNS = networks.${x}.cidr.v4;
-    EmitNTP = "yes";
+    EmitNTP = true;
     NTP = networks.${x}.cidr.v4;
     PoolOffset = 100;
     ServerAddress = "${networks.${x}.cidr.v4}/24";
@@ -33,21 +33,22 @@ let
   dhcpCfgDualStack = x: {
     dhcpServerConfig = (dhcpCfgCommon x);
     ipv6SendRAConfig = {
-      EmitDNS = "yes";
-      DNS = networks.${x}.cidr.v6;
-      EmitDomains = "no";
+      DNS = "${networks.${x}.cidr.v6}";
+      EmitDNS = true;
+      EmitDomains = false;
     };
     networkConfig = lib.mkMerge [
       {
-        IPv6AcceptRA = "no";
-        IPv6SendRA = "yes";
+        IPv6AcceptRA = false;
+        IPv6SendRA = true;
         LinkLocalAddressing = "ipv6";
-        DHCPPrefixDelegation = "yes";
-        DHCPServer = "yes";
+        DHCPPrefixDelegation = true;
+        DHCPServer = true;
         Address = [
           "${networks.${x}.cidr.v4}/24"
+          "${networks.${x}.cidr.v6}/64"
         ];
-        IPv4Forwarding = "yes";
+        IPv4Forwarding = true;
         IPMasquerade = "ipv4";
       }
       (dnsCfg x)
@@ -58,12 +59,15 @@ let
   dhcpCfgIPv4Only = x: {
     dhcpServerConfig = (dhcpCfgCommon x);
     dhcpServerStaticLeases = (dhcpLeases x);
-    networkConfig = {
-      DHCPServer = "yes";
-      Address = "${networks.${x}.cidr.v4}/24";
-      IPv4Forwarding = "yes";
-      IPMasquerade = "ipv4";
-    };
+    networkConfig = lib.mkMerge [
+      {
+        DHCPServer = true;
+        Address = "${networks.${x}.cidr.v4}/24";
+        IPv4Forwarding = true;
+        IPMasquerade = "ipv4";
+      }
+      (dnsCfg x)
+    ];
   };
 in
 {
@@ -84,39 +88,38 @@ in
 
   systemd.network = {
     enable = true;
-    config.networkConfig.IPv6Forwarding = "yes";
+    config.networkConfig.IPv6Forwarding = true;
     networks = {
       "10-wan0" = {
         matchConfig.Name = "wan0";
         networkConfig = {
-          DHCP = "yes";
-          IPv6AcceptRA = "yes";
+          DHCP = true;
+          IPv6AcceptRA = true;
           LinkLocalAddressing = "ipv6";
-          IPv4Forwarding = "yes";
+          IPv4Forwarding = true;
           DNS = "127.0.0.1";
-          DNSSEC = "no";
-          DNSOverTLS = "no";
+          DNSSEC = false;
+          DNSOverTLS = false;
         };
-
         dhcpV4Config = {
-          UseHostname = "no";
-          UseDNS = "no";
-          UseNTP = "no";
-          UseSIP = "no";
-          UseRoutes = "no";
-          UseGateway = "yes";
+          UseHostname = false;
+          UseDNS = false;
+          UseNTP = false;
+          UseSIP = false;
+          ClientIdentifier = "mac";
+          UseRoutes = false;
+          UseGateway = true;
         };
-
         ipv6AcceptRAConfig = {
-          UseDNS = "no";
-          DHCPv6Client = "yes";
+          UseDNS = false;
+          DHCPv6Client = true;
         };
         dhcpV6Config = {
           WithoutRA = "solicit";
           UseDelegatedPrefix = true;
-          UseHostname = "no";
-          UseDNS = "no";
-          UseNTP = "no";
+          UseHostname = false;
+          UseDNS = false;
+          UseNTP = false;
         };
         linkConfig.RequiredForOnline = "routable";
       };
@@ -138,14 +141,14 @@ in
       "30-iot" = lib.mkMerge [
         {
           matchConfig.Name = "iot";
-          linkConfig.RequiredForOnline = "no";
+          linkConfig.RequiredForOnline = false;
         }
         (dhcpCfgIPv4Only "iot")
       ];
       "30-guest" = {
         matchConfig.Name = "guest";
         networkConfig.Bridge = "br1";
-        linkConfig.RequiredForOnline = "no";
+        linkConfig.RequiredForOnline = false;
       };
       "40-br0" = lib.mkMerge [
         {
@@ -162,7 +165,7 @@ in
       "40-br1" = lib.mkMerge [
         {
           matchConfig.Name = "br1";
-          linkConfig.RequiredForOnline = "no";
+          linkConfig.RequiredForOnline = false;
         }
         (dhcpCfgDualStack "guest")
       ];
@@ -172,7 +175,7 @@ in
           {
             IPMasquerade = "both";
             Address = [
-              "${networks.wireguard.cidr.v4}/24}"
+              "${networks.wireguard.cidr.v4}/24"
               "${networks.wireguard.cidr.v6}/64"
             ];
           }
