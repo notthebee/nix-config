@@ -20,9 +20,7 @@
           if lib.attrsets.hasAttrByPath [ config.networking.hostName ] config.homelab.networks.external then
             config.homelab.networks.external.${config.networking.hostName}.address
           else
-            (lib.lists.findSingle (
-              x: x.hostname == config.networking.hostName
-            ) false false config.homelab.networks.local.lan.reservations).ip-address;
+            config.homelab.networks.local.lan.reservations.${config.networking.hostName}.Address;
       in
       [
         "--advertise-routes=${advertisedRoute}/32"

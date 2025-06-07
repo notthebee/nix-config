@@ -6,9 +6,8 @@
 }:
 let
   networks = config.homelab.networks.local;
-  internalInterfaces = lib.mapAttrsToList (_: val: val.interface) networks;
-  dhcpLeases =
-    x: lib.lists.forEach networks.${x}.reservations (y: builtins.removeAttrs y [ "Hostname" ]);
+  internalInterfaces = lib.attrsets.mapAttrsToList (_: val: val.interface) networks;
+  dhcpLeases = x: lib.attrsets.mapAttrsToList (_: value: value) networks.${x}.reservations;
   dnsCfg = x: {
     DNS = (
       lib.lists.remove null [
