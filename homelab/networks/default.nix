@@ -1,4 +1,7 @@
-{ lib, ... }:
+{ lib, config, ... }:
+let
+  cfg = config.homelab.networks;
+in
 {
   options.homelab.networks = {
     external = lib.mkOption {
@@ -31,22 +34,6 @@
     };
     local = lib.mkOption {
       default = { };
-      example = lib.literalExpression ''
-          {
-            lan = {
-              id = 1;
-              cidr = 192.168.2.1;
-              interface = "enp3s0";
-              reservations = [];
-        };
-            iot = {
-              id = 2;
-              cidr = 192.168.3.1;
-              interface = "lan";
-              reservations = [];
-            };
-          }
-      '';
       type = lib.types.attrsOf (
         lib.types.submodule {
           options = {
@@ -54,9 +41,14 @@
               example = 1;
               type = lib.types.int;
             };
-            cidr = lib.mkOption {
+            cidr.v4 = lib.mkOption {
               example = "192.168.2.1";
               type = lib.types.str;
+            };
+            cidr.v6 = lib.mkOption {
+              example = "fd14:d122:ca4c::";
+              default = null;
+              type = lib.types.nullOr lib.types.str;
             };
             interface = lib.mkOption {
               example = "enp4s0";
@@ -69,11 +61,18 @@
                 Whether the network should be trusted. Trusted networks can access all ports and hosts on the local network regardless of the firewall rules
               '';
             };
-            dhcp = lib.mkOption {
+            dhcp.v4 = lib.mkOption {
               type = lib.types.bool;
               default = true;
               description = ''
-                Whether to run a DHCP server on the network
+                Whether to run a DHCPv4 server on the network
+              '';
+            };
+            dhcp.v6 = lib.mkOption {
+              type = lib.types.bool;
+              default = cfg.cidr.ipv6;
+              description = ''
+                Whether to run a DHCPv6 server on the network
               '';
             };
             reservations = lib.mkOption {
