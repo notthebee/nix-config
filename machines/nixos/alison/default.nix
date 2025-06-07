@@ -69,7 +69,7 @@
     };
   };
   services.caddy.globalConfig = ''
-    default_bind ${config.homelab.networks.local.lan.cidr}
+    default_bind ${config.homelab.networks.local.lan.cidr.v4}
   '';
   environment.systemPackages = with pkgs; [
     pciutils
@@ -78,5 +78,6 @@
     cpufrequtils
     gnumake
     gcc
+    dig.dnsutils
   ];
 }

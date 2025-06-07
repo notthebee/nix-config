@@ -9,29 +9,24 @@ let
   internalInterfaces = lib.mapAttrsToList (_: val: val.interface) networks;
   dhcpLeases =
     x: lib.lists.forEach networks.${x}.reservations (y: builtins.removeAttrs y [ "Hostname" ]);
-  dnsServers = {
-    ipv6 = [
-      "2620:fe::fe"
-      "2620:fe::9"
-    ];
-    ipv4 = [
-      "9.9.9.9"
-      "149.112.112.112"
-    ];
-  };
-  dnsCfg = {
-    DNS = lib.strings.concatStringsSep " " (dnsServers.ipv6 ++ dnsServers.ipv4);
-    DNSSEC = "yes";
-    DNSOverTLS = "yes";
+  dnsCfg = x: {
+    DNS = (
+      lib.lists.remove null [
+        networks.${x}.cidr.v4
+        networks.${x}.cidr.v6
+      ]
+    );
+    DNSSEC = "no";
+    DNSOverTLS = "no";
   };
   dhcpCfgCommon = x: {
     EmitRouter = "yes";
     EmitDNS = "yes";
-    DNS = dnsServers.ipv4;
+    DNS = networks.${x}.cidr.v4;
     EmitNTP = "yes";
-    NTP = "networks.${x}.cidr";
+    NTP = networks.${x}.cidr.v4;
     PoolOffset = 100;
-    ServerAddress = "${networks.${x}.cidr}/24";
+    ServerAddress = "${networks.${x}.cidr.v4}/24";
     UplinkInterface = "wan0";
     DefaultLeaseTimeSec = 1800;
   };
@@ -39,7 +34,7 @@ let
     dhcpServerConfig = (dhcpCfgCommon x);
     ipv6SendRAConfig = {
       EmitDNS = "yes";
-      DNS = dnsServers.ipv6;
+      DNS = networks.${x}.cidr.v6;
       EmitDomains = "no";
     };
     networkConfig = lib.mkMerge [
@@ -49,11 +44,13 @@ let
         LinkLocalAddressing = "ipv6";
         DHCPPrefixDelegation = "yes";
         DHCPServer = "yes";
-        Address = "${networks.${x}.cidr}/24";
+        Address = [
+          "${networks.${x}.cidr.v4}/24"
+        ];
         IPv4Forwarding = "yes";
         IPMasquerade = "ipv4";
       }
-      dnsCfg
+      (dnsCfg x)
     ];
     dhcpServerStaticLeases = (dhcpLeases x);
 
@@ -63,7 +60,7 @@ let
     dhcpServerStaticLeases = (dhcpLeases x);
     networkConfig = {
       DHCPServer = "yes";
-      Address = "${networks.${x}.cidr}/24";
+      Address = "${networks.${x}.cidr.v4}/24";
       IPv4Forwarding = "yes";
       IPMasquerade = "ipv4";
     };
@@ -72,8 +69,8 @@ in
 {
   imports = [
     ./firewall.nix
+    ./dns.nix
   ];
-
   services.udev.extraRules = ''
     SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="00:e2:69:63:e7:57", ATTR{type}=="1", NAME="wan0"
     SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="00:e2:69:63:e7:56", ATTR{type}=="1", NAME="lan0"
@@ -91,15 +88,15 @@ in
     networks = {
       "10-wan0" = {
         matchConfig.Name = "wan0";
-        networkConfig = lib.mkMerge [
-          {
-            DHCP = "yes";
-            IPv6AcceptRA = "yes";
-            LinkLocalAddressing = "ipv6";
-            IPv4Forwarding = "yes";
-          }
-          dnsCfg
-        ];
+        networkConfig = {
+          DHCP = "yes";
+          IPv6AcceptRA = "yes";
+          LinkLocalAddressing = "ipv6";
+          IPv4Forwarding = "yes";
+          DNS = "127.0.0.1";
+          DNSSEC = "no";
+          DNSOverTLS = "no";
+        };
 
         dhcpV4Config = {
           UseHostname = "no";
@@ -174,9 +171,11 @@ in
         networkConfig = lib.mkMerge [
           {
             IPMasquerade = "both";
-            Address = networks.wireguard.cidr + "/24";
+            Address = [
+              "${networks.wireguard.cidr.v4}/24}"
+              "${networks.wireguard.cidr.v6}/64"
+            ];
           }
-          dnsCfg
         ];
       };
     };
@@ -216,12 +215,12 @@ in
           {
             # meredith
             PublicKey = "rAkXoiMoxwsKaZc4qIpoXWxD9HBCYjsAB33hPB7jBBg=";
-            AllowedIPs = [ (lib.strings.removeSuffix ".1" networks.wireguard.cidr + ".2/32") ];
+            AllowedIPs = [ (lib.strings.removeSuffix ".1" networks.wireguard.cidr.v4 + ".2/32") ];
           }
           {
             # iphone
             PublicKey = "6Nh1FrZLJBv7kb/jlR+rkCsWDoiSq9jpOQo68a6vr0Q=";
-            AllowedIPs = [ (lib.strings.removeSuffix ".1" networks.wireguard.cidr + ".3/32") ];
+            AllowedIPs = [ (lib.strings.removeSuffix ".1" networks.wireguard.cidr.v4 + ".3/32") ];
           }
         ];
         netdevConfig = {

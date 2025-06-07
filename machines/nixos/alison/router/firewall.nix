@@ -38,84 +38,87 @@ in
         ${pkgs.podman}/bin/podman network reload -a
       '';
 
-      extraCommands = lib.concatStrings [
-        ''
-          # Force all clients to use the router DNS
-        ''
-        (lib.concatMapStrings (x: "${x}\n") (
-          lib.lists.flatten (
-            lib.lists.forEach (lib.attrsets.mapAttrsToList (name: value: name) networks) (
-              x:
-              lib.lists.forEach
-                [
-                  "udp"
-                  "tcp"
-                ]
-                (y: ''
-                  iptables -t nat -A PREROUTING -i ${
-                    lib.attrsets.getAttrFromPath [
-                      x
-                      "interface"
-                    ] networks
-                  } -p ${y} ! --source ${
-                    lib.attrsets.getAttrFromPath [
-                      x
-                      "cidr"
-                    ] networks
-                  } ! --destination ${
-                    lib.attrsets.getAttrFromPath [
-                      x
-                      "cidr"
-                    ] networks
-                  } --dport 53 -j DNAT --to ${
-                    lib.attrsets.getAttrFromPath [
-                      x
-                      "cidr"
-                    ] networks
-                  }
-                '')
+      extraCommands =
+        let
+          getInterface =
+            x:
+            lib.attrsets.getAttrFromPath [
+              x
+              "interface"
+            ] networks;
+          getCidr =
+            x:
+            lib.attrsets.getAttrFromPath [
+              x
+              "cidr"
+              "v4"
+            ] networks;
+        in
+        lib.concatStrings [
+          ''
+            # Force all clients to use the router DNS
+          ''
+          (lib.concatMapStrings (x: "${x}\n") (
+            lib.lists.flatten (
+              lib.lists.forEach (lib.attrsets.mapAttrsToList (name: value: name) networks) (
+                x:
+                lib.lists.forEach
+                  [
+                    "udp"
+                    "tcp"
+                  ]
+                  (
+                    y:
+                    "iptables -t nat -A PREROUTING -i ${getInterface x} -p ${y} ! --source ${getCidr x} ! --destination ${getCidr x} --dport 53 -j DNAT --to ${getCidr x}
+                  "
+                  )
+              )
             )
-          )
-        ))
-        ''
-          # Block IOT devices from connecting to the internet
-          ip46tables -A FORWARD -i ${networks.iot.interface} -o ${externalInterface} -j nixos-fw-log-refuse
+          ))
+          ''
+            # Block IOT devices from connecting to the internet
+            ip46tables -A FORWARD -i ${networks.iot.interface} -o ${externalInterface} -j nixos-fw-log-refuse
 
-          # Isolate the guest network from the rest of the subnets
-        ''
-        (lib.concatMapStrings (x: "${x}\n") (
-          lib.lists.forEach
-            (lib.attrsets.mapAttrsToList (name: value: name) (
-              lib.attrsets.filterAttrs (n: v: n != "guest") networks
-            ))
-            (x: ''
-              ip46tables -A FORWARD -i ${networks.guest.interface} -o ${
-                lib.attrsets.getAttrFromPath [
-                  x
-                  "interface"
-                ] networks
-              }  -j nixos-fw-refuse
-            '')
-        ))
-        ''
-          # allow traffic with existing state
-          ip46tables -A FORWARD -m state --state ESTABLISHED,RELATED -j nixos-fw-accept
-          ip46tables -A INPUT -m state --state ESTABLISHED,RELATED -j nixos-fw-accept
+            # Isolate the guest network from the rest of the subnets
+          ''
+          (lib.concatMapStrings (x: "${x}\n") (
+            lib.lists.forEach
+              (lib.attrsets.mapAttrsToList (name: value: name) (
+                lib.attrsets.filterAttrs (n: v: n != "guest") networks
+              ))
+              (x: ''
+                ip46tables -A FORWARD -i ${networks.guest.interface} -o ${
+                  lib.attrsets.getAttrFromPath [
+                    x
+                    "interface"
+                  ] networks
+                }  -j nixos-fw-refuse
+              '')
+          ))
+          ''
+            # allow traffic with existing state
+            ip46tables -A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j nixos-fw-accept
+            ip46tables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j nixos-fw-accept
 
-          # Allow traffic on Podman
-          ip46tables -A INPUT -i podman0 -p tcp --dport 9001 -j nixos-fw-accept
+            # Allow traffic on Podman
+            ip46tables -A INPUT -i podman0 -p tcp --dport 9001 -j nixos-fw-accept
 
-          # allow Wireguard
-          ip46tables -A INPUT -i ${externalInterface} -p udp --dport ${
-            toString config.systemd.network.netdevs."50-wg0".wireguardConfig.ListenPort
-          } -j nixos-fw-accept
+            # allow Wireguard
+            ip46tables -A INPUT -i ${externalInterface} -p udp --dport ${
+              toString config.systemd.network.netdevs."50-wg0".wireguardConfig.ListenPort
+            } -j nixos-fw-accept
 
-          # block forwarding and inputs from external interface
-          ip46tables -A FORWARD -i ${externalInterface} -j nixos-fw-log-refuse
-          ip46tables -A INPUT -i ${externalInterface} -j nixos-fw-log-refuse
+            # block forwarding and inputs from external interface
+            ip46tables -A FORWARD -i ${externalInterface} -j nixos-fw-log-refuse
+            ip46tables -A INPUT -i ${externalInterface} -j nixos-fw-log-refuse
 
-        ''
-      ];
+            # Allow ICMPv6 traffic
+            ip6tables -A INPUT -p icmpv6 --icmpv6-type router-advertisement -j ACCEPT
+            ip6tables -A INPUT -p icmpv6 --icmpv6-type neighbor-solicitation -j ACCEPT
+            ip6tables -A INPUT -p icmpv6 --icmpv6-type neighbor-advertisement -j ACCEPT
+            ip6tables -A INPUT -p icmpv6 --icmpv6-type echo-request -j ACCEPT
+          ''
+        ];
     };
   };
 }
