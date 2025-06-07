@@ -6,14 +6,13 @@
   ...
 }:
 let
-  emilyIpAddress =
-    (lib.lists.findSingle (
-      x: x.hostname == "emily"
-    ) false false config.homelab.networks.local.lan.reservations).ip-address;
-  gatewayIpAddress = config.homelab.networks.local.lan.cidr;
+  lan = config.homelab.networks.local.lan;
+  emilyIpAddress = lan.reservations.emily.Address;
+  gatewayIpAddress = lan.cidr.v4;
   hardDrives = [
     "/dev/disk/by-label/Data1"
     "/dev/disk/by-label/Data2"
+    "/dev/disk/by-label/Data3"
     "/dev/disk/by-label/Parity1"
   ];
 in
@@ -127,7 +126,7 @@ in
     settings = {
       harddrives = {
         disks = hardDrives;
-        pwmPaths = [ "/sys/class/hwmon/hwmon1/device/pwm2:50:50" ];
+        pwmPaths = [ "/sys/class/hwmon/hwmon2/device/pwm2:50:50" ];
         extraArgs = [
           "-i 30sec"
         ];

@@ -13,7 +13,7 @@ let
     if ext ? config.networking.hostName then
       lib.lists.singleton "${ext.${config.networking.hostName}.gateway}/24"
     else
-      lib.mapAttrsToList (_: val: "${val.cidr}/24") (lib.attrsets.filterAttrs (n: v: v.trusted) int);
+      lib.mapAttrsToList (_: val: "${val.cidr.v4}/24") (lib.attrsets.filterAttrs (n: v: v.trusted) int);
 in
 {
   options.homelab.samba = {

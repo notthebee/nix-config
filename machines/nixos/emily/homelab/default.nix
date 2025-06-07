@@ -83,10 +83,7 @@ in
           {
             PiKVM =
               let
-                ip =
-                  (lib.lists.findSingle (
-                    x: x.hostname == "pikvm"
-                  ) false false config.homelab.networks.local.lan.reservations).ip-address;
+                ip = config.homelab.networks.local.lan.reservations.pikvm.Address;
               in
               {
                 href = "https://${ip}";

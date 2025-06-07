@@ -5,14 +5,9 @@
   ...
 }:
 let
-  tvIpAddress =
-    (lib.lists.findSingle (
-      x: x.hostname == "lgtv"
-    ) false false config.homelab.networks.local.iot.reservations).ip-address;
-  tvMacAddress =
-    (lib.lists.findSingle (
-      x: x.hostname == "lgtv"
-    ) false false config.homelab.networks.local.iot.reservations).hw-address;
+  iot = config.homelab.networks.local.iot.reservations;
+  tvIpAddress = iot.lgtv.Address;
+  tvMacAddress = iot.lgtv.Address;
 in
 {
   imports = [
