@@ -39,22 +39,27 @@
   services.auto-aspm.enable = true;
   services.hddfancontrol = {
     enable = true;
-    disks = [
-      "/dev/disk/by-label/Data1"
-      "/dev/disk/by-label/Data2"
-      "/dev/disk/by-label/Data3"
-      "/dev/disk/by-label/Data4"
-      "/dev/disk/by-label/Parity1"
-    ];
-    pwmPaths = [ "/sys/class/hwmon/hwmon0/pwm2" ];
-    extraArgs = [
-      "--pwm-start-value=100"
-      "--pwm-stop-value=50"
-      "--smartctl"
-      "-i 30"
-      "--spin-down-time=900"
-    ];
+    settings = {
+      harddrives = {
+        disks = [
+          "/dev/disk/by-label/Data1"
+          "/dev/disk/by-label/Data2"
+          "/dev/disk/by-label/Data3"
+          "/dev/disk/by-label/Data4"
+          "/dev/disk/by-label/Parity1"
+        ];
+        pwmPaths = [ "/sys/class/hwmon/hwmon0/pwm2:50:100" ];
+        extraArgs = [
+          "--pwm-start-value=100"
+          "--pwm-stop-value=50"
+          "--smartctl"
+          "-i 30"
+          "--spin-down-time=900"
+        ];
+      };
+    };
   };
+
   networking = {
     useDHCP = true;
     networkmanager.enable = false;
