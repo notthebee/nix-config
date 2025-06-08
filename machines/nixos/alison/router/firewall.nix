@@ -49,9 +49,11 @@ in
 
               chain inbound_untrusted {
                 icmp type echo-request limit rate 5/second accept
+                ip6 nexthdr icmpv6 icmpv6 type { destination-unreachable, packet-too-big, time-exceeded, parameter-problem, nd-router-advert, nd-neighbor-solicit, nd-neighbor-advert, mld-listener-query, nd-router-solicit } accept
 
                 # Allow DNS and DHCP on untrusted networks (iot, guest)
                 udp dport 53 accept
+                udp dport 546 accept
                 tcp dport 53 accept
                 udp dport 67 accept
 
