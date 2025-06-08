@@ -31,6 +31,7 @@ let
   };
   dhcpCfgDualStack = x: {
     dhcpServerConfig = (dhcpCfgCommon x);
+    ipv6Prefixes = [ { Prefix = "${networks.${x}.cidr.v6}/64"; } ];
     ipv6SendRAConfig = {
       DNS = "${networks.${x}.cidr.v6}";
       EmitDNS = true;

@@ -21,6 +21,9 @@ in
           content = ''
             chain prerouting {
                 type nat hook prerouting priority filter; policy accept;
+                # Intercept DNS queries and make sure they get redirected to the router's DNS
+                iifname {"${guest}", "${iot}", "${lan}"} udp dport 53 counter redirect to 53
+                iifname {"${guest}", "${iot}", "${lan}"} tcp dport 53 counter redirect to 53
               }
 
               chain postrouting {
@@ -71,14 +74,13 @@ in
 
                 iifname {"${lan}", "wg0"} accept
                 iifname ${guest} oifname ${externalInterface} accept
+
+                log prefix "[nftables] Forward denied: " counter drop
               }
 
               chain prerouting {
                 type nat hook prerouting priority filter; policy accept;
 
-                # Intercept DNS queries and make sure they get redirected to the router's DNS
-                iifname {"${guest}", "${iot}", "${lan}"} udp dport 53 counter redirect to 53
-                iifname {"${guest}", "${iot}", "${lan}"} tcp dport 53 counter redirect to 53
               }
           '';
         };
