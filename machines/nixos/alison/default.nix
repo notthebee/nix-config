@@ -19,9 +19,6 @@
   networking = {
     hostName = "alison";
     hostId = "73cd46a7";
-    firewall = {
-      enable = true;
-    };
   };
 
   zfs-root = {
