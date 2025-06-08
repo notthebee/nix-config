@@ -1,6 +1,5 @@
 {
   config,
-  lib,
   vars,
   pkgs,
   ...
@@ -37,6 +36,11 @@
 
   fileSystems."/mnt/data2" = {
     device = "/dev/disk/by-label/Data2";
+    fsType = "xfs";
+  };
+
+  fileSystems."/mnt/data3" = {
+    device = "/dev/disk/by-label/Data3";
     fsType = "xfs";
   };
 

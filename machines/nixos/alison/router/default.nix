@@ -1,30 +1,80 @@
 {
   lib,
   config,
-  pkgs,
   vars,
   ...
 }:
 let
-  externalInterface = "wan0";
   networks = config.homelab.networks.local;
-  internalInterfaces = lib.mapAttrsToList (_: val: val.interface) networks;
-  internalIPs = lib.mapAttrsToList (
-    _: val: lib.strings.removeSuffix ".1" val.cidr + ".0/24"
-  ) networks;
+  internalInterfaces = lib.attrsets.mapAttrsToList (_: val: val.interface) networks;
+  dhcpLeases = x: lib.attrsets.mapAttrsToList (_: value: value) networks.${x}.reservations;
+  dnsCfg = x: {
+    DNS = (
+      lib.lists.remove null [
+        networks.${x}.cidr.v4
+        networks.${x}.cidr.v6
+      ]
+    );
+    DNSSEC = false;
+    DNSOverTLS = false;
+  };
+  dhcpCfgCommon = x: {
+    EmitRouter = true;
+    EmitDNS = true;
+    DNS = networks.${x}.cidr.v4;
+    EmitNTP = true;
+    NTP = networks.${x}.cidr.v4;
+    PoolOffset = 100;
+    ServerAddress = "${networks.${x}.cidr.v4}/24";
+    UplinkInterface = "wan0";
+    DefaultLeaseTimeSec = 1800;
+  };
+  dhcpCfgDualStack = x: {
+    dhcpServerConfig = (dhcpCfgCommon x);
+    ipv6Prefixes = [ { Prefix = "${networks.${x}.cidr.v6}/64"; } ];
+    ipv6SendRAConfig = {
+      DNS = "${networks.${x}.cidr.v6}";
+      EmitDNS = true;
+      EmitDomains = false;
+    };
+    networkConfig = lib.mkMerge [
+      {
+        IPv6AcceptRA = false;
+        IPv6SendRA = true;
+        LinkLocalAddressing = "ipv6";
+        DHCPPrefixDelegation = true;
+        DHCPServer = true;
+        Address = [
+          "${networks.${x}.cidr.v4}/24"
+          "${networks.${x}.cidr.v6}/64"
+        ];
+        IPv4Forwarding = true;
+        IPMasquerade = "ipv4";
+      }
+      (dnsCfg x)
+    ];
+    dhcpServerStaticLeases = (dhcpLeases x);
+
+  };
+  dhcpCfgIPv4Only = x: {
+    dhcpServerConfig = (dhcpCfgCommon x);
+    dhcpServerStaticLeases = (dhcpLeases x);
+    networkConfig = lib.mkMerge [
+      {
+        DHCPServer = true;
+        Address = "${networks.${x}.cidr.v4}/24";
+        IPv4Forwarding = true;
+        IPMasquerade = "ipv4";
+      }
+      (dnsCfg x)
+    ];
+  };
 in
 {
-  _module.args = {
-    externalInterface = externalInterface;
-    internalInterfaces = internalInterfaces;
-    internalIPs = internalIPs;
-  };
   imports = [
-    ./dns.nix
     ./firewall.nix
-    ./wireguard.nix
+    ./dns.nix
   ];
-
   services.udev.extraRules = ''
     SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="00:e2:69:63:e7:57", ATTR{type}=="1", NAME="wan0"
     SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="00:e2:69:63:e7:56", ATTR{type}=="1", NAME="lan0"
@@ -32,113 +82,162 @@ in
     SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="00:e2:69:63:e7:54", ATTR{type}=="1", NAME="lan2"
   '';
 
-  boot.kernel.sysctl = {
-    "net.ipv6.conf.all.forwarding" = true;
-    "net.ipv6.conf.${externalInterface}.accept_ra" = 2;
+  homelab.motd.networkInterfaces = lib.mapAttrsToList (_: v: v.interface) networks;
+
+  networking.useDHCP = false;
+
+  systemd.network = {
+    enable = true;
+    config.networkConfig.IPv6Forwarding = true;
+    networks = {
+      "10-wan0" = {
+        matchConfig.Name = "wan0";
+        networkConfig = {
+          DHCP = true;
+          IPv6AcceptRA = true;
+          LinkLocalAddressing = "ipv6";
+          IPv4Forwarding = true;
+          DNS = "127.0.0.1";
+          DNSSEC = false;
+          DNSOverTLS = false;
+        };
+        dhcpV4Config = {
+          UseHostname = false;
+          UseDNS = false;
+          UseNTP = false;
+          UseSIP = false;
+          ClientIdentifier = "mac";
+          UseRoutes = false;
+          UseGateway = true;
+        };
+        ipv6AcceptRAConfig = {
+          UseDNS = false;
+          DHCPv6Client = true;
+        };
+        dhcpV6Config = {
+          WithoutRA = "solicit";
+          UseDelegatedPrefix = true;
+          UseHostname = false;
+          UseDNS = false;
+          UseNTP = false;
+        };
+        linkConfig.RequiredForOnline = "routable";
+      };
+      "20-lan0" = {
+        matchConfig.Name = "lan0";
+        networkConfig.Bridge = "br0";
+        linkConfig.RequiredForOnline = "enslaved";
+      };
+      "20-lan1" = {
+        matchConfig.Name = "lan1";
+        networkConfig.Bridge = "br0";
+        linkConfig.RequiredForOnline = "enslaved";
+      };
+      "20-lan2" = {
+        matchConfig.Name = "lan2";
+        networkConfig.Bridge = "br1";
+        linkConfig.RequiredForOnline = "enslaved";
+      };
+      "30-iot" = lib.mkMerge [
+        {
+          matchConfig.Name = "iot";
+          linkConfig.RequiredForOnline = false;
+        }
+        (dhcpCfgIPv4Only "iot")
+      ];
+      "30-guest" = {
+        matchConfig.Name = "guest";
+        networkConfig.Bridge = "br1";
+        linkConfig.RequiredForOnline = false;
+      };
+      "40-br0" = lib.mkMerge [
+        {
+          matchConfig.Name = "br0";
+          vlan = [
+            "iot"
+            "guest"
+          ];
+          linkConfig.RequiredForOnline = "routable";
+          dhcpPrefixDelegationConfig.SubnetId = "0x1";
+        }
+        (dhcpCfgDualStack "lan")
+      ];
+      "40-br1" = lib.mkMerge [
+        {
+          matchConfig.Name = "br1";
+          linkConfig.RequiredForOnline = false;
+        }
+        (dhcpCfgDualStack "guest")
+      ];
+      "60-wg0" = {
+        matchConfig.Name = "wg0";
+        networkConfig = lib.mkMerge [
+          {
+            IPMasquerade = "both";
+            Address = [
+              "${networks.wireguard.cidr.v4}/24"
+              "${networks.wireguard.cidr.v6}/64"
+            ];
+          }
+        ];
+      };
+    };
+    netdevs = {
+      "50-br0" = {
+        netdevConfig = {
+          Kind = "bridge";
+          Name = "br0";
+        };
+      };
+      "50-br1" = {
+        netdevConfig = {
+          Kind = "bridge";
+          Name = "br1";
+        };
+      };
+      "50-iot" = {
+        netdevConfig = {
+          Kind = "vlan";
+          Name = "iot";
+        };
+        vlanConfig.Id = 3;
+      };
+      "50-guest" = {
+        netdevConfig = {
+          Kind = "vlan";
+          Name = "guest";
+        };
+        vlanConfig.Id = 5;
+      };
+      "50-wg0" = {
+        wireguardConfig = {
+          ListenPort = 51820;
+          PrivateKeyFile = config.age.secrets.wireguardPrivateKeyAlison.path;
+        };
+        wireguardPeers = [
+          {
+            # meredith
+            PublicKey = "rAkXoiMoxwsKaZc4qIpoXWxD9HBCYjsAB33hPB7jBBg=";
+            AllowedIPs = [ (lib.strings.removeSuffix ".1" networks.wireguard.cidr.v4 + ".2/32") ];
+          }
+          {
+            # iphone
+            PublicKey = "6Nh1FrZLJBv7kb/jlR+rkCsWDoiSq9jpOQo68a6vr0Q=";
+            AllowedIPs = [ (lib.strings.removeSuffix ".1" networks.wireguard.cidr.v4 + ".3/32") ];
+          }
+        ];
+        netdevConfig = {
+          Kind = "wireguard";
+          Name = "wg0";
+        };
+      };
+    };
   };
-
-  homelab.motd.networkInterfaces = lib.mapAttrsToList (
-    _: v: v.interface
-  ) config.homelab.networks.local;
-
   networking = {
     hostName = "alison";
     domain = "${config.networking.hostName}.${vars.domainName}";
-    nameservers = [ "127.0.0.1" ];
-    hosts = lib.mkForce {
-      "127.0.0.1" = [ "localhost" ];
-      "::1" = [ "localhost" ];
-    };
-    bridges = {
-      br0.interfaces = [
-        "lan0"
-        "lan1"
-      ];
-      br1.interfaces = [
-        "lan2"
-        "guest"
-      ];
-    };
-    vlans = {
-      iot = {
-        interface = "${networks.lan.interface}";
-        id = 3;
-      };
-      app = {
-        interface = "${networks.lan.interface}";
-        id = 4;
-      };
-      guest = {
-        interface = "${networks.lan.interface}";
-        id = 5;
-      };
-    };
-    interfaces = {
-      ${externalInterface} = {
-        useDHCP = true;
-      };
-      ${networks.lan.interface} = {
-        useDHCP = false;
-        ipv4.addresses = [
-          {
-            address = "${networks.lan.cidr}";
-            prefixLength = 24;
-          }
-        ];
-      };
-      ${networks.iot.interface} = {
-        useDHCP = false;
-        ipv4.addresses = [
-          {
-            address = "${networks.iot.cidr}";
-            prefixLength = 24;
-          }
-        ];
-      };
-      ${networks.app.interface} = {
-        useDHCP = false;
-        ipv4.addresses = [
-          {
-            address = "${networks.app.cidr}";
-            prefixLength = 24;
-          }
-        ];
-      };
-      ${networks.guest.interface} = {
-        useDHCP = false;
-        ipv4.addresses = [
-          {
-            address = "${networks.guest.cidr}";
-            prefixLength = 24;
-          }
-        ];
-      };
-    };
-    nat = {
-      enable = true;
-      externalInterface = externalInterface;
-      internalIPs = internalIPs;
-      internalInterfaces = internalInterfaces;
-    };
-    enableIPv6 = true;
-
-    dhcpcd = {
-      persistent = true;
-      extraConfig = ''
-        noipv6rs
-        interface ${externalInterface}
-        ia_na 1
-        ia_pd 2/::/60 ${networks.lan.interface}/0/64 ${networks.iot.interface}/1/64 ${networks.guest.interface}/2/64 ${networks.app.interface}/4/64
-        vendorclassid nixos
-      '';
-    };
-
+    search = [ vars.domainName ];
   };
-
-  environment.systemPackages = with pkgs; [
-    tcpdump
-    dnsutils
-  ];
 
   services = {
     avahi = {
@@ -150,144 +249,6 @@ in
         addresses = true;
         workstation = true;
       };
-    };
-    kea = {
-      dhcp4 = {
-        enable = true;
-        settings = {
-          interfaces-config = {
-            service-sockets-require-all = true;
-            interfaces = lib.mapAttrsToList (_: val: val.interface) (
-              lib.attrsets.filterAttrs (n: v: v.dhcp) networks
-            );
-          };
-          lease-database = {
-            name = "/var/lib/kea/dhcp4.leases";
-            persist = true;
-            type = "memfile";
-          };
-          option-data = [
-            {
-              name = "domain-name-servers";
-              data = "${networks.lan.cidr}";
-              always-send = true;
-            }
-            {
-              name = "routers";
-              data = "${networks.lan.cidr}";
-            }
-            {
-              name = "domain-name";
-              data = "${vars.domainName}";
-            }
-          ];
-
-          rebind-timer = 2000;
-          renew-timer = 1000;
-          valid-lifetime = 43200;
-
-          subnet4 =
-            lib.lists.forEach
-              (lib.attrsets.mapAttrsToList (name: value: name) (lib.attrsets.filterAttrs (n: v: v.dhcp) networks))
-              (x: {
-                id = (
-                  lib.attrsets.getAttrFromPath [
-                    x
-                    "id"
-                  ] networks
-                );
-                pools = [
-                  {
-                    pool =
-                      toString (
-                        (lib.strings.removeSuffix ".1" (
-                          lib.attrsets.getAttrFromPath [
-                            x
-                            "cidr"
-                          ] networks
-                        ))
-                        + ".100"
-                      )
-                      + " - "
-                      + (
-                        (lib.strings.removeSuffix ".1" (
-                          lib.attrsets.getAttrFromPath [
-                            x
-                            "cidr"
-                          ] networks
-                        ))
-                        + ".255"
-                      );
-                  }
-                ];
-                option-data = [
-                  {
-                    name = "domain-name-servers";
-                    data = (
-                      lib.attrsets.getAttrFromPath [
-                        x
-                        "cidr"
-                      ] networks
-                    );
-                    always-send = true;
-                  }
-                  {
-                    name = "routers";
-                    data = (
-                      lib.attrsets.getAttrFromPath [
-                        x
-                        "cidr"
-                      ] networks
-                    );
-                  }
-                ];
-                subnet =
-                  (lib.strings.removeSuffix ".1" (
-                    lib.attrsets.getAttrFromPath [
-                      x
-                      "cidr"
-                    ] networks
-                  ))
-                  + ".0/24";
-                reservations = (
-                  lib.attrsets.getAttrFromPath [
-                    x
-                    "reservations"
-                  ] networks
-                );
-              });
-        };
-      };
-    };
-
-    radvd = {
-      enable = true;
-      config = lib.concatStrings (
-        lib.lists.forEach
-          (lib.attrsets.mapAttrsToList (name: value: name) (lib.attrsets.filterAttrs (n: v: v.dhcp) networks))
-          (
-            x:
-            (lib.concatMapStrings (x: "${x}\n") [
-              (lib.concatStrings [
-                "interface "
-                (lib.attrsets.getAttrFromPath [
-                  x
-                  "interface"
-                ] networks)
-              ])
-              ''
-                {
-                  AdvSendAdvert on;
-                  prefix ::/64
-                  {
-                    AdvOnLink on;
-                    AdvAutonomous on;
-                  };
-                };
-              ''
-            ])
-          )
-      );
     };
     journald = {
       rateLimitBurst = 0;

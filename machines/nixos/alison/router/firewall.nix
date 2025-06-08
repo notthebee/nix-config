@@ -1,121 +1,95 @@
 {
-  lib,
   config,
-  pkgs,
-  externalInterface,
   ...
 }:
 let
+  externalInterface = "wan0";
   networks = config.homelab.networks.local;
+  iot = networks.iot.interface;
+  guest = networks.guest.interface;
+  lan = networks.lan.interface;
+  wgPort = toString config.systemd.network.netdevs."50-wg0".wireguardConfig.ListenPort;
 in
 {
   networking = {
-    firewall = {
+    nftables = {
       enable = true;
-      allowPing = true;
+      flushRuleset = false;
+      tables = {
+        nat = {
+          family = "ip";
+          content = ''
+            chain prerouting {
+                type nat hook prerouting priority filter; policy accept;
+                # Intercept DNS queries and make sure they get redirected to the router's DNS
+                iifname {"${guest}", "${iot}", "${lan}"} udp dport 53 counter redirect to 53
+                iifname {"${guest}", "${iot}", "${lan}"} tcp dport 53 counter redirect to 53
+              }
 
-      trustedInterfaces = (
-        lib.mapAttrsToList (_: val: val.interface) (lib.attrsets.filterAttrs (n: v: v.trusted) networks)
-      );
-      interfaces."podman0".allowedUDPPorts = [ 53 ];
-      # These ports will be opened *publicly*, via WAN
-      allowedTCPPorts = lib.mkForce [ ];
-      allowedUDPPorts = lib.mkForce [ ];
-      interfaces."${networks.guest.interface}" = {
-        allowedUDPPorts = [ 53 ];
-        allowedTCPPorts = [ 53 ];
+              chain postrouting {
+                type nat hook postrouting priority 100; policy accept;
+                oifname ${externalInterface} masquerade
+              }
+          '';
+        };
+        global = {
+          family = "inet";
+          content = ''
+            chain inbound_world {
+                # Enable ICMPv6 types necessary for DHCPv6
+                ip6 nexthdr icmpv6 icmpv6 type { destination-unreachable, packet-too-big, time-exceeded, parameter-problem, nd-router-advert, nd-neighbor-solicit, nd-neighbor-advert, mld-listener-query, nd-router-solicit } accept
+                # Allow port 546/udp for DHCPv6
+                ip6 saddr fe80::/10 iifname ${externalInterface} udp sport 547 udp dport 546 accept
+
+                # Allow Wireguard
+                udp dport ${wgPort} accept
+
+                log prefix "[nftables] Inbound WAN denied: " counter drop
+              }
+
+              chain inbound_untrusted {
+                icmp type echo-request limit rate 5/second accept
+                ip6 nexthdr icmpv6 icmpv6 type { destination-unreachable, packet-too-big, time-exceeded, parameter-problem, nd-router-advert, nd-neighbor-solicit, nd-neighbor-advert, mld-listener-query, nd-router-solicit } accept
+
+                # Allow DNS and DHCP on untrusted networks (iot, guest)
+                udp dport 53 accept
+                udp dport 546 accept
+                tcp dport 53 accept
+                udp dport 67 accept
+
+                log prefix "[nftables] Untrusted internal denied: " counter drop
+              }
+
+              chain inbound {
+                type filter hook input priority 0; policy drop;
+
+                # Allow traffic from established and related packets, drop invalid
+                ct state vmap { established : accept, related : accept, invalid : drop }
+
+                iifname vmap { lo : accept, ${externalInterface} : jump inbound_world, ${lan} : accept, ${guest}: jump inbound_untrusted, ${iot}: jump inbound_untrusted }
+              }
+
+              chain forward {
+                type filter hook forward priority 0; policy drop;
+
+                ct state vmap { established : accept, related : accept, invalid : drop }
+
+                iifname {"${lan}", "wg0"} accept
+                iifname ${guest} oifname ${externalInterface} accept
+
+                log prefix "[nftables] Forward denied: " counter drop
+              }
+
+              chain prerouting {
+                type nat hook prerouting priority filter; policy accept;
+
+              }
+          '';
+        };
       };
-      # Necessary to flush all non nixos-* tables
-      extraStopCommands = ''
-        iptables-save | ${pkgs.gawk}/bin/awk '/^[*]/ { print $1 } 
-                       /^:[A-Z]+ [^-]/ { print $1 " ACCEPT" ; }
-                       /COMMIT/ { print $0; }' | iptables-restore
-
-        ip6tables-save | ${pkgs.gawk}/bin/awk '/^[*]/ { print $1 } 
-                       /^:[A-Z]+ [^-]/ { print $1 " ACCEPT" ; }
-                       /COMMIT/ { print $0; }' | ip6tables-restore
-
-        ${pkgs.podman}/bin/podman network reload -a
-      '';
-
-      extraCommands = lib.concatStrings [
-        ''
-          # Force all clients to use the router DNS
-        ''
-        (lib.concatMapStrings (x: "${x}\n") (
-          lib.lists.flatten (
-            lib.lists.forEach (lib.attrsets.mapAttrsToList (name: value: name) networks) (
-              x:
-              lib.lists.forEach
-                [
-                  "udp"
-                  "tcp"
-                ]
-                (y: ''
-                  iptables -t nat -A PREROUTING -i ${
-                    lib.attrsets.getAttrFromPath [
-                      x
-                      "interface"
-                    ] networks
-                  } -p ${y} ! --source ${
-                    lib.attrsets.getAttrFromPath [
-                      x
-                      "cidr"
-                    ] networks
-                  } ! --destination ${
-                    lib.attrsets.getAttrFromPath [
-                      x
-                      "cidr"
-                    ] networks
-                  } --dport 53 -j DNAT --to ${
-                    lib.attrsets.getAttrFromPath [
-                      x
-                      "cidr"
-                    ] networks
-                  }
-                '')
-            )
-          )
-        ))
-        ''
-          # Block IOT devices from connecting to the internet
-          ip46tables -A FORWARD -i ${networks.iot.interface} -o ${externalInterface} -j nixos-fw-log-refuse 
-
-          # Isolate the guest network from the rest of the subnets
-        ''
-        (lib.concatMapStrings (x: "${x}\n") (
-          lib.lists.forEach
-            (lib.attrsets.mapAttrsToList (name: value: name) (
-              lib.attrsets.filterAttrs (n: v: n != "guest") networks
-            ))
-            (x: ''
-              ip46tables -A FORWARD -i ${networks.guest.interface} -o ${
-                lib.attrsets.getAttrFromPath [
-                  x
-                  "interface"
-                ] networks
-              }  -j nixos-fw-refuse
-            '')
-        ))
-        ''
-          # allow traffic with existing state
-          ip46tables -A FORWARD -m state --state ESTABLISHED,RELATED -j nixos-fw-accept
-          ip46tables -A INPUT -m state --state ESTABLISHED,RELATED -j nixos-fw-accept
-
-          # Allow traffic on Podman 
-          ip46tables -A INPUT -i podman0 -p tcp --dport 9001 -j nixos-fw-accept
-
-          # allow Wireguard
-          ip46tables -A INPUT -i ${externalInterface} -p udp --dport ${
-            toString config.networking.wireguard.interfaces."${networks.wireguard.interface}".listenPort
-          } -j nixos-fw-accept
-
-          # block forwarding and inputs from external interface
-          ip46tables -A FORWARD -i ${externalInterface} -j nixos-fw-log-refuse
-          ip46tables -A INPUT -i ${externalInterface} -j nixos-fw-log-refuse
-
-        ''
-      ];
     };
+
+    firewall.enable = false;
+    nat.enable = false;
   };
 }
