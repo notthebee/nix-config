@@ -32,8 +32,13 @@ in
     };
   };
   config = lib.mkIf cfg.enable {
+    systemd.services.radicale.serviceConfig.LoadCredential = "radicale.htpasswd:${cfg.passwordFile}";
     services.radicale = {
       enable = true;
+      extraArgs = [
+        "--auth-htpasswd-filename=%d/radicale.htpasswd"
+        "--auth-htpasswd-encryption=plain"
+      ];
       settings = {
         server = {
           hosts = [
@@ -43,10 +48,9 @@ in
         storage = {
           filesystem_folder = "/var/lib/radicale/collections";
         };
+
         auth = {
           type = "htpasswd";
-          htpasswd_filename = cfg.passwordFile;
-          htpasswd_encryption = "plain";
         };
       };
     };

@@ -99,6 +99,7 @@ in
     ./filesystems
     ./backup
     ./homelab
+    ./secrets
   ];
 
   services.duckdns = {

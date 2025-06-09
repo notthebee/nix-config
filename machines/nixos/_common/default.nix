@@ -24,6 +24,7 @@
     ./filesystems
     ./nix
     ./networks
+    ./secrets
   ];
 
   time.timeZone = "Europe/Berlin";

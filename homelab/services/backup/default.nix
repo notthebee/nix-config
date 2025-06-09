@@ -161,7 +161,7 @@ in
                 ];
                 backupPrepareCommand =
                   let
-                    restic = "${pkgs.restic}/bin/restic -r '${config.services.restic.backups.appdata-s3.repository}' -p ${cfg.passwordFile}";
+                    restic = "${pkgs.restic}/bin/restic -r '${config.services.restic.backups.appdata-s3.repository}'";
                   in
                   ''
                     ${restic} stats || ${restic} init
@@ -193,7 +193,7 @@ in
                 ];
                 backupPrepareCommand =
                   let
-                    restic = "${pkgs.restic}/bin/restic -r '${config.services.restic.backups.paperless-s3.repository}' -p ${config.age.secrets.resticPassword.path}";
+                    restic = "${pkgs.restic}/bin/restic -r '${config.services.restic.backups.paperless-s3.repository}'";
                   in
                   ''
                     ${restic} stats || ${restic} init

@@ -34,6 +34,7 @@
     ./syncthing
     ./backup
     ./homelab
+    ./secrets
   ];
 
   services.auto-aspm.enable = true;
