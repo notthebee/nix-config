@@ -10,7 +10,7 @@
   '';
 
   imports = [
-    ./work.nix
+    "${inputs.secrets}/work.nix"
     ./secrets.nix
   ];
 

@@ -23,7 +23,7 @@
   imports = [
     ./filesystems
     ./nix
-    ./networks
+    "${inputs.secrets}/networks.nix"
     ./secrets
   ];
 
