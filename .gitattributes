@@ -1,2 +1,0 @@
-machines/nixos/_common/networks/default.nix filter=git-crypt diff=git-crypt
-machines/darwin/meredith/work.nix filter=git-crypt diff=git-crypt
