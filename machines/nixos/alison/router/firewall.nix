@@ -44,7 +44,7 @@ in
                 # Allow Wireguard
                 udp dport ${wgPort} accept
 
-                log prefix "[nftables] Inbound WAN denied: " counter drop
+                counter drop
               }
 
               chain inbound_untrusted {
@@ -57,7 +57,7 @@ in
                 tcp dport 53 accept
                 udp dport 67 accept
 
-                log prefix "[nftables] Untrusted internal denied: " counter drop
+                counter drop
               }
 
               chain inbound {
@@ -66,7 +66,7 @@ in
                 # Allow traffic from established and related packets, drop invalid
                 ct state vmap { established : accept, related : accept, invalid : drop }
 
-                iifname vmap { lo : accept, ${externalInterface} : jump inbound_world, ${lan} : accept, ${guest}: jump inbound_untrusted, ${iot}: jump inbound_untrusted }
+                iifname vmap { lo : accept, "podman*" : accept, ${externalInterface} : jump inbound_world, ${lan} : accept, ${guest} : jump inbound_untrusted, ${iot} : jump inbound_untrusted }
               }
 
               chain forward {
@@ -74,10 +74,10 @@ in
 
                 ct state vmap { established : accept, related : accept, invalid : drop }
 
-                iifname {"${lan}", "wg0"} accept
+                iifname {"${lan}", "wg0", "podman*"} accept
                 iifname ${guest} oifname ${externalInterface} accept
 
-                log prefix "[nftables] Forward denied: " counter drop
+                counter drop
               }
 
               chain prerouting {

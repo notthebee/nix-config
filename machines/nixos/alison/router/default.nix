@@ -214,18 +214,34 @@ in
           ListenPort = 51820;
           PrivateKeyFile = config.age.secrets.wireguardPrivateKeyAlison.path;
         };
-        wireguardPeers = [
-          {
-            # meredith
-            PublicKey = "rAkXoiMoxwsKaZc4qIpoXWxD9HBCYjsAB33hPB7jBBg=";
-            AllowedIPs = [ (lib.strings.removeSuffix ".1" networks.wireguard.cidr.v4 + ".2/32") ];
-          }
-          {
-            # iphone
-            PublicKey = "6Nh1FrZLJBv7kb/jlR+rkCsWDoiSq9jpOQo68a6vr0Q=";
-            AllowedIPs = [ (lib.strings.removeSuffix ".1" networks.wireguard.cidr.v4 + ".3/32") ];
-          }
-        ];
+        wireguardPeers =
+          let
+            wgIp =
+              proto: x:
+              (
+                (lib.strings.removeSuffix ".1" networks.wireguard.cidr.${proto})
+                + ".${toString x}"
+                + (if proto == "v6" then "/128" else "/32")
+              );
+          in
+          [
+            {
+              # meredith
+              PublicKey = "rAkXoiMoxwsKaZc4qIpoXWxD9HBCYjsAB33hPB7jBBg=";
+              AllowedIPs = [
+                (wgIp "v4" 2)
+                (wgIp "v6" 2)
+              ];
+            }
+            {
+              # iphone
+              PublicKey = "6Nh1FrZLJBv7kb/jlR+rkCsWDoiSq9jpOQo68a6vr0Q=";
+              AllowedIPs = [
+                (wgIp "v4" 3)
+                (wgIp "v6" 3)
+              ];
+            }
+          ];
         netdevConfig = {
           Kind = "wireguard";
           Name = "wg0";
