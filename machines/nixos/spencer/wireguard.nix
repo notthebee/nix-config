@@ -6,7 +6,7 @@
   networking.firewall = {
     allowedUDPPorts = [ 51820 ];
   };
-  
+
   networking.wireguard.interfaces = {
     # "wg0" is the network interface name. You can name the interface arbitrarily.
     wg0 = {
@@ -32,10 +32,10 @@
       # Note: The private key can also be included inline via the privateKey option,
       # but this makes the private key world-readable; thus, using privateKeyFile is
       # recommended.
-      privateKeyFile = config.age.secrets.wireguardPrivateKey.path;
+      privateKeyFile = config.age.secrets.wireguardPrivateKeySpencer.path;
 
       peers = [
-        { 
+        {
           name = "emily";
           publicKey = "npTrLwAIJZ3m4XqdmQpP/KIi0C6urjBQHoCuA1vOOTc=";
           allowedIPs = [ "10.100.0.2/32" ];
@@ -48,6 +48,5 @@
       ];
     };
   };
-
 
 }

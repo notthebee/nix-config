@@ -1,16 +1,10 @@
 {
-  inputs,
   pkgs,
-  lib,
   config,
   ...
 }:
 {
   home.packages = with pkgs; [ grc ];
-
-  age.secrets.bwSession = {
-    file = "${inputs.secrets}/bwSession.age";
-  };
 
   programs = {
     fzf = {
@@ -93,22 +87,23 @@
         zstyle ':completion:*' list-colors ''${(s.:.)LS_COLORS}
         zstyle ':completion:*' menu yes=long select
 
-          if [ $(uname) = "Darwin" ]; then
-            path=("$HOME/.nix-profile/bin" "/run/wrappers/bin" "/etc/profiles/per-user/$USER/bin" "/nix/var/nix/profiles/default/bin" "/run/current-system/sw/bin" "/opt/homebrew/bin" $path)
-            export BW_SESSION=$(${pkgs.coreutils}/bin/cat ${config.age.secrets.bwSession.path})
-            export DOCKER_HOST="unix://$HOME/.colima/default/docker.sock"
-          fi
+        if [ $(uname) = "Darwin" ]; then
+          path=("$HOME/.nix-profile/bin" "/run/wrappers/bin" "/etc/profiles/per-user/$USER/bin" "/nix/var/nix/profiles/default/bin" "/run/current-system/sw/bin" "/opt/homebrew/bin" $path)
+          ${
+            if config.age.secrets ? bwSession then
+              "export BW_SESSION=$(${pkgs.coreutils}/bin/cat ${config.age.secrets.bwSession.path})"
+            else
+              ""
+          }
+          export DOCKER_HOST="unix://$HOME/.colima/default/docker.sock"
+          alias lsblk="diskutil list"
+          ulimit -n 2048
+        fi
 
           export EDITOR=nvim || export EDITOR=vim
           export LANG=en_US.UTF-8
           export LC_CTYPE=en_US.UTF-8
           export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
-
-
-          if [ $(uname) = "Darwin" ]; then
-            alias lsblk="diskutil list"
-            ulimit -n 2048
-          fi
 
           source $ZPLUG_HOME/repos/unixorn/warhol.plugin.zsh/warhol.plugin.zsh
           bindkey '^[[A' history-substring-search-up

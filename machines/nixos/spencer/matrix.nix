@@ -1,22 +1,15 @@
-{ pkgs, inputs, lib, config, ... }:
+{
+  pkgs,
+  config,
+  ...
+}:
 let
   domain = "notthebe.ee";
   fqdn = "chat.${domain}";
   baseUrl = "https://${fqdn}";
-  clientConfig."m.homeserver".base_url = baseUrl;
-  serverConfig."m.server" = "${fqdn}:443";
-  mkWellKnown = data: ''
-    default_type application/json;
-    add_header Access-Control-Allow-Origin *;
-    return 200 '${builtins.toJSON data}';
-  '';
 in
 {
-  age.secrets.matrixRegistrationSecret = lib.mkDefault {
-    owner = "matrix-synapse";
-    group = "matrix-synapse";
-    file = "${inputs.secrets}/matrixRegistrationSecret.age";
-  };
+
   security.acme = {
     certs."${fqdn}".email = "moe@notthebe.ee";
   };
@@ -75,10 +68,15 @@ in
           type = "http";
           tls = false;
           x_forwarded = true;
-          resources = [{
-            names = [ "client" "federation" ];
-            compress = true;
-          }];
+          resources = [
+            {
+              names = [
+                "client"
+                "federation"
+              ];
+              compress = true;
+            }
+          ];
         }
       ];
       secondary_directory_servers = [

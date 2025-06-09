@@ -9,7 +9,10 @@
     ulimit -n 2048
   '';
 
-  imports = [ ./work.nix ];
+  imports = [
+    "${inputs.secrets}/work.nix"
+    ./secrets.nix
+  ];
 
   homebrew = {
     enable = true;

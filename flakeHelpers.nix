@@ -24,7 +24,6 @@ in
         inherit inputs;
       };
       modules = [
-        "${inputs.secrets}/default.nix"
         inputs.agenix-darwin.darwinModules.default
         ./machines/darwin
         ./machines/darwin/${machineHostname}
@@ -58,7 +57,6 @@ in
         ./modules/tg-notify
         ./modules/auto-aspm
         ./modules/mover
-        "${inputs.secrets}/default.nix"
         inputs.agenix.nixosModules.default
         ./users/notthebee
         (homeManagerCfg false [ ])

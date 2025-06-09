@@ -42,6 +42,7 @@
   imports = [
     ./router
     ./filesystems
+    ./secrets
   ];
 
   virtualisation.docker.storageDriver = "overlay2";
