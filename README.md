@@ -47,11 +47,10 @@ nix --experimental-features "nix-command flakes" run github:nix-community/disko 
     -- -m destroy,format,mount /tmp/disko.nix
 ```
 
-Install git and git-crypt
+Install git
 
 ```bash
 nix-env -f '<nixpkgs>' -iA git
-nix-env -f '<nixpkgs>' -iA git-crypt
 ```
 
 Clone this repository
@@ -61,24 +60,15 @@ mkdir -p /mnt/etc/nixos
 git clone https://github.com/notthebee/nix-config.git /mnt/etc/nixos
 ```
 
-Put the private and GPG key into place (required for secret management)
+Put the private key into place (required for secret management)
 
 ```bash
 mkdir -p /mnt/home/notthebee/.ssh
 exit
 scp ~/.ssh/notthebee root@$NIXOS_HOST:/mnt/home/notthebee/.ssh
-scp ~/.ssh/git-crypt-nix root@$NIXOS_HOST:/mnt/home/notthebee/.ssh
 ssh root@$NIXOS_HOST
 chmod 700 /mnt/home/notthebee/.ssh
 chmod 600 /mnt/home/notthebee/.ssh/*
-```
-
-Unlock the git-crypt vault
-
-```bash
-cd /mnt/etc/nixos
-chown -R root:root .
-git-crypt unlock /mnt/home/notthebee/.ssh/git-crypt-nix
 ```
 
 Install the system
