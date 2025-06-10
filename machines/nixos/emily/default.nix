@@ -170,8 +170,6 @@ in
     hddtemp
     smartmontools
     cpufrequtils
-    gnumake
-    gcc
     intel-gpu-tools
     powertop
   ];
@@ -181,4 +179,8 @@ in
     credentialsFile = config.age.secrets.tgNotifyCredentials.path;
   };
 
+  services.adiosBot = {
+    enable = true;
+    botTokenFile = config.age.secrets.adiosBotToken.path;
+  };
 }

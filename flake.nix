@@ -117,6 +117,7 @@
       (mkNixos "emily" inputs.nixpkgs [
         ./modules/zfs-root
         ./modules/tailscale
+        ./modules/adios-bot
         ./homelab
         inputs.home-manager.nixosModules.home-manager
       ])
