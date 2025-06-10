@@ -89,7 +89,6 @@
     iperf3
     eza
     fastfetch
-    (python312.withPackages (ps: with ps; [ pip ]))
     tmux
     rsync
     iotop
@@ -97,15 +96,8 @@
     nmap
     jq
     ripgrep
-    sqlite
     inputs.agenix.packages."${system}".default
     lm_sensors
-    jc
-    moreutils
-    lsof
-    fatrace
-    git-crypt
-    bfg-repo-cleaner
   ];
 
 }
