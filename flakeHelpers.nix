@@ -47,7 +47,6 @@ in
       system = "x86_64-linux";
       specialArgs = {
         inherit inputs;
-        vars = import ./machines/nixos/vars.nix;
       };
       modules = [
         ./homelab

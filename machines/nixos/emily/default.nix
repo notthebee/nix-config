@@ -6,7 +6,8 @@
   ...
 }:
 let
-  lan = config.homelab.networks.local.lan;
+  hl = config.homelab;
+  lan = hl.networks.local.lan;
   emilyIpAddress = lan.reservations.emily.Address;
   gatewayIpAddress = lan.cidr.v4;
   hardDrives = [
@@ -141,10 +142,10 @@ in
 
   services.mover = {
     enable = true;
-    cacheArray = vars.cacheArray;
-    backingArray = vars.slowArray;
-    user = config.homelab.user;
-    group = config.homelab.group;
+    cacheArray = hl.mounts.fast;
+    backingArray = hl.mounts.slow;
+    user = hl.user;
+    group = hl.group;
     percentageFree = 60;
     excludedPaths = [
       "Media/Music"

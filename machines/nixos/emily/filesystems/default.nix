@@ -1,9 +1,11 @@
 {
   config,
-  vars,
   pkgs,
   ...
 }:
+let
+  hl = config.homelab;
+in
 {
 
   imports = [
@@ -24,7 +26,7 @@
   # This fixes the weird mergerfs permissions issue
   boot.initrd.systemd.enable = true;
 
-  fileSystems.${vars.cacheArray} = {
+  fileSystems.${hl.mounts.fast} = {
     device = "cache";
     fsType = "zfs";
   };
@@ -49,7 +51,7 @@
     fsType = "xfs";
   };
 
-  fileSystems.${vars.slowArray} = {
+  fileSystems.${hl.mounts.slow} = {
     device = "/mnt/data*";
     options = [
       "defaults"
@@ -66,8 +68,8 @@
     fsType = "fuse.mergerfs";
   };
 
-  fileSystems.${vars.mainArray} = {
-    device = "${vars.cacheArray}:${vars.slowArray}";
+  fileSystems.${hl.mounts.merged} = {
+    device = "${hl.mounts.fast}:${hl.mounts.slow}";
     options = [
       "category.create=epff"
       "defaults"
