@@ -251,8 +251,8 @@ in
   };
   networking = {
     hostName = "alison";
-    domain = "${config.networking.hostName}.${vars.domainName}";
-    search = [ vars.domainName ];
+    domain = "${config.networking.hostName}.${config.homelab.baseDomain}";
+    search = [ config.homelab.baseDomain ];
   };
 
   services = {

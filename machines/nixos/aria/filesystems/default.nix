@@ -1,9 +1,11 @@
 {
   config,
-  vars,
   pkgs,
   ...
 }:
+let
+  hl = config.homelab;
+in
 {
 
   imports = [
@@ -24,7 +26,7 @@
   # This fixes the weird mergerfs permissions issue
   boot.initrd.systemd.enable = true;
 
-  fileSystems."/mnt/user" = {
+  fileSystems."${hl.mounts.fast}" = {
     device = "rpool/nixos/data";
     fsType = "zfs";
     neededForBoot = true;
@@ -55,7 +57,7 @@
     fsType = "xfs";
   };
 
-  fileSystems.${vars.slowArray} = {
+  fileSystems.${hl.mounts.slow} = {
     device = "/mnt/data*";
     options = [
       "category.create=ff"

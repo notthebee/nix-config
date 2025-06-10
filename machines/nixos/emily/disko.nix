@@ -119,7 +119,7 @@ in
           "nixos/var/lib" = {
             type = "zfs_fs";
             options.mountpoint = "legacy";
-            mountpoint = "/var/log";
+            mountpoint = "/var/lib";
           };
           "nixos/config" = {
             type = "zfs_fs";
