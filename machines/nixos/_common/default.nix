@@ -6,6 +6,10 @@
   ...
 }:
 {
+  age.secrets.hashedUserPassword = {
+    file = "${inputs.secrets}/hashedUserPassword.age";
+  };
+
   system.stateVersion = "22.11";
   system.autoUpgrade = {
     enable = true;
@@ -30,10 +34,14 @@
   time.timeZone = "Europe/Berlin";
 
   users.users = {
+    notthebee = {
+      hashedPasswordFile = config.age.secrets.hashedUserPassword.path;
+    };
     root = {
       initialHashedPassword = config.age.secrets.hashedUserPassword.path;
     };
   };
+
   services.openssh = {
     enable = lib.mkDefault true;
     settings = {

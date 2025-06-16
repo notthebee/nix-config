@@ -1,10 +1,15 @@
 {
   pkgs,
   config,
+  inputs,
+  lib,
   ...
 }:
 {
   home.packages = with pkgs; [ grc ];
+  age.secrets = lib.mkIf (pkgs.system == "aarch64-darwin") {
+    bwSession.file = "${inputs.secrets}/bwSession.age";
+  };
 
   programs = {
     fzf = {
@@ -87,18 +92,18 @@
         zstyle ':completion:*' list-colors ''${(s.:.)LS_COLORS}
         zstyle ':completion:*' menu yes=long select
 
-        if [ $(uname) = "Darwin" ]; then
-          path=("$HOME/.nix-profile/bin" "/run/wrappers/bin" "/etc/profiles/per-user/$USER/bin" "/nix/var/nix/profiles/default/bin" "/run/current-system/sw/bin" "/opt/homebrew/bin" $path)
-          ${
-            if config.age.secrets ? bwSession then
-              "export BW_SESSION=$(${pkgs.coreutils}/bin/cat ${config.age.secrets.bwSession.path})"
-            else
-              ""
-          }
-          export DOCKER_HOST="unix://$HOME/.colima/default/docker.sock"
-          alias lsblk="diskutil list"
-          ulimit -n 2048
-        fi
+        ${
+          if (pkgs.system == "aarch64-darwin") then
+            ''
+              path=("$HOME/.nix-profile/bin" "/run/wrappers/bin" "/etc/profiles/per-user/$USER/bin" "/nix/var/nix/profiles/default/bin" "/run/current-system/sw/bin" "/opt/homebrew/bin" $path)
+              export BW_SESSION=$(${pkgs.coreutils}/bin/cat ${config.age.secrets.bwSession.path})
+              export DOCKER_HOST="unix://$HOME/.colima/default/docker.sock"
+              alias lsblk="diskutil list"
+              ulimit -n 2048
+            ''
+          else
+            ""
+        }
 
           export EDITOR=nvim || export EDITOR=vim
           export LANG=en_US.UTF-8
