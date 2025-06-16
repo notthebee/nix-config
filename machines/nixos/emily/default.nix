@@ -54,7 +54,7 @@ in
     useDHCP = true;
     networkmanager.enable = false;
     hostName = "emily";
-    interfaces.enp3s0 = {
+    interfaces.enp1s0 = {
       ipv4.addresses = [
         {
           address = emilyIpAddress;
@@ -64,14 +64,14 @@ in
     };
     defaultGateway = {
       address = gatewayIpAddress;
-      interface = "enp3s0";
+      interface = "enp1s0";
     };
     hostId = "0730ae51";
     firewall = {
       enable = true;
       allowPing = true;
       trustedInterfaces = [
-        "enp3s0"
+        "enp1s0"
         "tailscale0"
       ];
     };
