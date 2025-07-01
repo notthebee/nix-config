@@ -120,6 +120,7 @@ in
       radarr.enable = true;
       bazarr.enable = true;
       prowlarr.enable = true;
+      jellyseerr.enable = true;
       nextcloud = {
         enable = true;
         adminpassFile = config.age.secrets.nextcloudAdminPassword.path;
