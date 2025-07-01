@@ -13,6 +13,7 @@
     dataDisks = {
       d1 = "/mnt/data1";
       d2 = "/mnt/data2";
+      d3 = "/mnt/data3";
     };
   };
 }
