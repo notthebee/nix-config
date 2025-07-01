@@ -15,7 +15,7 @@ in
     };
     port = lib.mkOption {
       type = lib.types.port;
-      default = config.services.jellyseerr.port;
+      default = 5055;
     };
     homepage.name = lib.mkOption {
       type = lib.types.str;
