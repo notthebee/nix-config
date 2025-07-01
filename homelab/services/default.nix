@@ -72,6 +72,7 @@
     ./backup
     ./arr/prowlarr
     ./arr/bazarr
+    ./arr/jellyseerr
     ./arr/sonarr
     ./arr/radarr
     #./arr/lidarr
