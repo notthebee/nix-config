@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  config,
+  inputs,
+  pkgs,
+  ...
+}:
 let
   hl = config.homelab;
 in
@@ -120,7 +125,10 @@ in
       radarr.enable = true;
       bazarr.enable = true;
       prowlarr.enable = true;
-      jellyseerr.enable = true;
+      jellyseerr = {
+        enable = true;
+        package = inputs.nixpkgs-unstable.legacyPackages.${pkgs.system}.jellyseerr;
+      };
       nextcloud = {
         enable = true;
         adminpassFile = config.age.secrets.nextcloudAdminPassword.path;

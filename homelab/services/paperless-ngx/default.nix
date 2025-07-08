@@ -56,6 +56,7 @@ in
         consumptionDir = cfg.consumptionDir;
         consumptionDirIsPublic = true;
         settings = {
+          PAPERLESS_URL = "https://${cfg.url}";
           PAPERLESS_CONSUMER_IGNORE_PATTERN = [
             ".DS_STORE/*"
             "desktop.ini"

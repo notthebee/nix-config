@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  pkgs,
+  config,
+  lib,
+  ...
+}:
 let
   service = "jellyseerr";
   cfg = config.homelab.services.${service};
@@ -17,6 +22,7 @@ in
       type = lib.types.port;
       default = 5055;
     };
+    package = lib.mkPackageOption pkgs "jellyseerr" { };
     homepage.name = lib.mkOption {
       type = lib.types.str;
       default = "Jellyseerr";
@@ -38,6 +44,7 @@ in
     services.${service} = {
       enable = true;
       port = cfg.port;
+      package = cfg.package;
     };
     services.caddy.virtualHosts."${cfg.url}" = {
       useACMEHost = homelab.baseDomain;
