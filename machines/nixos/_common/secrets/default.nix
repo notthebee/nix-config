@@ -6,7 +6,6 @@
   age = {
     identityPaths = [
       "/persist/ssh/ssh_host_ed25519_key"
-      "/home/notthebee/.ssh/notthebee"
     ];
     secrets = {
       hashedUserPassword.file = "${inputs.secrets}/hashedUserPassword.age";

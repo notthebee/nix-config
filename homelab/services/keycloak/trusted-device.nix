@@ -12,7 +12,7 @@ maven.buildMavenPackage rec {
     owner = "wouterh-dev";
     repo = "keycloak-spi-trusted-device";
     rev = "v${version}";
-    hash = "sha256-WNx4pUoaMx4SiksLi33Cofd5NrR38oD6sIapTNRJLEs=";
+    hash = "sha256-3GFQsgFXDEN5ORO7rkHSlEcdCbnVR3V8byXsGXCd00o=";
   };
 
   mvnHash = "sha256-Gi7Wx9LI/Y4MprNJrMkhhJSIK/z2aVB4OpzZnD1+70I=";
