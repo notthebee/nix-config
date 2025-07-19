@@ -10,17 +10,33 @@
     file = "${inputs.secrets}/hashedUserPassword.age";
   };
 
+  programs.ssh = {
+    knownHosts = {
+      "github.com".publicKey =
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl";
+    };
+    extraConfig = ''
+      Host github.com
+        User git
+        IdentityFile /persist/ssh/ssh_host_ed25519_key
+        IdentitiesOnly yes
+    '';
+  };
+
   system.stateVersion = "22.11";
+
+  systemd.services.nixos-upgrade.preStart = ''
+    cd /etc/nixos
+    chown -R root:root .
+    git pull || true
+  '';
   system.autoUpgrade = {
     enable = true;
-    flake = "/etc/nixos\\?submodules=1";
+    flake = "/etc/nixos#${config.networking.hostName}";
     flags = [
-      "--update-input"
-      "nixpkgs"
       "-L"
     ];
-    dates = "Sat *-*-* 06:00:00";
-    randomizedDelaySec = "45min";
+    dates = "Sat *-*-* 02:30:00";
     allowReboot = true;
   };
 
