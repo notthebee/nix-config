@@ -47,10 +47,6 @@
 
   virtualisation.docker.storageDriver = "overlay2";
 
-  system.autoUpgrade = {
-    allowReboot = lib.mkForce false;
-  };
-
   homelab = {
     enable = true;
     cloudflare.dnsCredentialsFile = config.age.secrets.cloudflareDnsApiCredentials.path;
