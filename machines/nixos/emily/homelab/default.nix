@@ -132,9 +132,8 @@ in
         enable = true;
         package = inputs.nixpkgs-unstable.legacyPackages.${pkgs.system}.jellyseerr;
       };
-      nextcloud = {
+      ocis = {
         enable = true;
-        adminpassFile = config.age.secrets.nextcloudAdminPassword.path;
         cloudflared = {
           tunnelId = "cc246d42-a03d-41d4-97e2-48aa15d47297";
           credentialsFile = config.age.secrets.nextcloudCloudflared.path;
