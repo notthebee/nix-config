@@ -7,7 +7,7 @@
 let
   service = "keycloak";
   cfg = config.homelab.services.${service};
-  homelab = config.homelab;
+  hl = config.homelab;
 in
 {
   options.homelab.services.${service} = {
@@ -16,7 +16,7 @@ in
     };
     url = lib.mkOption {
       type = lib.types.str;
-      default = "login.${homelab.baseDomain}";
+      default = "login.${hl.baseDomain}";
     };
     homepage.name = lib.mkOption {
       type = lib.types.str;

@@ -7,12 +7,14 @@ let
   domain = "notthebe.ee";
   fqdn = "chat.${domain}";
   baseUrl = "https://${fqdn}";
+  serverConfig."m.server" = "${fqdn}:443";
+  clientConfig."m.homeserver".base_url = baseUrl;
 in
 {
-
-  security.acme = {
-    certs."${fqdn}".email = "moe@notthebe.ee";
-  };
+  networking.firewall.allowedTCPPorts = [
+    80
+    443
+  ];
   users.users.matrix-synapse = {
     isSystemUser = true;
     createHome = true;
@@ -21,38 +23,30 @@ in
   services.postgresql = {
     enable = true;
     initialScript = pkgs.writeText "synapse-init.sql" ''
-        CREATE ROLE "matrix-synapse" WITH LOGIN PASSWORD 'synapse';
+      CREATE ROLE "matrix-synapse" WITH LOGIN PASSWORD 'synapse';
       CREATE DATABASE "matrix-synapse" WITH OWNER "matrix-synapse"
-        TEMPLATE template0
-        LC_COLLATE = "C"
-        LC_CTYPE = "C";
+      TEMPLATE template0
+      LC_COLLATE = "C"
+      LC_CTYPE = "C";
     '';
   };
-  services.nginx = {
+  services.caddy = {
+    email = "moe@notthebe.ee";
+    user = "deploy";
+    group = "deploy";
     enable = true;
-    recommendedTlsSettings = true;
-    recommendedOptimisation = true;
-    recommendedGzipSettings = true;
-    recommendedProxySettings = true;
     virtualHosts = {
-      "${fqdn}" = {
-        enableACME = true;
-        forceSSL = true;
-        # It's also possible to do a redirect here or something else, this vhost is not
-        # needed for Matrix. It's recommended though to *not put* element
-        # here, see also the section about Element.
-        locations."/".extraConfig = ''
-          return 404;
-        '';
-        # Forward all Matrix API calls to the synapse Matrix homeserver. A trailing slash
-        # *must not* be used here.
-        locations."/_matrix".proxyPass = "http://[::1]:8008";
-        # Forward requests for e.g. SSO and password-resets.
-        locations."/_synapse/client".proxyPass = "http://[::1]:8008";
-      };
+      "${domain}".extraConfig = ''
+        respond /.well-known/matrix/server `${builtins.toJSON serverConfig}`
+        respond /.well-known/matrix/client `${builtins.toJSON clientConfig}`
+      '';
+      "${fqdn}".extraConfig = ''
+        @matrix path /_matrix/* /_matrix /_synapse/client/* /_synapse/client
+        reverse_proxy @matrix http://[::1]:8008
+        respond / 404
+      '';
     };
   };
-
   services.matrix-synapse = {
     enable = true;
     extraConfigFiles = [

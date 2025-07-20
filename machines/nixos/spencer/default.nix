@@ -1,4 +1,7 @@
 { modulesPath, config, ... }:
+let
+  net = config.homelab.networks.external.spencer;
+in
 {
   boot.loader.grub.device = "/dev/sda";
   boot.initrd.availableKernelModules = [
@@ -36,14 +39,14 @@
       "9.9.9.9"
     ];
     defaultGateway = {
-      address = config.homelab.networks.external.spencer.gateway;
-      interface = "ens3";
+      address = net.gateway;
+      interface = net.interface;
     };
     interfaces = {
-      ens3.ipv4 = {
+      "${net.interface}".ipv4 = {
         addresses = [
           {
-            address = config.homelab.networks.external.spencer.address;
+            address = net.address;
             prefixLength = 25;
           }
         ];

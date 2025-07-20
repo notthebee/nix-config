@@ -2,9 +2,12 @@
   config,
   inputs,
   pkgs,
+  lib,
   ...
 }:
 let
+  wg = config.homelab.networks.external.spencer-wireguard;
+  wgBase = lib.strings.removeSuffix ".1" wg.gateway;
   hl = config.homelab;
 in
 {
@@ -164,8 +167,8 @@ in
       wireguard-netns = {
         enable = true;
         configFile = config.age.secrets.wireguardCredentials.path;
-        privateIP = "10.100.0.2";
-        dnsIP = "10.100.0.1";
+        privateIP = "${wgBase}.2";
+        dnsIP = wg.gateway;
       };
     };
   };
