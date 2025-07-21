@@ -6,6 +6,8 @@ Very much a work in progress.
 
 ## Services
 
+<!-- BEGIN SERVICE LIST -->
+
 ## alison
 
 | Icon                                                                                                                                                     | Service        | Description              | Category   |
@@ -41,6 +43,8 @@ Very much a work in progress.
 | <img src='https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/sabnzbd.svg' alt='SABnzbd' width=32 height=32>               | SABnzbd        | The free and easy binary newsreader             | Downloads |
 | <img src='https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/sonarr.svg' alt='Sonarr' width=32 height=32>                 | Sonarr         | TV show collection manager                      | Arr       |
 | <img src='https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/bitwarden.svg' alt='Vaultwarden' width=32 height=32>         | Vaultwarden    | Password manager                                | Services  |
+
+<!-- END SERVICE LIST -->
 
 ## Installation runbook (NixOS)
 

@@ -14,10 +14,20 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.GH_PRIVATE_KEY }}
       - uses: actions/checkout@v4
-      - run: sudo apt-get update && sudo apt-get install git git-crypt
       - uses: DeterminateSystems/nix-installer-action@v12
       - run: git config --global --add safe.directory "${PWD}"
-      - run: echo "$GIT_CRYPT_KEY" | base64 -d | git-crypt unlock -
-        env:
-          GIT_CRYPT_KEY: ${{ secrets.GIT_CRYPT_KEY }}
       - run: nix flake check
+
+  generate-readme:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: DeterminateSystems/nix-installer-action@v12
+      - run: (grep -B 99999 "BEGIN SERVICE LIST" README.md; bash getServices.sh; grep -A 99999 "END SERVICE LIST" README.md) > README.md
+      - name: Commit and push README
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add README.md
+          git diff-index --quiet HEAD || git commit -m "chore: Generate README.md"
+          git push
