@@ -30,7 +30,7 @@ Very much a work in progress.
 |<img src='https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/jellyseerr.svg' alt='Jellyseerr' width=32 height=32>|Jellyseerr|Media request and discovery manager|Arr|
 |<img src='https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/keycloak.svg' alt='Keycloak' width=32 height=32>|Keycloak|Open Source Identity and Access Management|Services|
 |<img src='https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/microbin.png' alt='Microbin' width=32 height=32>|Microbin|A minimal pastebin|Services|
-|<img src='https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/miniflux.svg' alt='Miniflux' width=32 height=32>|Miniflux|Minimalist and opinionated feed reader|Services|
+|<img src='https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/miniflux-light.svg' alt='Miniflux' width=32 height=32>|Miniflux|Minimalist and opinionated feed reader|Services|
 |<img src='https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/owncloud.svg' alt='OCIS' width=32 height=32>|OCIS|Enterprise File Storage and Collaboration|Services|
 |<img src='https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/paperless.svg' alt='Paperless-ngx' width=32 height=32>|Paperless-ngx|Document management system|Services|
 |<img src='https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/prowlarr.svg' alt='Prowlarr' width=32 height=32>|Prowlarr|PVR indexer|Arr|
