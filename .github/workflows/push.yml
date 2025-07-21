@@ -22,9 +22,13 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     steps:
+      - name: Access private repository
+        uses: webfactory/ssh-agent@master
+        with:
+          ssh-private-key: ${{ secrets.GH_PRIVATE_KEY }}
       - uses: actions/checkout@v4
       - uses: DeterminateSystems/nix-installer-action@v12
-      - run: (grep -B 99999 "BEGIN SERVICE LIST" README.md; bash getServices.sh; grep -A 99999 "END SERVICE LIST" README.md) > NEW_README.md
+      - run: (grep -B 99999 "BEGIN SERVICE LIST" README.md && bash getServices.sh && grep -A 99999 "END SERVICE LIST" README.md) > NEW_README.md
       - run: mv NEW_README.md README.md
       - name: Commit and push README
         run: |
