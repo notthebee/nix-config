@@ -62,15 +62,6 @@ in
       };
     };
 
-    services.fail2ban-cloudflare = lib.mkIf config.services.fail2ban-cloudflare.enable {
-      jails = {
-        nextcloud = {
-          serviceName = "ocis";
-          failRegex = "^.*Login failed:.*(Remote IP: <HOST>).*$";
-        };
-      };
-    };
-
     systemd.services.ocis.preStart = ''
       ${lib.getExe pkgs.ocis} init || true
     '';
