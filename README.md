@@ -8,7 +8,7 @@ Very much a work in progress.
 
 ## alison
 
-<table>
+<table width=100%>
 <thead>
 <tr>
 <th scope="col" align="left">Icon</th>
