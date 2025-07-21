@@ -8,7 +8,7 @@ Very much a work in progress.
 
 ## alison
 
-<table width=100%>
+<table style="width: 100% !important;">
 <thead>
 <tr>
 <th scope="col" align="left">Icon</th>
@@ -41,7 +41,7 @@ Very much a work in progress.
 
 ## aria
 
-<table>
+<table style="width: 100%;">
 <thead>
 <tr>
 <th scope="col" align="left">Icon</th>
@@ -62,7 +62,7 @@ Very much a work in progress.
 
 ## emily
 
-<table>
+<table style="width: 100%;">
 <thead>
 <tr>
 <th scope="col" align="left">Icon</th>
