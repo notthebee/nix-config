@@ -7,10 +7,10 @@ getConfig() {
   echo $homepage_config | jq -r .$1
 }
 
-all_hostnames=$(createArray nix eval .#nixosConfigurations --apply 'builtins.attrNames')
+all_hostnames=$(createArray nix --quiet eval .#nixosConfigurations --apply 'builtins.attrNames' 2>/dev/null)
 
 for hostname in ${all_hostnames[@]}; do
-  homelab_enabled=$(nix eval .#nixosConfigurations.$hostname.config.homelab.enable)
+  homelab_enabled=$(nix --quiet eval .#nixosConfigurations.$hostname.config.homelab.enable 2>/dev/null)
   if [ $homelab_enabled = false ]; then
     continue
   fi
@@ -19,13 +19,13 @@ for hostname in ${all_hostnames[@]}; do
 
   echo '|Icon|Service|Description|Category|'
   echo '|---|---|---|---|'
-  all_services=$(createArray nix eval .#nixosConfigurations.$hostname.config.homelab.services --apply 'builtins.attrNames')
+  all_services=$(createArray nix --quiet eval .#nixosConfigurations.$hostname.config.homelab.services --apply 'builtins.attrNames' 2>/dev/null)
   for i in ${all_services[@]}; do
-    service_enabled=$(nix eval .#nixosConfigurations.$hostname.config.homelab.services.$i.enable)
+    service_enabled=$(nix --quiet eval .#nixosConfigurations.$hostname.config.homelab.services.$i.enable 2>/dev/null)
     if [ $service_enabled = true ]; then
-      homepage_enabled=$(nix eval .#nixosConfigurations.$hostname.config.homelab.services.$i --apply 'builtins.hasAttr("homepage")')
+      homepage_enabled=$(nix --quiet eval .#nixosConfigurations.$hostname.config.homelab.services.$i --apply 'builtins.hasAttr("homepage")' 2>/dev/null)
       if [ $homepage_enabled = true ]; then
-        homepage_config=$(nix eval .#nixosConfigurations.$hostname.config.homelab.services.$i.homepage --json)
+        homepage_config=$(nix --quiet eval .#nixosConfigurations.$hostname.config.homelab.services.$i.homepage --json 2>/dev/null)
         name=$(getConfig name)
         category=$(getConfig category)
         description=$(getConfig description)
