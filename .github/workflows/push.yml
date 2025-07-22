@@ -23,7 +23,6 @@ jobs:
   generate-readme:
     runs-on: ubuntu-latest
     environment: production
-    needs: lint
     steps:
       - name: Access private repository
         uses: webfactory/ssh-agent@master
@@ -34,6 +33,23 @@ jobs:
       - name: Run the Magic Nix Cache
         uses: DeterminateSystems/magic-nix-cache-action@v13
       - run: (grep -B 99999 "BEGIN SERVICE LIST" README.md && nix eval --offline --raw --file bin/generateServicesTable.nix && grep -A 99999 "END SERVICE LIST" README.md) > NEW_README.md
+      - uses: actions/upload-artifact@v4
+        with:
+          name: new-readme
+          path: NEW_README.md
+
+  push-readme:
+    runs-on: ubuntu-latest
+    environment: production
+    needs:
+      - lint
+      - generate-readme
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: new-readme
+          path: NEW_README.md
       - run: mv NEW_README.md README.md
       - name: Commit and push README
         run: |
@@ -41,4 +57,4 @@ jobs:
           git config user.email github-actions@github.com
           git add README.md
           git diff-index --quiet HEAD || git commit -m "chore: Generate README.md"
-          git push
+          git push  -
