@@ -49,8 +49,8 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: new-readme
-          path: NEW_README.md
-      - run: mv NEW_README.md README.md
+          path: new-readme
+      - run: mv new-readme/NEW_README.md README.md
       - name: Commit and push README
         run: |
           git config user.name github-actions
