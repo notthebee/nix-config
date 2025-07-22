@@ -47,7 +47,7 @@ let
     hostname:
     lib.strings.concatLines [
       "### ${hostname}"
-      "|Icon|Name|Category|Description|"
+      "|Icon|Name|Description|Category|"
       "|---|---|---|---|"
       (lib.strings.concatLines (homepageServicesData hostname))
     ]
