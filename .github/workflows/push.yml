@@ -23,6 +23,7 @@ jobs:
   generate-readme:
     runs-on: ubuntu-latest
     environment: production
+    needs: lint
     steps:
       - name: Access private repository
         uses: webfactory/ssh-agent@master
@@ -32,7 +33,7 @@ jobs:
       - uses: DeterminateSystems/nix-installer-action@v19
       - name: Run the Magic Nix Cache
         uses: DeterminateSystems/magic-nix-cache-action@v13
-      - run: (grep -B 99999 "BEGIN SERVICE LIST" README.md && nix eval --raw --file bin/generateServicesTable.nix && grep -A 99999 "END SERVICE LIST" README.md) > NEW_README.md
+      - run: (grep -B 99999 "BEGIN SERVICE LIST" README.md && nix eval --offline --raw --file bin/generateServicesTable.nix && grep -A 99999 "END SERVICE LIST" README.md) > NEW_README.md
       - run: mv NEW_README.md README.md
       - name: Commit and push README
         run: |
