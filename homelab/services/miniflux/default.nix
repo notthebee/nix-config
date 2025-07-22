@@ -31,7 +31,7 @@ in
     };
     homepage.icon = lib.mkOption {
       type = lib.types.str;
-      default = "miniflux.svg";
+      default = "miniflux-light.svg";
     };
     homepage.category = lib.mkOption {
       type = lib.types.str;
