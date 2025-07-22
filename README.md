@@ -10,7 +10,7 @@ Very much a work in progress.
 
 <!-- BEGIN SERVICE LIST -->
 ### alison
-|Icon|Name|Category|Description|
+|Icon|Name|Description|Category|
 |---|---|---|---|
 |<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/home-assistant.svg' width=32 height=32>|Home Assistant|Home automation platform|Smart Home|
 |<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/raspberrymatic.png' width=32 height=32>|RaspberryMatic|Homematic IP CCU|Smart Home|
@@ -18,13 +18,13 @@ Very much a work in progress.
 
 
 ### aria
-|Icon|Name|Category|Description|
+|Icon|Name|Description|Category|
 |---|---|---|---|
 |<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/immich.svg' width=32 height=32>|Immich|Self-hosted photo and video management solution|Media|
 
 
 ### emily
-|Icon|Name|Category|Description|
+|Icon|Name|Description|Category|
 |---|---|---|---|
 |<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/audiobookshelf.svg' width=32 height=32>|Audiobookshelf|Audiobook and podcast player|Media|
 |<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/bazarr.svg' width=32 height=32>|Bazarr|Subtitle manager|Arr|
