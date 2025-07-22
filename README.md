@@ -9,42 +9,41 @@ Very much a work in progress.
 > This section is generated automatically from the Nix configuration using GitHub Actions and [this cursed Nix script](bin/generateServicesTable.nix)
 
 <!-- BEGIN SERVICE LIST -->
+### alison
+|Icon|Name|Category|Description|
+|---|---|---|---|
+|<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/home-assistant.svg' width=32 height=32>|Home Assistant|Home automation platform|Smart Home|
+|<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/raspberrymatic.png' width=32 height=32>|RaspberryMatic|Homematic IP CCU|Smart Home|
+|<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/uptime-kuma.svg' width=32 height=32>|Uptime Kuma|Service monitoring tool|Services|
 
-## alison
 
-| Icon                                                                                                                                                     | Service        | Description              | Category   |
-| -------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- | ------------------------ | ---------- |
-| <img src='https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/home-assistant.svg' alt='Home Assistant' width=32 height=32> | Home Assistant | Home automation platform | Smart Home |
-| <img src='https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/raspberrymatic.png' alt='RaspberryMatic' width=32 height=32> | RaspberryMatic | Homematic IP CCU         | Smart Home |
-| <img src='https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/uptime-kuma.svg' alt='Uptime Kuma' width=32 height=32>       | Uptime Kuma    | Service monitoring tool  | Services   |
+### aria
+|Icon|Name|Category|Description|
+|---|---|---|---|
+|<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/immich.svg' width=32 height=32>|Immich|Self-hosted photo and video management solution|Media|
 
-## aria
 
-| Icon                                                                                                                                     | Service | Description                                     | Category |
-| ---------------------------------------------------------------------------------------------------------------------------------------- | ------- | ----------------------------------------------- | -------- |
-| <img src='https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/immich.svg' alt='Immich' width=32 height=32> | Immich  | Self-hosted photo and video management solution | Media    |
+### emily
+|Icon|Name|Category|Description|
+|---|---|---|---|
+|<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/audiobookshelf.svg' width=32 height=32>|Audiobookshelf|Audiobook and podcast player|Media|
+|<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/bazarr.svg' width=32 height=32>|Bazarr|Subtitle manager|Arr|
+|<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/deluge.svg' width=32 height=32>|Deluge|Torrent client|Downloads|
+|<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/immich.svg' width=32 height=32>|Immich|Self-hosted photo and video management solution|Media|
+|<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/jellyfin.svg' width=32 height=32>|Jellyfin|The Free Software Media System|Media|
+|<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/jellyseerr.svg' width=32 height=32>|Jellyseerr|Media request and discovery manager|Arr|
+|<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/keycloak.svg' width=32 height=32>|Keycloak|Open Source Identity and Access Management|Services|
+|<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/microbin.png' width=32 height=32>|Microbin|A minimal pastebin|Services|
+|<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/miniflux-light.svg' width=32 height=32>|Miniflux|Minimalist and opinionated feed reader|Services|
+|<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/owncloud.svg' width=32 height=32>|OCIS|Enterprise File Storage and Collaboration|Services|
+|<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/paperless.svg' width=32 height=32>|Paperless-ngx|Document management system|Services|
+|<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/prowlarr.svg' width=32 height=32>|Prowlarr|PVR indexer|Arr|
+|<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/radarr.svg' width=32 height=32>|Radarr|Movie collection manager|Arr|
+|<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/radicale.svg' width=32 height=32>|Radicale|Free and Open-Source CalDAV and CardDAV Server|Services|
+|<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/sabnzbd.svg' width=32 height=32>|SABnzbd|The free and easy binary newsreader|Downloads|
+|<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/sonarr.svg' width=32 height=32>|Sonarr|TV show collection manager|Arr|
+|<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/bitwarden.svg' width=32 height=32>|Vaultwarden|Password manager|Services|
 
-## emily
-
-| Icon                                                                                                                                                     | Service        | Description                                     | Category  |
-| -------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- | ----------------------------------------------- | --------- |
-| <img src='https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/audiobookshelf.svg' alt='Audiobookshelf' width=32 height=32> | Audiobookshelf | Audiobook and podcast player                    | Media     |
-| <img src='https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/bazarr.svg' alt='Bazarr' width=32 height=32>                 | Bazarr         | Subtitle manager                                | Arr       |
-| <img src='https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/deluge.svg' alt='Deluge' width=32 height=32>                 | Deluge         | Torrent client                                  | Downloads |
-| <img src='https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/immich.svg' alt='Immich' width=32 height=32>                 | Immich         | Self-hosted photo and video management solution | Media     |
-| <img src='https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/jellyfin.svg' alt='Jellyfin' width=32 height=32>             | Jellyfin       | The Free Software Media System                  | Media     |
-| <img src='https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/jellyseerr.svg' alt='Jellyseerr' width=32 height=32>         | Jellyseerr     | Media request and discovery manager             | Arr       |
-| <img src='https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/keycloak.svg' alt='Keycloak' width=32 height=32>             | Keycloak       | Open Source Identity and Access Management      | Services  |
-| <img src='https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/microbin.png' alt='Microbin' width=32 height=32>             | Microbin       | A minimal pastebin                              | Services  |
-| <img src='https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/miniflux-light.svg' alt='Miniflux' width=32 height=32>       | Miniflux       | Minimalist and opinionated feed reader          | Services  |
-| <img src='https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/owncloud.svg' alt='OCIS' width=32 height=32>                 | OCIS           | Enterprise File Storage and Collaboration       | Services  |
-| <img src='https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/paperless.svg' alt='Paperless-ngx' width=32 height=32>       | Paperless-ngx  | Document management system                      | Services  |
-| <img src='https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/prowlarr.svg' alt='Prowlarr' width=32 height=32>             | Prowlarr       | PVR indexer                                     | Arr       |
-| <img src='https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/radarr.svg' alt='Radarr' width=32 height=32>                 | Radarr         | Movie collection manager                        | Arr       |
-| <img src='https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/radicale.svg' alt='Radicale' width=32 height=32>             | Radicale       | Free and Open-Source CalDAV and CardDAV Server  | Services  |
-| <img src='https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/sabnzbd.svg' alt='SABnzbd' width=32 height=32>               | SABnzbd        | The free and easy binary newsreader             | Downloads |
-| <img src='https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/sonarr.svg' alt='Sonarr' width=32 height=32>                 | Sonarr         | TV show collection manager                      | Arr       |
-| <img src='https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/bitwarden.svg' alt='Vaultwarden' width=32 height=32>         | Vaultwarden    | Password manager                                | Services  |
 
 <!-- END SERVICE LIST -->
 
