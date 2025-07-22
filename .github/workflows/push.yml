@@ -58,4 +58,4 @@ jobs:
           git config user.email github-actions@github.com
           git add README.md
           git diff-index --quiet HEAD || git commit -m "chore: Generate README.md"
-          git push  -
+          git push
