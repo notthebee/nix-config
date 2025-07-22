@@ -32,11 +32,12 @@ jobs:
       - uses: DeterminateSystems/nix-installer-action@v19
       - name: Run the Magic Nix Cache
         uses: DeterminateSystems/magic-nix-cache-action@v13
-      - run: (grep -B 99999 "BEGIN SERVICE LIST" README.md && nix eval --offline --raw --file bin/generateServicesTable.nix && grep -A 99999 "END SERVICE LIST" README.md) > NEW_README.md
+      - run: mkdir newreadme
+      - run: (grep -B 99999 "BEGIN SERVICE LIST" README.md && nix eval --offline --raw --file bin/generateServicesTable.nix && grep -A 99999 "END SERVICE LIST" README.md) > newreadme/README.md
       - uses: actions/upload-artifact@v4
         with:
           name: new-readme
-          path: NEW_README.md
+          path: newreadme
 
   push-readme:
     runs-on: ubuntu-latest
@@ -49,8 +50,8 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: new-readme
-          path: new-readme
-      - run: mv new-readme/NEW_README.md README.md
+          path: newreadme
+      - run: mv newreadme/README.md README.md
       - name: Commit and push README
         run: |
           git config user.name github-actions
