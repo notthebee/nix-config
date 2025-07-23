@@ -1,13 +1,6 @@
 with builtins.getFlake (toString ../.);
 let
   lib = import <nixpkgs/lib>;
-  homelabHostnames =
-    let
-      hostnames = builtins.attrNames nixosConfigurations;
-    in
-    builtins.filter (x: x != null) (
-      builtins.map (hostname: if (hl hostname).enable then hostname else null) hostnames
-    );
   hl = hostname: nixosConfigurations.${hostname}.config.homelab;
   enabledHomepageServices =
     let
@@ -25,24 +18,30 @@ let
     builtins.map (
       service:
       let
+        format = if lib.strings.hasSuffix "svg" icon then "svg" else "png";
         iconlink =
           icon:
-          let
-            format = if lib.strings.hasSuffix "svg" icon then "svg" else "png";
-          in
           "<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/${format}/${icon}' width=32 height=32>";
         serviceConfig = (hl hostname).services.${service}.homepage;
       in
       "|${iconlink serviceConfig.icon}|${serviceConfig.name}|${serviceConfig.description}|${serviceConfig.category}|"
     ) (enabledHomepageServices hostname);
-  allHostsServiceData = builtins.map (
-    hostname:
-    lib.strings.concatLines [
-      "### ${hostname}"
-      "|Icon|Name|Description|Category|"
-      "|---|---|---|---|"
-      (lib.strings.concatLines (homepageServicesData hostname))
-    ]
-  ) homelabHostnames;
+  allHostsServiceData =
+    let
+      homelabHostnames = builtins.filter (x: x != null) (
+        builtins.map (hostname: if (hl hostname).enable then hostname else null) (
+          builtins.attrNames nixosConfigurations
+        )
+      );
+    in
+    builtins.map (
+      hostname:
+      lib.strings.concatLines [
+        "### ${hostname}"
+        "|Icon|Name|Description|Category|"
+        "|---|---|---|---|"
+        (lib.strings.concatLines (homepageServicesData hostname))
+      ]
+    ) homelabHostnames;
 in
 lib.strings.concatLines allHostsServiceData
