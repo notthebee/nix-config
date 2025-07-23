@@ -7,7 +7,7 @@ let
     };
     home-manager.users.notthebee.imports = [
       inputs.agenix.homeManagerModules.default
-      inputs.nix-index-database.hmModules.nix-index
+      inputs.nix-index-database.homeModules.nix-index
       ./users/notthebee/dots.nix
       ./users/notthebee/age.nix
     ] ++ extraImports;
@@ -24,7 +24,7 @@ in
         inherit inputs;
       };
       modules = [
-        inputs.agenix-darwin.darwinModules.default
+        inputs.agenix.darwinModules.default
         ./machines/darwin
         ./machines/darwin/${machineHostname}
         inputs.home-manager-unstable.darwinModules.home-manager
@@ -34,15 +34,7 @@ in
       ];
     };
   };
-  mkNixos = machineHostname: nixpkgsVersion: extraModules: rec {
-    deploy.nodes.${machineHostname} = {
-      hostname = machineHostname;
-      profiles.system = {
-        user = "root";
-        sshUser = "notthebee";
-        path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos nixosConfigurations.${machineHostname};
-      };
-    };
+  mkNixos = machineHostname: nixpkgsVersion: extraModules: {
     nixosConfigurations.${machineHostname} = nixpkgsVersion.lib.nixosSystem {
       system = "x86_64-linux";
       specialArgs = {

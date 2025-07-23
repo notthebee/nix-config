@@ -13,52 +13,49 @@
     ];
   };
   inputs = {
-    flake-utils.url = "github:numtide/flake-utils";
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
-    nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-unstable";
-    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    flake-utils.url = "github:numtide/flake-utils?shallow=true";
+    nixpkgs = {
+      url = "github:nixos/nixpkgs/nixos-25.05?shallow=true";
+    };
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable?shallow=true";
     nixvim = {
-      url = "github:nix-community/nixvim";
+      url = "github:nix-community/nixvim?shallow=true";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     home-manager = {
-      url = "github:nix-community/home-manager/release-25.05";
+      url = "github:nix-community/home-manager/release-25.05?shallow=true";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     home-manager-unstable = {
-      url = "github:nix-community/home-manager/master";
+      url = "github:nix-community/home-manager/master?shallow=true";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     ryzen-undervolt = {
-      url = "github:svenlange2/Ryzen-5800x3d-linux-undervolting/0f05965f9939259c27a428065fda5a6c0cbb9225";
+      url = "github:svenlange2/Ryzen-5800x3d-linux-undervolting/0f05965f9939259c27a428065fda5a6c0cbb9225?shallow=true";
       flake = false;
     };
     auto-aspm = {
-      url = "github:notthebee/AutoASPM";
+      url = "github:notthebee/AutoASPM?shallow=true";
       flake = false;
     };
     agenix = {
-      url = "github:ryantm/agenix";
+      url = "github:ryantm/agenix?shallow=true";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    agenix-darwin = {
-      url = "github:ryantm/agenix";
-      inputs.nixpkgs.follows = "nixpkgs-darwin";
-    };
     recyclarr-configs = {
-      url = "github:recyclarr/config-templates";
+      url = "github:recyclarr/config-templates?shallow=true";
       flake = false;
     };
     nix-darwin = {
-      url = "github:LnL7/nix-darwin/master";
-      inputs.nixpkgs.follows = "nixpkgs-darwin";
+      url = "github:LnL7/nix-darwin/master?shallow=true";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     adios-bot = {
-      url = "github:notthebee/adiosbot";
+      url = "github:notthebee/adiosbot?shallow=true";
       flake = false;
     };
     nix-index-database = {
-      url = "github:Mic92/nix-index-database";
+      url = "github:Mic92/nix-index-database?shallow=true";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     secrets = {
@@ -66,15 +63,13 @@
       flake = false;
     };
     jovian = {
-      url = "github:Jovian-Experiments/Jovian-NixOS";
+      url = "github:Jovian-Experiments/Jovian-NixOS?shallow=true";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     alga = {
-      url = "github:Tenzer/alga";
+      url = "github:Tenzer/alga?shallow=true";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
-    deploy-rs.url = "github:serokell/deploy-rs";
-
   };
 
   outputs =
