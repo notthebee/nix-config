@@ -18,7 +18,7 @@ jobs:
       - name: Run the Magic Nix Cache
         uses: DeterminateSystems/magic-nix-cache-action@v13
       - run: git config --global --add safe.directory "${PWD}"
-      - run: nix flake check
+      - run: nix flake check --accept-flake-config
 
   generate-readme:
     runs-on: ubuntu-latest
