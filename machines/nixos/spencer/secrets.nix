@@ -7,5 +7,10 @@
       group = "matrix-synapse";
       file = "${inputs.secrets}/matrixRegistrationSecret.age";
     };
+    plausibleSecretKeybaseFile = {
+      owner = "plausible";
+      group = "plausible";
+      file = "${inputs.secrets}/plausibleSecretKeybaseFile.age";
+    };
   };
 }

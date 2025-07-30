@@ -29,6 +29,7 @@ in
     ./matrix.nix
     ./wireguard.nix
     ./secrets.nix
+    ./plausible.nix
     (modulesPath + "/profiles/qemu-guest.nix")
   ];
 
