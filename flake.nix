@@ -88,7 +88,7 @@
           packages.default = pkgs.mkShell {
             packages = [
               pkgs.just
-              pkgs.nixos-rebuild
+              pkgs.nixos-rebuild-ng
             ];
           };
         }
