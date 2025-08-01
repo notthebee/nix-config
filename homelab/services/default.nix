@@ -92,7 +92,7 @@
     ./paperless-ngx
     ./radicale
     ./sabnzbd
-    #./slskd
+    ./slskd
     ./uptime-kuma
     ./vaultwarden
     ./wireguard-netns

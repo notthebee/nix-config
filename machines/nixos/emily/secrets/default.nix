@@ -11,6 +11,10 @@
     borgBackupSSHKey.file = "${inputs.secrets}/borgBackupSSHKey.age";
     invoiceNinja.file = "${inputs.secrets}/invoiceNinja.age";
     paperlessWebdav.file = "${inputs.secrets}/paperlessWebdav.age";
+    slskdEnvironmentFile = {
+      file = "${inputs.secrets}/slskdEnvironmentFile.age";
+      owner = "share";
+    };
     paperlessPassword.file = "${inputs.secrets}/paperlessPassword.age";
     nextcloudCloudflared.file = "${inputs.secrets}/nextcloudCloudflared.age";
     nextcloudAdminPassword.file = "${inputs.secrets}/nextcloudAdminPassword.age";
