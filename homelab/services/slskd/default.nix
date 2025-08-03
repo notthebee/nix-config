@@ -19,9 +19,13 @@ in
       type = lib.types.str;
       default = "/var/lib/${service}";
     };
-    downloadDir = lib.mkOption {
+    musicDir = lib.mkOption {
       type = lib.types.str;
       default = "${hl.mounts.fast}/Media/Music/Library";
+    };
+    downloadDir = lib.mkOption {
+      type = lib.types.str;
+      default = "${hl.mounts.fast}/Media/Music/Import";
     };
     incompleteDownloadDir = lib.mkOption {
       type = lib.types.str;
@@ -30,9 +34,6 @@ in
     url = lib.mkOption {
       type = lib.types.str;
       default = "slskd.${hl.baseDomain}";
-    };
-    beetsConfigFile = lib.mkOption {
-      type = lib.types.path;
     };
     environmentFile = lib.mkOption {
       description = "File with slskd credentials";
@@ -64,6 +65,7 @@ in
   };
   config = lib.mkIf cfg.enable {
     systemd.tmpfiles.rules = map (x: "d ${x} 0775 ${hl.user} ${hl.group} - -") [
+      cfg.musicDir
       cfg.downloadDir
       cfg.incompleteDownloadDir
     ];
@@ -79,7 +81,7 @@ in
           incomplete = cfg.incompleteDownloadDir;
         };
         shares = {
-          directories = [ cfg.downloadDir ];
+          directories = [ cfg.musicDir ];
           filters = [
             "\.ini$"
             "Thumbs.db$"
@@ -96,42 +98,97 @@ in
         wantedBy = [ "sockets.target" ];
       };
     };
-    systemd.services = lib.mkIf hl.services.wireguard-netns.enable {
-      slskd = {
-        bindsTo = [ "netns@${ns}.service" ];
-        environment = {
-          DOTNET_USE_POLLING_FILE_WATCHER = "true";
-        };
-        requires = [
-          "network-online.target"
-          "${ns}.service"
-        ];
-        serviceConfig.NetworkNamespacePath = [ "/var/run/netns/${ns}" ];
-      };
-      "slskd-web-proxy" = {
+    systemd.paths = {
+      slskd-import-files = {
         enable = true;
-        description = "Proxy to slskd WebUI in Network Namespace";
-        requires = [
-          "slskd.service"
-          "slskd-web-proxy.socket"
-        ];
-        after = [
-          "slskd.service"
-          "slskd-web-proxy.socket"
-        ];
-        unitConfig = {
-          JoinsNamespaceOf = "slskd.service";
-        };
-        serviceConfig = {
-          User = config.services.slskd.user;
-          Group = config.services.slskd.group;
-          ExecStart = "${pkgs.systemd}/lib/systemd/systemd-socket-proxyd --exit-idle-time=5min 127.0.0.1:${
-            toString config.services.${service}.settings.web.port
-          }";
-          PrivateNetwork = "yes";
+        wantedBy = [ "multi-user.target" ];
+        pathConfig = {
+          PathChanged = cfg.downloadDir;
+          Unit = "slskd-import-files.service";
+          TriggerLimitIntervalSec = "1m";
         };
       };
     };
+    systemd.services =
+      {
+        slskd-import-files = {
+          enable = true;
+          description = "Automatically import Soulseek downloads";
+          path = [ pkgs.beets ];
+          after = [ "network.target" ];
+          serviceConfig = {
+            Type = "oneshot";
+            LockPersonality = true;
+            NoNewPrivileges = true;
+            PrivateDevices = true;
+            PrivateMounts = true;
+            PrivateTmp = true;
+            PrivateUsers = true;
+            ProtectClock = true;
+            ProtectControlGroups = true;
+            ProtectHome = true;
+            ProtectHostname = true;
+            ProtectKernelLogs = true;
+            ProtectKernelModules = true;
+            ProtectKernelTunables = true;
+            ProtectProc = "invisible";
+            ProtectSystem = "strict";
+            RemoveIPC = true;
+            RestrictNamespaces = true;
+            RestrictSUIDSGID = true;
+            ReadWritePaths = [
+              cfg.downloadDir
+              cfg.musicDir
+            ];
+            User = config.services.slskd.user;
+            Group = config.services.slskd.group;
+            ExecStart =
+              let
+                slskd-import-files = pkgs.writeScriptBin "slskd-import-files" ''
+                  #!${lib.getExe pkgs.bash}
+                  ${lib.getExe pkgs.rsync} -ax --remove-source-files ${cfg.downloadDir} ${cfg.musicDir}
+                '';
+              in
+              lib.getExe slskd-import-files;
+          };
+        };
+      }
+      // lib.attrsets.optionalAttrs hl.services.wireguard-netns.enable {
+        slskd = {
+          bindsTo = [ "netns@${ns}.service" ];
+          environment = {
+            DOTNET_USE_POLLING_FILE_WATCHER = "true";
+          };
+          requires = [
+            "network-online.target"
+            "${ns}.service"
+          ];
+          serviceConfig.NetworkNamespacePath = [ "/var/run/netns/${ns}" ];
+        };
+        "slskd-web-proxy" = {
+          enable = true;
+          description = "Proxy to slskd WebUI in Network Namespace";
+          requires = [
+            "slskd.service"
+            "slskd-web-proxy.socket"
+          ];
+          after = [
+            "slskd.service"
+            "slskd-web-proxy.socket"
+          ];
+          unitConfig = {
+            JoinsNamespaceOf = "slskd.service";
+          };
+          serviceConfig = {
+            User = config.services.slskd.user;
+            Group = config.services.slskd.group;
+            ExecStart = "${pkgs.systemd}/lib/systemd/systemd-socket-proxyd --exit-idle-time=5min 127.0.0.1:${
+              toString config.services.${service}.settings.web.port
+            }";
+            PrivateNetwork = "yes";
+          };
+        };
+      };
 
     services.caddy.virtualHosts."${cfg.url}" = {
       useACMEHost = hl.baseDomain;
