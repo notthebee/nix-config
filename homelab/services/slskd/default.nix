@@ -115,47 +115,56 @@ in
     };
     systemd.services =
       {
-        slskd-import-files = {
-          enable = true;
-          description = "Automatically import Soulseek downloads";
-          path = [ pkgs.beets ];
-          after = [ "network.target" ];
-          serviceConfig = {
-            Type = "oneshot";
-            LockPersonality = true;
-            NoNewPrivileges = true;
-            PrivateDevices = true;
-            PrivateMounts = true;
-            PrivateTmp = true;
-            PrivateUsers = true;
-            ProtectClock = true;
-            ProtectControlGroups = true;
-            ProtectHome = true;
-            ProtectHostname = true;
-            ProtectKernelLogs = true;
-            ProtectKernelModules = true;
-            ProtectKernelTunables = true;
-            ProtectProc = "invisible";
-            ProtectSystem = "strict";
-            RemoveIPC = true;
-            RestrictNamespaces = true;
-            RestrictSUIDSGID = true;
-            ReadWritePaths = [
-              cfg.downloadDir
-              cfg.musicDir
-            ];
-            User = config.services.slskd.user;
-            Group = config.services.slskd.group;
-            ExecStart =
-              let
-                slskd-import-files = pkgs.writeScriptBin "slskd-import-files" ''
-                  #!${lib.getExe pkgs.bash}
-                  ${lib.getExe pkgs.beets} -c ${cfg.beetsConfigFile} import -m -A -q ${cfg.downloadDir}
-                '';
-              in
-              lib.getExe slskd-import-files;
+        slskd-import-files =
+          let
+            stateDir = "/var/lib/slskd-import-files";
+          in
+          {
+            enable = true;
+            description = "Automatically import Soulseek downloads";
+            path = [ pkgs.beets ];
+            after = [ "network.target" ];
+            environment = {
+              "BEETSDIR" = stateDir;
+            };
+            serviceConfig = {
+              Type = "oneshot";
+              LockPersonality = true;
+              NoNewPrivileges = true;
+              PrivateDevices = true;
+              PrivateMounts = true;
+              PrivateTmp = true;
+              PrivateUsers = true;
+              ProtectClock = true;
+              ProtectControlGroups = true;
+              StateDirectory = "stateDir";
+              ProtectHome = true;
+              ProtectHostname = true;
+              ProtectKernelLogs = true;
+              ProtectKernelModules = true;
+              ProtectKernelTunables = true;
+              ProtectProc = "invisible";
+              ProtectSystem = "strict";
+              RemoveIPC = true;
+              RestrictNamespaces = true;
+              RestrictSUIDSGID = true;
+              ReadOnlyPaths = [ cfg.beetsConfigFile ];
+              ReadWritePaths = [
+                cfg.downloadDir
+                cfg.musicDir
+              ];
+              User = config.services.slskd.user;
+              Group = config.services.slskd.group;
+              ExecStart =
+                let
+                  slskd-import-files = pkgs.writeScriptBin "slskd-import-files" ''
+                    #!${lib.getExe pkgs.bash}
+                    ${lib.getExe pkgs.beets} -c ${cfg.beetsConfigFile} import -m -A -q ${cfg.downloadDir}
+                  '';
+                in
+                lib.getExe slskd-import-files;
+            };
           };
-        };
       }
       // lib.attrsets.optionalAttrs hl.services.wireguard-netns.enable {
         slskd = {
