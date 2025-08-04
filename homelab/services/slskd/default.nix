@@ -36,6 +36,9 @@ in
       type = lib.types.str;
       default = "slskd.${hl.baseDomain}";
     };
+    beetsConfigFile = lib.mkOption {
+      type = lib.types.str;
+    };
     environmentFile = lib.mkOption {
       description = "File with slskd credentials";
       type = lib.types.path;
