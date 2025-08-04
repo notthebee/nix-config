@@ -147,7 +147,6 @@ in
                 slskd-import-files = pkgs.writeScriptBin "slskd-import-files" ''
                   #!${lib.getExe pkgs.bash}
                   ${lib.getExe pkgs.beets} -c ${cfg.beetsConfigFile} import -m -A -q ${cfg.downloadDir}
-                  ${lib.getExe pkgs.rsync} -ax --remove-source-files ${cfg.downloadDir} ${cfg.musicDir}
                 '';
               in
               lib.getExe slskd-import-files;
