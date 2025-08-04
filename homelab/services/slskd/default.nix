@@ -11,6 +11,7 @@ let
   ns = hl.services.wireguard-netns.namespace;
 in
 {
+  imports = [ ./beets.nix ];
   options.homelab.services.${service} = {
     enable = lib.mkEnableOption {
       description = "Enable ${service}";
