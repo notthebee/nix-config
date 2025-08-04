@@ -14,10 +14,6 @@ let
     library = "${config.homelab.services.slskd.musicDir}/beets.db";
 
     plugins = [
-      "fetchart"
-      "lyrics"
-      "lastgenre"
-      "embedart"
       "duplicates"
     ];
 
@@ -48,9 +44,9 @@ let
     };
 
     paths = {
-      default = "$albumartist/($year) $album %aunique{}/$track $title %aunique{}";
-      singleton = "$albumartist/($year) $album %aunique{}/$track $title %aunique{}";
-      comp = "Compilations/$album %aunique{}/$track $title %aunique{}";
+      default = "$albumartist/($year) $album/$track $title";
+      singleton = "$albumartist/($year) $album/$track $title";
+      comp = "Compilations/$album/$track $title";
     };
 
     aunique = {
