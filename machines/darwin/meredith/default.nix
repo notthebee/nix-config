@@ -108,6 +108,7 @@
     devenv
     nixfmt-rfc-style
     opentofu
+    talosctl
   ];
 
   system.stateVersion = 4;

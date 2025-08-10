@@ -122,7 +122,7 @@
         ./homelab
         inputs.home-manager.nixosModules.home-manager
       ])
-      (mkDarwin "meredith" inputs.nixpkgs-darwin
+      (mkDarwin "meredith" inputs.nixpkgs-unstable
         [
           dots/tmux
           dots/kitty
