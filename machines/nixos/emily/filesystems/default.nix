@@ -54,6 +54,7 @@ in
   fileSystems.${hl.mounts.slow} = {
     device = "/mnt/data*";
     options = [
+      "category.create=mfs"
       "defaults"
       "allow_other"
       "moveonenospc=1"
