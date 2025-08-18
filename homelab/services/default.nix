@@ -85,7 +85,7 @@
     ./keycloak
     ./microbin
     ./miniflux
-    #./navidrome
+    ./navidrome
     ./ocis
     ./smarthome/homeassistant
     ./smarthome/raspberrymatic

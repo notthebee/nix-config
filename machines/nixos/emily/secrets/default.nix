@@ -17,6 +17,8 @@
     };
     paperlessPassword.file = "${inputs.secrets}/paperlessPassword.age";
     nextcloudCloudflared.file = "${inputs.secrets}/nextcloudCloudflared.age";
+    navidromeCloudflared.file = "${inputs.secrets}/navidromeCloudflared.age";
+    navidromeEnv.file = "${inputs.secrets}/navidromeEnv.age";
     nextcloudAdminPassword.file = "${inputs.secrets}/nextcloudAdminPassword.age";
     vaultwardenCloudflared.file = "${inputs.secrets}/vaultwardenCloudflared.age";
     microbinCloudflared.file = "${inputs.secrets}/microbinCloudflared.age";

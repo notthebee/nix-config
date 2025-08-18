@@ -165,6 +165,14 @@ in
         };
         adminCredentialsFile = config.age.secrets.minifluxAdminPassword.path;
       };
+      navidrome = {
+        enable = true;
+        environmentFile = config.age.secrets.navidromeEnv.path;
+        cloudflared = {
+          tunnelId = "dc669277-8528-4a25-bacb-b844a262de17";
+          credentialsFile = config.age.secrets.navidromeCloudflared.path;
+        };
+      };
       audiobookshelf.enable = true;
       deluge.enable = true;
       wireguard-netns = {
