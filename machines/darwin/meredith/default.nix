@@ -40,6 +40,7 @@
       "monitorcontrol"
       "raycast"
       "mattermost"
+      "jitsi-meet"
     ];
     brews = [
       "pulumi"
