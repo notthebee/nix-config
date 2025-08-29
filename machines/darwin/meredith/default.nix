@@ -110,6 +110,7 @@
     nixfmt-rfc-style
     opentofu
     talosctl
+    obsidian
   ];
 
   system.stateVersion = 4;
