@@ -50,11 +50,11 @@
         "uv2nix": "uv2nix"
       },
       "locked": {
-        "lastModified": 1756227514,
-        "narHash": "sha256-3BhMOkjp47n1+gxwQMJNnyZWEnARJM0O8mEUWx4qzXc=",
+        "lastModified": 1756403946,
+        "narHash": "sha256-NKOtEySP+Ou38Yq0HkwzAgtz52L6AbCA6vjYC1HxHD0=",
         "owner": "Tenzer",
         "repo": "alga",
-        "rev": "25e0d8697031450ca0e52381c48f40494d1ecdf8",
+        "rev": "796c0883f231df74ab2ff2eb2b0cc6ac0115d6a1",
         "type": "github"
       },
       "original": {
@@ -482,11 +482,11 @@
     "recyclarr-configs": {
       "flake": false,
       "locked": {
-        "lastModified": 1755475516,
-        "narHash": "sha256-5tXanPnSXp+oVYBRJ/RkO911aP1DFYCKmbCjDlUF9Iw=",
+        "lastModified": 1756374740,
+        "narHash": "sha256-dosOe3tJgcKVZ38tUm9zD1AdEKcBmGiChQF27LXkCO4=",
         "owner": "recyclarr",
         "repo": "config-templates",
-        "rev": "50222550a6a21b4b341cddf1855e5be9db90a352",
+        "rev": "f4ad0dde03b77de227700e26ade3e22d4b41a2ce",
         "type": "github"
       },
       "original": {
