@@ -1,6 +1,5 @@
 {
   config,
-  pkgs,
   lib,
   ...
 }:
@@ -40,7 +39,7 @@ in
     };
   };
   config = lib.mkIf cfg.enable {
-    nixpkgs.overlays = with pkgs; [
+    nixpkgs.overlays = [
       (final: prev: {
         jellyfin-web = prev.jellyfin-web.overrideAttrs (
           finalAttrs: previousAttrs: {
