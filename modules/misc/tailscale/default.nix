@@ -2,16 +2,16 @@
   config,
   pkgs,
   lib,
+  inputs,
   ...
 }:
 {
-
-  environment.systemPackages = [ pkgs.tailscale ];
 
   networking.firewall.allowedUDPPorts = [ config.services.tailscale.port ];
   networking.firewall.trustedInterfaces = [ "tailscale0" ];
 
   services.tailscale = {
+    package = inputs.nixpkgs-unstable.legacyPackages.${pkgs.system}.tailscale;
     enable = true;
     authKeyFile = config.age.secrets.tailscaleAuthKey.path;
     extraUpFlags =
