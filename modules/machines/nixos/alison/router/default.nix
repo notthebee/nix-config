@@ -240,6 +240,14 @@ in
                 (wgIp "v6" 3)
               ];
             }
+            {
+              # pixel
+              PublicKey = "G4YNJHjG8n8v3v5gZjMdE4d+9tXAf/Yng571rk8t2Gk=";
+              AllowedIPs = [
+                (wgIp "v4" 4)
+                (wgIp "v6" 4)
+              ];
+            }
           ];
         netdevConfig = {
           Kind = "wireguard";
