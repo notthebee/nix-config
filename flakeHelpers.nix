@@ -10,14 +10,15 @@ let
       inputs.nix-index-database.homeModules.nix-index
       ./users/notthebee/dots.nix
       ./users/notthebee/age.nix
-    ] ++ extraImports;
+    ]
+    ++ extraImports;
     home-manager.backupFileExtension = "bak";
     home-manager.useUserPackages = userPackages;
   };
 in
 {
 
-  mkDarwin = machineHostname: nixpkgsVersion: extraHmModules: extraModules: {
+  mkDarwin = machineHostname: nixpkgsVersion: extraHmModules: _extraModules: {
     darwinConfigurations.${machineHostname} = inputs.nix-darwin.lib.darwinSystem {
       system = "aarch64-darwin";
       specialArgs = {
@@ -51,7 +52,8 @@ in
         inputs.agenix.nixosModules.default
         ./users/notthebee
         (homeManagerCfg false [ ])
-      ] ++ extraModules;
+      ]
+      ++ extraModules;
     };
   };
   mkMerge = inputs.nixpkgs.lib.lists.foldl' (

@@ -13,14 +13,22 @@
     ];
   };
   inputs = {
-    flake-utils.url = "github:numtide/flake-utils?shallow=true";
+    import-tree.url = "github:vic/import-tree";
     nixpkgs = {
       url = "github:nixos/nixpkgs/nixos-25.05?shallow=true";
     };
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable?shallow=true";
+    flake-parts = {
+      url = "github:hercules-ci/flake-parts";
+      inputs.nixpkgs-lib.follows = "nixpkgs";
+    };
     nixvim = {
       url = "github:nix-community/nixvim?shallow=true";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     home-manager = {
       url = "github:nix-community/home-manager/release-25.05?shallow=true";
@@ -73,61 +81,20 @@
   };
 
   outputs =
-    { flake-utils, nixpkgs, ... }@inputs:
-    let
-      helpers = import ./flakeHelpers.nix inputs;
-      inherit (helpers) mkMerge mkNixos mkDarwin;
-    in
-    mkMerge [
-      (flake-utils.lib.eachDefaultSystem (
-        system:
-        let
-          pkgs = nixpkgs.legacyPackages.${system};
-        in
-        {
-          packages.default = pkgs.mkShell {
-            packages = [
-              pkgs.just
-              pkgs.nixos-rebuild-ng
-            ];
-          };
-        }
-      ))
-      (mkNixos "spencer" inputs.nixpkgs [
-        ./modules/notthebe.ee
-        ./homelab
-        inputs.home-manager.nixosModules.home-manager
-      ])
-      (mkNixos "maya" inputs.nixpkgs-unstable [
-        ./modules/ryzen-undervolt
-        ./modules/lgtv
-        inputs.jovian.nixosModules.default
-        inputs.home-manager-unstable.nixosModules.home-manager
-      ])
-      (mkNixos "alison" inputs.nixpkgs [
-        ./modules/zfs-root
-        ./homelab
-        inputs.home-manager.nixosModules.home-manager
-      ])
-      (mkNixos "emily" inputs.nixpkgs [
-        ./modules/zfs-root
-        ./modules/tailscale
-        ./modules/adios-bot
-        ./homelab
-        inputs.home-manager.nixosModules.home-manager
-      ])
-      (mkNixos "aria" inputs.nixpkgs [
-        ./modules/zfs-root
-        ./modules/tailscale
-        ./homelab
-        inputs.home-manager.nixosModules.home-manager
-      ])
-      (mkDarwin "meredith" inputs.nixpkgs-unstable
-        [
-          dots/tmux
-          dots/kitty
-        ]
-        [ ]
-      )
-    ];
+    inputs@{ flake-parts, ... }:
+    inputs.flake-parts.lib.mkFlake { inherit inputs; } (
+      { ... }:
+      {
+        systems = [
+          "x86_64-linux"
+          "aarch64-darwin"
+        ];
+        imports = [
+          ./modules/machines/nixos
+          ./modules/devshell.nix
+        ];
+        _module.args.rootPath = ./.;
+      }
+    );
+
 }
