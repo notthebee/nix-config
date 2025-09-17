@@ -50,11 +50,11 @@
         "uv2nix": "uv2nix"
       },
       "locked": {
-        "lastModified": 1757916665,
-        "narHash": "sha256-ZOIn36bZcEQNnBkQpGEOabE9IG3KLTuJsZHYIvoiKTo=",
+        "lastModified": 1758003459,
+        "narHash": "sha256-DVkvFK47N7I/38U86ZqBXwoNuTARJNsw4TBRd3zSlkA=",
         "owner": "Tenzer",
         "repo": "alga",
-        "rev": "d569d6f847d1dcfff93651b1478ab55dd0d928fa",
+        "rev": "0e81f679a3e01b6f1eea5b939b7122e63a465777",
         "type": "github"
       },
       "original": {
@@ -206,11 +206,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1757920978,
-        "narHash": "sha256-Mv16aegXLulgyDunijP6SPFJNm8lSXb2w3Q0X+vZ9TY=",
+        "lastModified": 1758079348,
+        "narHash": "sha256-zgw4ALFTtbig0JHigdmnfe4WKDS3FjP+Ep8Uv7SFzPY=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "11cc5449c50e0e5b785be3dfcb88245232633eb8",
+        "rev": "75f97fcbe31cd6d4151527f3ac50cacbe8f1ff0d",
         "type": "github"
       },
       "original": {
@@ -410,11 +410,11 @@
         "systems": "systems_4"
       },
       "locked": {
-        "lastModified": 1757864383,
-        "narHash": "sha256-oMoFAEC8A8BGBHIYiUNsgsVhEyNwTbn066J68LtbelY=",
+        "lastModified": 1758061611,
+        "narHash": "sha256-WJJDjNu80dWMSlpexhgRybPsvwl8C2tPwT6yM918Tsg=",
         "owner": "nix-community",
         "repo": "nixvim",
-        "rev": "db1a991f33fb43cf0e2a4aff54a8c53b4dc12128",
+        "rev": "7f45eae65baa38d77d09e0fcf5bfeab6c0f733c0",
         "type": "github"
       },
       "original": {
@@ -433,11 +433,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1757624466,
-        "narHash": "sha256-25ExS2AkQD05Jf0Y2Wnn5KHpucN2d3ObEQOVaDh7ubg=",
+        "lastModified": 1757885130,
+        "narHash": "sha256-56CMb5W/pgjKLh0bx2ekhn5rde/YmgR63HAqrY9/BCw=",
         "owner": "NuschtOS",
         "repo": "search",
-        "rev": "da8bcb74407e41d334fc79081fdd8948b795bd6f",
+        "rev": "fae3c59a646e00c4b1d359c50b27458a0713d2fd",
         "type": "github"
       },
       "original": {
@@ -554,11 +554,11 @@
     "secrets": {
       "flake": false,
       "locked": {
-        "lastModified": 1757588649,
-        "narHash": "sha256-tB67M7O1HdaKlBrgndZYgmC7RpcGbPKwWlVAIWstzho=",
+        "lastModified": 1758047269,
+        "narHash": "sha256-YhpniWc/NueRFFYZZz8tYOjj7xoDCMY2ogs2MkdiSgE=",
         "ref": "refs/heads/main",
-        "rev": "6d4ebb74b9514b729146d14cd3673d44b1406b15",
-        "revCount": 78,
+        "rev": "7873da6a0d9e953332a036f7666c5a533fcadedd",
+        "revCount": 79,
         "type": "git",
         "url": "ssh://git@github.com/notthebee/nix-private.git"
       },
