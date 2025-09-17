@@ -81,6 +81,7 @@
     #./deemix
     ./homepage
     ./immich
+    ./invoiceplane
     ./jellyfin
     ./keycloak
     ./microbin

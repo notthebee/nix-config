@@ -9,7 +9,7 @@
     keycloakCloudflared.file = "${inputs.secrets}/keycloakCloudflared.age";
     adiosBotToken.file = "${inputs.secrets}/adiosBotToken.age";
     borgBackupSSHKey.file = "${inputs.secrets}/borgBackupSSHKey.age";
-    invoiceNinja.file = "${inputs.secrets}/invoiceNinja.age";
+    invoicePlaneDbPasswordFile.file = "${inputs.secrets}/invoicePlaneDbPasswordFile.age";
     paperlessWebdav.file = "${inputs.secrets}/paperlessWebdav.age";
     slskdEnvironmentFile = {
       file = "${inputs.secrets}/slskdEnvironmentFile.age";

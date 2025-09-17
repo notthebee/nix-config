@@ -89,6 +89,9 @@ in
         enable = true;
         mediaDir = "${hl.mounts.fast}/Media/Photos";
       };
+      invoiceplane = {
+        enable = true;
+      };
       homepage = {
         enable = true;
         misc = [
