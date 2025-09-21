@@ -2,8 +2,9 @@
 {
   nix.gc = {
     automatic = true;
-    dates = "weekly";
+    dates = "daily";
     options = "--delete-older-than 30d";
+    persistent = true;
   };
   nix.optimise.automatic = true;
   nix.optimise.dates = [ "weekly" ];
