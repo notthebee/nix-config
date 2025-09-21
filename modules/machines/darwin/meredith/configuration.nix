@@ -42,12 +42,16 @@
       "mattermost"
       "jitsi-meet"
     ];
+    taps = [
+      "hashicorp/tap"
+    ];
     brews = [
       "pulumi"
+      "packer"
     ];
   };
   environment.systemPackages = with pkgs; [
-    (python312Full.withPackages (
+    (python313.withPackages (
       ps: with ps; [
         pip
         jmespath
@@ -61,16 +65,6 @@
     yq
     git-lfs
     pre-commit
-    bfg-repo-cleaner
-    go
-    gotools
-    gopls
-    go-outline
-    gopls
-    gopkgs
-    gocode-gomod
-    godef
-    golint
     colima
     docker
     docker-compose
@@ -95,7 +89,6 @@
     ffmpeg
     discord
     git-filter-repo
-    spotify
     slack
     google-cloud-sdk
     pinentry.curses
@@ -109,8 +102,6 @@
     devenv
     nixfmt-rfc-style
     opentofu
-    talosctl
-    obsidian
   ];
 
   system.stateVersion = 4;
