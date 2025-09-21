@@ -1,18 +1,22 @@
 { lib, ... }:
 {
-  nix.gc = {
-    automatic = true;
-    dates = "daily";
-    options = "--delete-older-than 30d";
-    persistent = true;
-  };
-  nix.optimise.automatic = true;
-  nix.optimise.dates = [ "weekly" ];
+  nix = {
+    gc = {
+      automatic = true;
+      dates = "daily";
+      options = "--delete-older-than 14d";
+      persistent = true;
+    };
+    optimise = {
+      automatic = true;
+      dates = [ "daily" ];
+    };
 
-  nix.settings.experimental-features = lib.mkDefault [
-    "nix-command"
-    "flakes"
-  ];
+    settings.experimental-features = lib.mkDefault [
+      "nix-command"
+      "flakes"
+    ];
+  };
 
   nixpkgs = {
     config = {
