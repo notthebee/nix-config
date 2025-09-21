@@ -29,12 +29,6 @@ in
   config = lib.mkIf cfg.enable {
     environment.systemPackages = [
       adiosBot
-      (pkgs.python312.withPackages (
-        ps: with ps; [
-          discordpy
-          pytz
-        ]
-      ))
     ];
 
     systemd.services.adios-bot = {
@@ -42,7 +36,7 @@ in
       after = [ "network.target" ];
       wantedBy = [ "multi-user.target" ];
       path = [
-        (pkgs.python312.withPackages (
+        (pkgs.python313.withPackages (
           ps: with ps; [
             discordpy
             pytz
@@ -51,10 +45,11 @@ in
         pkgs.systemd
         pkgs.coreutils
         pkgs.gawk
+        adiosBot
       ];
       serviceConfig = {
         Type = "simple";
-        ExecStart = "/run/current-system/sw/bin/adiosBot";
+        ExecStart = "${lib.getExe adiosBot}";
         EnvironmentFile = cfg.botTokenFile;
         Environment = "WORKING_DIR=${cfg.workingDir}";
       };

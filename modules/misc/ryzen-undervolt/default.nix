@@ -39,15 +39,14 @@ in
     ];
     environment.systemPackages = [
       ryzen-undervolt
-      pkgs.python312Full
     ];
     systemd.services.ryzen-undervolt = {
       description = "Ryzen 5800x3D undervolting service";
       wantedBy = [ "multi-user.target" ];
-      path = [ pkgs.python312Full ];
+      path = [ pkgs.python313 ];
       serviceConfig = {
         Type = "oneshot";
-        ExecStart = "${lib.getExe pkgs.python312Full} ${lib.getExe ryzen-undervolt} -c ${builtins.toString cfg.coreCount} -o ${builtins.toString cfg.offset}";
+        ExecStart = "python3 ${lib.getExe ryzen-undervolt} -c ${builtins.toString cfg.coreCount} -o ${builtins.toString cfg.offset}";
       };
     };
   };
