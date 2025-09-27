@@ -70,16 +70,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1758972283,
-        "narHash": "sha256-qPRC98AjMg3XkK5Q6pBFEACnH/9E1icLdcguAfVfQu0=",
+        "lastModified": 1758972915,
+        "narHash": "sha256-grVRwFECBEzhG4FMyW2atQZ4vWlwenSYLRRJHC9ZKJg=",
         "owner": "notthebee",
         "repo": "AutoASPM",
-        "rev": "6407849ed8d613ac9aaec04636283680d5d09a4e",
+        "rev": "622fdd7e69f32c73ee0a38d4571e9dd3695b6e76",
         "type": "github"
       },
       "original": {
         "owner": "notthebee",
-        "ref": "dev",
         "repo": "AutoASPM",
         "type": "github"
       }

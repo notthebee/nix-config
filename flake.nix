@@ -43,7 +43,7 @@
       flake = false;
     };
     autoaspm = {
-      url = "github:notthebee/AutoASPM/dev?shallow=true";
+      url = "github:notthebee/AutoASPM";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     agenix = {
