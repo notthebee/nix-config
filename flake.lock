@@ -1,13 +1,17 @@
 {
   "nodes": {
     "adios-bot": {
-      "flake": false,
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
       "locked": {
-        "lastModified": 1737711654,
-        "narHash": "sha256-k+27RkjBR83kv8JFxYMwOR1EbjZgfW6fmf5n1D66DYQ=",
+        "lastModified": 1758977554,
+        "narHash": "sha256-nvRMRGF2hRFl+/NzbmRITks6po32Q1CFjZorkcT+zTE=",
         "owner": "notthebee",
         "repo": "adiosbot",
-        "rev": "6d9d8db317285406c296182eccfc9c104e7535c8",
+        "rev": "aeacc0bcbcd2c185674e6d4cafc72861d2044122",
         "type": "github"
       },
       "original": {

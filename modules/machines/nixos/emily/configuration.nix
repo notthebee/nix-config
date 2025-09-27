@@ -96,7 +96,6 @@ in
     };
   };
   imports = [
-    ../../../misc/adios-bot
     ../../../misc/tailscale
     ../../../misc/zfs-root
     ./filesystems

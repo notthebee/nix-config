@@ -51,6 +51,7 @@ in
               ../../misc/tg-notify
               ../../misc/mover
               self.inputs.agenix.nixosModules.default
+              self.inputs.adios-bot.nixosModules.default
               self.inputs.autoaspm.nixosModules.default
               self.inputs."home-manager${
                 lib.attrsets.attrByPath [ name ] "" nixpkgsMap

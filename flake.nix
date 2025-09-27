@@ -60,7 +60,7 @@
     };
     adios-bot = {
       url = "github:notthebee/adiosbot?shallow=true";
-      flake = false;
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     nix-index-database = {
       url = "github:Mic92/nix-index-database?shallow=true";
