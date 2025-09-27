@@ -63,18 +63,23 @@
         "type": "github"
       }
     },
-    "auto-aspm": {
-      "flake": false,
+    "autoaspm": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
       "locked": {
-        "lastModified": 1734075490,
-        "narHash": "sha256-rbvqaCddVTBpisc+Ow4IF0FfWJ4//lNsV3gY55w6AP0=",
+        "lastModified": 1758972283,
+        "narHash": "sha256-qPRC98AjMg3XkK5Q6pBFEACnH/9E1icLdcguAfVfQu0=",
         "owner": "notthebee",
         "repo": "AutoASPM",
-        "rev": "e3bbeb5a96a2fb24188a7e6be649e057ff1968c5",
+        "rev": "6407849ed8d613ac9aaec04636283680d5d09a4e",
         "type": "github"
       },
       "original": {
         "owner": "notthebee",
+        "ref": "dev",
         "repo": "AutoASPM",
         "type": "github"
       }
@@ -517,7 +522,7 @@
         "adios-bot": "adios-bot",
         "agenix": "agenix",
         "alga": "alga",
-        "auto-aspm": "auto-aspm",
+        "autoaspm": "autoaspm",
         "flake-parts": "flake-parts",
         "home-manager": "home-manager_2",
         "home-manager-unstable": "home-manager-unstable",

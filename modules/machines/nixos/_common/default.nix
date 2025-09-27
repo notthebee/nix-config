@@ -120,7 +120,7 @@
     nmap
     jq
     ripgrep
-    inputs.agenix.packages."${system}".default
+    #inputs.agenix.packages."${system}".default
     lm_sensors
   ];
 

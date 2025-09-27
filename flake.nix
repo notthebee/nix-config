@@ -42,9 +42,9 @@
       url = "github:svenlange2/Ryzen-5800x3d-linux-undervolting/0f05965f9939259c27a428065fda5a6c0cbb9225?shallow=true";
       flake = false;
     };
-    auto-aspm = {
-      url = "github:notthebee/AutoASPM?shallow=true";
-      flake = false;
+    autoaspm = {
+      url = "github:notthebee/AutoASPM/dev?shallow=true";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     agenix = {
       url = "github:ryantm/agenix?shallow=true";

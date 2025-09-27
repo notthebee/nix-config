@@ -49,9 +49,9 @@ in
               ../../homelab
               ../../misc/email
               ../../misc/tg-notify
-              ../../misc/auto-aspm
               ../../misc/mover
               self.inputs.agenix.nixosModules.default
+              self.inputs.autoaspm.nixosModules.default
               self.inputs."home-manager${
                 lib.attrsets.attrByPath [ name ] "" nixpkgsMap
               }".nixosModules.home-manager
