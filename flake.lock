@@ -249,21 +249,6 @@
         "type": "github"
       }
     },
-    "import-tree": {
-      "locked": {
-        "lastModified": 1752730890,
-        "narHash": "sha256-GES8fapSLGz36MMPRVNkSUWXUTtqvGQNXHjRmRLfJUY=",
-        "owner": "vic",
-        "repo": "import-tree",
-        "rev": "6ebb8cb87987b20264c09296166543fd3761d274",
-        "type": "github"
-      },
-      "original": {
-        "owner": "vic",
-        "repo": "import-tree",
-        "type": "github"
-      }
-    },
     "ixx": {
       "inputs": {
         "flake-utils": [
@@ -504,22 +489,6 @@
         "type": "github"
       }
     },
-    "recyclarr-configs": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1757259985,
-        "narHash": "sha256-/Va9VQqU65NjDLSFqIoYr5fwb1IIRQZC0MupDrqUOrw=",
-        "owner": "recyclarr",
-        "repo": "config-templates",
-        "rev": "d24dca2305b86de382e4e977301bd3faf8612c08",
-        "type": "github"
-      },
-      "original": {
-        "owner": "recyclarr",
-        "repo": "config-templates",
-        "type": "github"
-      }
-    },
     "root": {
       "inputs": {
         "adios-bot": "adios-bot",
@@ -529,14 +498,12 @@
         "flake-parts": "flake-parts",
         "home-manager": "home-manager_2",
         "home-manager-unstable": "home-manager-unstable",
-        "import-tree": "import-tree",
         "jovian": "jovian",
         "nix-darwin": "nix-darwin",
         "nix-index-database": "nix-index-database",
         "nixpkgs": "nixpkgs",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "nixvim": "nixvim",
-        "recyclarr-configs": "recyclarr-configs",
         "ryzen-undervolt": "ryzen-undervolt",
         "secrets": "secrets",
         "treefmt-nix": "treefmt-nix"

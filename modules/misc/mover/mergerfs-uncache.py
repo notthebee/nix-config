@@ -6,7 +6,6 @@ import os
 import socket
 import syslog
 import time
-import datetime
 import urllib.request
 from pathlib import Path
 from typing import List

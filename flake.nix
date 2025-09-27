@@ -13,7 +13,6 @@
     ];
   };
   inputs = {
-    import-tree.url = "github:vic/import-tree";
     nixpkgs = {
       url = "github:nixos/nixpkgs/nixos-25.05?shallow=true";
     };
@@ -49,10 +48,6 @@
     agenix = {
       url = "github:ryantm/agenix?shallow=true";
       inputs.nixpkgs.follows = "nixpkgs";
-    };
-    recyclarr-configs = {
-      url = "github:recyclarr/config-templates?shallow=true";
-      flake = false;
     };
     nix-darwin = {
       url = "github:LnL7/nix-darwin/master?shallow=true";
