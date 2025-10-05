@@ -2,14 +2,11 @@
   lib,
   config,
   pkgs,
-  inputs,
   ...
 }:
 let
   cfg = config.services.ryzen-undervolt;
-  ryzen-undervolt = pkgs.writeScriptBin "ryzen-undervolt" (
-    builtins.readFile "${inputs.ryzen-undervolt}/ruv.py"
-  );
+  ryzen-undervolt = pkgs.callPackage ./package.nix { };
 in
 {
   options.services.ryzen-undervolt = {
@@ -46,7 +43,7 @@ in
       path = [ pkgs.python313 ];
       serviceConfig = {
         Type = "oneshot";
-        ExecStart = "python3 ${lib.getExe ryzen-undervolt} -c ${builtins.toString cfg.coreCount} -o ${builtins.toString cfg.offset}";
+        ExecStart = "${lib.getExe ryzen-undervolt} -c ${builtins.toString cfg.coreCount} -o ${builtins.toString cfg.offset}";
       };
     };
   };

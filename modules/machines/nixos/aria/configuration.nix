@@ -39,7 +39,7 @@
     ./secrets
   ];
 
-  services.auto-aspm.enable = true;
+  services.autoaspm.enable = true;
   services.hddfancontrol = {
     enable = true;
     settings = {

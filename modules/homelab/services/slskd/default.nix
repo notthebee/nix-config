@@ -70,6 +70,8 @@ in
   config = lib.mkIf cfg.enable {
     systemd.tmpfiles.rules = map (x: "d ${x} 0775 ${hl.user} ${hl.group} - -") [
       cfg.musicDir
+      "${cfg.musicDir}/.beets"
+      cfg.downloadDir
       cfg.downloadDir
       cfg.incompleteDownloadDir
     ];
@@ -80,6 +82,24 @@ in
       environmentFile = cfg.environmentFile;
       domain = null;
       settings = {
+        integration.scripts.slskd-import-files = {
+          on = [
+            "DownloadDirectoryComplete"
+            "DownloadFileComplete"
+          ];
+          run =
+            let
+              slskd-import-files = pkgs.writeScriptBin "slskd-import-files" ''
+                #!${lib.getExe pkgs.bash}
+                cd ${cfg.musicDir}/.beets
+                HOME=${cfg.musicDir}/.beets ${lib.getExe pkgs.beets} -c ${cfg.beetsConfigFile} import -m -A -q ${cfg.downloadDir}
+              '';
+            in
+            {
+              executable = "${lib.getExe pkgs.bash}";
+              command = "-c ${lib.getExe slskd-import-files}";
+            };
+        };
         directories = {
           downloads = cfg.downloadDir;
           incomplete = cfg.incompleteDownloadDir;
@@ -102,71 +122,17 @@ in
         wantedBy = [ "sockets.target" ];
       };
     };
-    systemd.paths = {
-      slskd-import-files = {
-        enable = true;
-        wantedBy = [ "multi-user.target" ];
-        pathConfig = {
-          PathChanged = cfg.downloadDir;
-          Unit = "slskd-import-files.service";
-          TriggerLimitIntervalSec = "1m";
-        };
-      };
-    };
     systemd.services = {
-      slskd-import-files =
-        let
-          stateDir = "/var/lib/slskd-import-files";
-        in
-        {
-          enable = true;
-          description = "Automatically import Soulseek downloads";
-          path = [ pkgs.beets ];
-          after = [ "network.target" ];
-          environment = {
-            "BEETSDIR" = stateDir;
-          };
-          serviceConfig = {
-            Type = "oneshot";
-            LockPersonality = true;
-            NoNewPrivileges = true;
-            PrivateDevices = true;
-            PrivateMounts = true;
-            PrivateTmp = true;
-            PrivateUsers = true;
-            ProtectClock = true;
-            ProtectControlGroups = true;
-            StateDirectory = "stateDir";
-            ProtectHome = true;
-            ProtectHostname = true;
-            ProtectKernelLogs = true;
-            ProtectKernelModules = true;
-            ProtectKernelTunables = true;
-            ProtectProc = "invisible";
-            ProtectSystem = "strict";
-            RemoveIPC = true;
-            RestrictNamespaces = true;
-            RestrictSUIDSGID = true;
-            ReadOnlyPaths = [ cfg.beetsConfigFile ];
-            ReadWritePaths = [
-              cfg.downloadDir
-              cfg.musicDir
-            ];
-            User = config.services.slskd.user;
-            Group = config.services.slskd.group;
-            ExecStart =
-              let
-                slskd-import-files = pkgs.writeScriptBin "slskd-import-files" ''
-                  #!${lib.getExe pkgs.bash}
-                  ${lib.getExe pkgs.beets} -c ${cfg.beetsConfigFile} import -m -A -q ${cfg.downloadDir}
-                '';
-              in
-              lib.getExe slskd-import-files;
-          };
-        };
-    }
-    // lib.attrsets.optionalAttrs hl.services.wireguard-netns.enable {
       slskd = {
+        serviceConfig.ReadWritePaths = [
+          cfg.musicDir
+        ];
+        serviceConfig.ReadOnlyPaths = lib.mkForce [ ];
+        serviceConfig.NetworkNamespacePath = lib.attrsets.optionalAttrs hl.services.wireguard-netns.enable [
+          "/var/run/netns/${ns}"
+        ];
+      }
+      // lib.attrsets.optionalAttrs hl.services.wireguard-netns.enable {
         bindsTo = [ "netns@${ns}.service" ];
         environment = {
           DOTNET_USE_POLLING_FILE_WATCHER = "true";
@@ -175,9 +141,8 @@ in
           "network-online.target"
           "${ns}.service"
         ];
-        serviceConfig.NetworkNamespacePath = [ "/var/run/netns/${ns}" ];
       };
-      "slskd-web-proxy" = {
+      "slskd-web-proxy" = lib.attrsets.optionalAttrs hl.services.wireguard-netns.enable {
         enable = true;
         description = "Proxy to slskd WebUI in Network Namespace";
         requires = [
