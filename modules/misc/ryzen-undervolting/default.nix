@@ -5,11 +5,11 @@
   ...
 }:
 let
-  cfg = config.services.ryzen-undervolt;
-  ryzen-undervolt = pkgs.callPackage ./package.nix { };
+  cfg = config.services.ryzen-undervolting;
+  ryzen-undervolting = pkgs.callPackage ./package.nix { };
 in
 {
-  options.services.ryzen-undervolt = {
+  options.services.ryzen-undervolting = {
     enable = lib.mkEnableOption "Ryzen 5800x3D undervolting service";
     offset = lib.mkOption {
       description = "The voltage offet in mV";
@@ -27,23 +27,23 @@ in
     assertions = [
       {
         assertion = cfg.offset <= 0;
-        message = "service.ryzen-undervolt.offset has to be less than 0";
+        message = "service.ryzen-undervolting.offset has to be less than 0";
       }
       {
         assertion = cfg.coreCount >= 1 && cfg.coreCount <= 16;
-        message = "service.ryzen-undervolt.coreCount has to be a number between 1 and 16";
+        message = "service.ryzen-undervolting.coreCount has to be a number between 1 and 16";
       }
     ];
     environment.systemPackages = [
-      ryzen-undervolt
+      ryzen-undervolting
     ];
-    systemd.services.ryzen-undervolt = {
+    hardware.cpu.amd.ryzen-smu.enable = true;
+    systemd.services.ryzen-undervolting = {
       description = "Ryzen 5800x3D undervolting service";
       wantedBy = [ "multi-user.target" ];
-      path = [ pkgs.python313 ];
       serviceConfig = {
         Type = "oneshot";
-        ExecStart = "${lib.getExe ryzen-undervolt} -c ${builtins.toString cfg.coreCount} -o ${builtins.toString cfg.offset}";
+        ExecStart = "${lib.getExe pkgs.python3} ${lib.getExe ryzen-undervolting} -c ${builtins.toString cfg.coreCount} -o ${builtins.toString cfg.offset}";
       };
     };
   };

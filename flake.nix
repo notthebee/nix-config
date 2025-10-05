@@ -37,10 +37,6 @@
       url = "github:nix-community/home-manager/master?shallow=true";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
-    ryzen-undervolt = {
-      url = "github:svenlange2/Ryzen-5800x3d-linux-undervolting/0f05965f9939259c27a428065fda5a6c0cbb9225?shallow=true";
-      flake = false;
-    };
     autoaspm = {
       url = "github:notthebee/AutoASPM";
       inputs.nixpkgs.follows = "nixpkgs";

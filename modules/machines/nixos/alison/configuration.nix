@@ -40,6 +40,7 @@
 
   imports = [
     ../../../misc/zfs-root
+    ../../../misc/agenix
     ./router
     ./filesystems
     ./secrets

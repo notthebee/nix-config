@@ -31,6 +31,7 @@
 
   imports = [
     ../../../misc/zfs-root
+    ../../../misc/agenix
     ../../../misc/tailscale
     ./filesystems
     ./syncthing

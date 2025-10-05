@@ -27,6 +27,7 @@ in
 
   imports = [
     ../../../misc/notthebe.ee
+    ../../../misc/agenix
     ./matrix.nix
     ./wireguard.nix
     ./secrets.nix

@@ -504,36 +504,18 @@
         "nixpkgs": "nixpkgs",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "nixvim": "nixvim",
-        "ryzen-undervolt": "ryzen-undervolt",
         "secrets": "secrets",
         "treefmt-nix": "treefmt-nix"
-      }
-    },
-    "ryzen-undervolt": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1704490715,
-        "narHash": "sha256-ngYM4E1xXfk3pbRp32pLHhngOerRHH9gBSN/aK8BPYQ=",
-        "owner": "svenlange2",
-        "repo": "Ryzen-5800x3d-linux-undervolting",
-        "rev": "0f05965f9939259c27a428065fda5a6c0cbb9225",
-        "type": "github"
-      },
-      "original": {
-        "owner": "svenlange2",
-        "repo": "Ryzen-5800x3d-linux-undervolting",
-        "rev": "0f05965f9939259c27a428065fda5a6c0cbb9225",
-        "type": "github"
       }
     },
     "secrets": {
       "flake": false,
       "locked": {
-        "lastModified": 1758538535,
-        "narHash": "sha256-7trJ0CkNa3u8H3/XbP3A0NMzu4nkJtGcQDkhuGrooZQ=",
+        "lastModified": 1759663450,
+        "narHash": "sha256-TTF0KG6DTfreblFOUuNQtl0MAjKLieAqPBiVUlUHT/Q=",
         "ref": "refs/heads/main",
-        "rev": "866f172b83137b3f226255662f8db182a0277bda",
-        "revCount": 80,
+        "rev": "ba0b268bf25dafb45a7d7c8898c20d294388d253",
+        "revCount": 82,
         "type": "git",
         "url": "ssh://git@github.com/notthebee/nix-private.git"
       },

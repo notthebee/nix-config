@@ -19,7 +19,10 @@
   boot = {
     kernelPackages = pkgs.linuxPackages_latest;
     consoleLogLevel = 0;
-    initrd.verbose = false;
+    initrd = {
+      verbose = false;
+      kernelModules = [ "amd" ];
+    };
     kernelParams = [
       "quiet"
       "splash"

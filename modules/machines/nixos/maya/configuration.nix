@@ -8,11 +8,11 @@
 let
   iot = config.homelab.networks.local.iot.reservations;
   tvIpAddress = iot.lgtv.Address;
-  tvMacAddress = iot.lgtv.Address;
+  tvMacAddress = iot.lgtv.MACAddress;
 in
 {
   imports = [
-    ../../../misc/ryzen-undervolt
+    ../../../misc/ryzen-undervolting
     ../../../misc/lgtv
     inputs.jovian.nixosModules.default
     #./lact.nix
@@ -58,7 +58,7 @@ in
       user = "notthebee";
       group = "notthebee";
     };
-    ryzen-undervolt = {
+    ryzen-undervolting = {
       enable = true;
       offset = -25;
     };
