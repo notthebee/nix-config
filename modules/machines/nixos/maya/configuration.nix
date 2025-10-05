@@ -15,7 +15,7 @@ in
     ../../../misc/ryzen-undervolt
     ../../../misc/lgtv
     inputs.jovian.nixosModules.default
-    ./lact.nix
+    #./lact.nix
     ./boot.nix
     ./no-rgb.nix
   ];
