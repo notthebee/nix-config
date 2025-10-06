@@ -87,7 +87,7 @@
     ./microbin
     ./miniflux
     ./navidrome
-    ./ocis
+    ./nextcloud
     ./smarthome/homeassistant
     ./smarthome/raspberrymatic
     ./paperless-ngx
