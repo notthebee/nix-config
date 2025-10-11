@@ -37,7 +37,7 @@ Very much a work in progress.
 |<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/microbin.png' width=32 height=32>|Microbin|A minimal pastebin|Services|
 |<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/miniflux-light.svg' width=32 height=32>|Miniflux|Minimalist and opinionated feed reader|Services|
 |<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/navidrome.svg' width=32 height=32>|Navidrome|Self-hosted music streaming service|Media|
-|<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/owncloud.svg' width=32 height=32>|OCIS|Enterprise File Storage and Collaboration|Services|
+|<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/nextcloud.svg' width=32 height=32>|Nextcloud|Enterprise File Storage and Collaboration|Services|
 |<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/paperless.svg' width=32 height=32>|Paperless-ngx|Document management system|Services|
 |<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/prowlarr.svg' width=32 height=32>|Prowlarr|PVR indexer|Arr|
 |<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/radarr.svg' width=32 height=32>|Radarr|Movie collection manager|Arr|
