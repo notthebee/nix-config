@@ -1,8 +1,18 @@
 {
   config,
   pkgs,
+  lib,
   ...
 }:
+let
+  hardDrives = [
+    "/dev/disk/by-label/Data1"
+    "/dev/disk/by-label/Data2"
+    "/dev/disk/by-label/Data3"
+    "/dev/disk/by-label/Data4"
+    "/dev/disk/by-label/Parity1"
+  ];
+in
 {
   boot.kernelModules = [ "nct6775" ];
   hardware.cpu.intel.updateMicrocode = true;
@@ -17,7 +27,7 @@
     boot = {
       devNodes = "/dev/disk/by-id/";
       bootDevices = [ "ata-SAMSUNG_MZ7LN256HAJQ-00000_S3TWNX0N158949" ];
-      immutable = false;
+      immutable = true;
       availableKernelModules = [
         "uhci_hcd"
         "ehci_pci"
@@ -41,24 +51,28 @@
   ];
 
   services.autoaspm.enable = true;
+  systemd.services.hd-idle = {
+    description = "External HD spin down daemon";
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "simple";
+      ExecStart =
+        let
+          idleTime = toString 900;
+          hardDriveParameter = lib.strings.concatMapStringsSep " " (x: "-a ${x} -i ${idleTime}") hardDrives;
+        in
+        "${pkgs.hd-idle}/bin/hd-idle -i 0 ${hardDriveParameter}";
+    };
+  };
+
   services.hddfancontrol = {
     enable = true;
     settings = {
       harddrives = {
-        disks = [
-          "/dev/disk/by-label/Data1"
-          "/dev/disk/by-label/Data2"
-          "/dev/disk/by-label/Data3"
-          "/dev/disk/by-label/Data4"
-          "/dev/disk/by-label/Parity1"
-        ];
-        pwmPaths = [ "/sys/class/hwmon/hwmon0/pwm2:50:100" ];
+        disks = hardDrives;
+        pwmPaths = [ "/sys/class/hwmon/hwmon0/pwm1:30:22" ];
         extraArgs = [
-          "--pwm-start-value=100"
-          "--pwm-stop-value=50"
-          "--smartctl"
-          "-i 30"
-          "--spin-down-time=900"
+          "-i 30sec"
         ];
       };
     };
@@ -78,6 +92,7 @@
   virtualisation.docker.storageDriver = "overlay2";
 
   system.autoUpgrade.enable = true;
+  powerManagement.powertop.enable = true;
 
   environment.systemPackages = with pkgs; [
     pciutils
