@@ -214,11 +214,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1760130406,
-        "narHash": "sha256-GKMwBaFRw/C1p1VtjDz4DyhyzjKUWyi1K50bh8lgA2E=",
+        "lastModified": 1760239230,
+        "narHash": "sha256-eqSP/BAbQwNTlQ/6yuK0yILzZAPNNj91gp6oIfVtu/E=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "d305eece827a3fe317a2d70138f53feccaf890a1",
+        "rev": "c4aaddeaecc09554c92518fd904e3e84b497ed09",
         "type": "github"
       },
       "original": {
@@ -348,11 +348,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1759637156,
-        "narHash": "sha256-8NI1SqntLfKl6Q0Luemc3aIboezSJElofUrqipF5g78=",
+        "lastModified": 1760239548,
+        "narHash": "sha256-nXPLD+4zYtESJ2ZZJS2rk3aTNNqkBhVxl0IPoxOj1i8=",
         "owner": "Mic92",
         "repo": "nix-index-database",
-        "rev": "0ca69684091aa3a6b1fe994c4afeff305b15e915",
+        "rev": "f0ca6a7dd956b3ad8fc628e1eb1024e15c862da0",
         "type": "github"
       },
       "original": {
@@ -403,11 +403,11 @@
         "systems": "systems_4"
       },
       "locked": {
-        "lastModified": 1760105514,
-        "narHash": "sha256-un7IqbXz3hC8rHGAgD/mVbDdzTxf9ar3UjGnRxuYoYA=",
+        "lastModified": 1760215554,
+        "narHash": "sha256-6o8epYMUwpsNdr3XxDxazxC7mHyKieFju+uVjHWX0/s=",
         "owner": "nix-community",
         "repo": "nixvim",
-        "rev": "bb9d744b644d160336b7ff681dac1b19db01ba2c",
+        "rev": "92793f84ca0fd1d4b414b4cbef611a71da789d16",
         "type": "github"
       },
       "original": {
@@ -511,11 +511,11 @@
     "secrets": {
       "flake": false,
       "locked": {
-        "lastModified": 1760134253,
-        "narHash": "sha256-Z9g5mSYIoQvnyd0QRzbXC2JB21OLSoYHQxAyAPJvx+8=",
+        "lastModified": 1760200297,
+        "narHash": "sha256-b4RismqfHG2Ksjb7SLK9aD12kwALb8ce8KQEPaDVHWQ=",
         "ref": "refs/heads/main",
-        "rev": "d3027761d6d45a5bd860c811dbaf0182f49dc6db",
-        "revCount": 85,
+        "rev": "570ac617bda9af10fea154af026925adc9bdcb18",
+        "revCount": 86,
         "type": "git",
         "url": "ssh://git@github.com/notthebee/nix-private.git"
       },
