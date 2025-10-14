@@ -70,7 +70,6 @@
       };
       rpool = {
         type = "zpool";
-        mode = "mirror";
         options = {
           ashift = "12";
           autotrim = "on";
