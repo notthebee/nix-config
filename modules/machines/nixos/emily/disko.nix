@@ -7,7 +7,7 @@ in
     disk = {
       main = {
         type = "disk";
-        device = "/dev/disk/by-id/${diskMain}";
+        device = "/dev/disk/by-id/ata-Samsung_SSD_860_EVO_500GB_S3Z2NB0KC53819J";
         content = {
           type = "gpt";
           partitions = {
@@ -17,7 +17,7 @@ in
               content = {
                 type = "filesystem";
                 format = "vfat";
-                mountpoint = "/boot/efis/${diskMain}-part2";
+                mountpoint = "/boot/efis/ata-Samsung_SSD_860_EVO_500GB_S3Z2NB0KC53819J-part2";
               };
             };
             bpool = {
