@@ -12,7 +12,9 @@ Very much a work in progress.
 ### alison
 |Icon|Name|Description|Category|
 |---|---|---|---|
+|<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/grafana.svg' width=32 height=32>|Grafana|Platform for data analytics and monitoring|Observability|
 |<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/home-assistant.svg' width=32 height=32>|Home Assistant|Home automation platform|Smart Home|
+|<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/prometheus.svg' width=32 height=32>|Prometheus|Monitoring system & time series database|Observability|
 |<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/raspberrymatic.png' width=32 height=32>|RaspberryMatic|Homematic IP CCU|Smart Home|
 |<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/uptime-kuma.svg' width=32 height=32>|Uptime Kuma|Service monitoring tool|Services|
 
