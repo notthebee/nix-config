@@ -40,6 +40,7 @@
   imports = [
     ./filesystems
     ./nix
+    ./monitoring
     "${inputs.secrets}/networks.nix"
   ];
 

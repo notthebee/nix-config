@@ -66,7 +66,7 @@ in
                 # Allow traffic from established and related packets, drop invalid
                 ct state vmap { established : accept, related : accept, invalid : drop }
 
-                iifname vmap { lo : accept, "podman*" : accept, wg0 : accept, ${externalInterface} : jump inbound_world, ${lan} : accept, ${guest} : jump inbound_untrusted, ${iot} : jump inbound_untrusted }
+                iifname vmap { lo : accept, "podman*" : accept, wg0 : accept, ${externalInterface} : jump inbound_world, ${lan} : accept, tailscale0 : accept, ${guest} : jump inbound_untrusted, ${iot} : jump inbound_untrusted }
               }
 
               chain forward {
@@ -74,7 +74,7 @@ in
 
                 ct state vmap { established : accept, related : accept, invalid : drop }
 
-                iifname {"${lan}", "wg0", "podman*"} accept
+                iifname {"${lan}", "tailscale0", "wg0", "podman*"} accept
                 iifname ${guest} oifname ${externalInterface} accept
 
                 counter drop

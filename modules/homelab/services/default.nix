@@ -86,6 +86,8 @@
     ./keycloak
     ./microbin
     ./miniflux
+    ./monitoring/grafana
+    ./monitoring/prometheus
     ./navidrome
     ./nextcloud
     ./smarthome/homeassistant

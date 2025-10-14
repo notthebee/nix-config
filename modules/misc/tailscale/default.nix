@@ -7,7 +7,6 @@
 }:
 {
 
-  networking.firewall.allowedUDPPorts = [ config.services.tailscale.port ];
   networking.firewall.trustedInterfaces = [ "tailscale0" ];
 
   services.tailscale = {

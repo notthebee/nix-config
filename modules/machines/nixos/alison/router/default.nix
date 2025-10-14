@@ -72,6 +72,7 @@ in
 {
   imports = [
     ./firewall.nix
+    ./tailscale.nix
     ./dns.nix
   ];
   services.udev.extraRules = ''
