@@ -1,8 +1,3 @@
-{ config, builtins, ... }:
-let
-  diskMain = builtins.head config.zfs-root.bootDevices;
-in
-{
   disko.devices = {
     disk = {
       main = {
@@ -149,4 +144,3 @@ in
       };
     };
   };
-}
