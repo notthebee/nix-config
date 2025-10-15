@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 let
@@ -44,6 +45,11 @@ in
   config = lib.mkIf cfg.enable {
     services.${service} = {
       sites.${cfg.url} = {
+        invoiceTemplates =
+          let
+            notthebee = pkgs.callPackage ./template.nix { };
+          in
+          [ notthebee ];
         settings = {
           DISABLE_SETUP = true;
           SETUP_COMPLETED = true;
