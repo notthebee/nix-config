@@ -5,10 +5,23 @@
   ...
 }:
 let
-  enabledServices = lib.attrsets.mapAttrsToList (name: _value: name) (
+  enabledNixosServices = lib.attrsets.mapAttrsToList (name: _value: name) (
     lib.attrsets.filterAttrs (
-      _name: value: value ? configDir && value ? enable && value.enable
+      name: value:
+      value != "enable" && name != "backup" && value ? configDir && value ? enable && value.enable
     ) config.homelab.services
+  );
+  monitoredServices = lib.lists.flatten (
+    lib.lists.forEach enabledNixosServices (
+      x:
+      let
+        svc = config.homelab.services.${x};
+      in
+      if (svc ? monitoredServices) then
+        svc.monitoredServices
+      else
+        [ "$(list-units --type service | grep paperless)" ]
+    )
   );
 
   networkInterface =
@@ -80,20 +93,15 @@ let
     printf "$BOLD Service status$ENDCOLOR\n"
 
     function get_service_status() {
-      statuses=$(systemctl list-units | grep $1 | grep service)
-      while IFS= read -r line; do
-        service_name=$(echo $line | awk '{print $1;}')
-        if [[ $service_name =~ ".scope" || $service_name =~ ".mount" ]]; then
-          continue
-        fi
-        if echo "$line" | grep -q 'failed'; then
-          printf "$RED• $ENDCOLOR%-50s $RED[failed]$ENDCOLOR\n" "$service_name"
-        elif echo "$line" | grep -q 'running'; then
-          printf "$GREEN• $ENDCOLOR%-50s $GREEN[active]$ENDCOLOR\n" "$service_name"
-        fi
-      done <<< "$statuses"
+      if systemctl is-failed "$1" | grep -q 'failed'; then
+        printf "$RED• $ENDCOLOR%-50s $RED[failed]$ENDCOLOR\n" "$1"
+      elif systemctl is-failed "$1" | grep -q 'active'; then
+        printf "$GREEN• $ENDCOLOR%-50s $GREEN[active]$ENDCOLOR\n" "$1"
+      else
+        printf "$YELLOW• $ENDCOLOR%-50s $YELLOW[unknown]$ENDCOLOR\n" "$1"
+      fi
     }
-    ${lib.strings.concatStrings (lib.lists.forEach enabledServices (x: "get_service_status ${x}\n"))}
+    ${lib.strings.concatStrings (lib.lists.forEach monitoredServices (x: "get_service_status ${x}\n"))}
   '';
 in
 {

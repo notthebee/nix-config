@@ -25,6 +25,12 @@ in
       type = lib.types.str;
       default = "invoice.${hl.baseDomain}";
     };
+    monitoredServices = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [
+        "phpfpm-invoiceplane-${cfg.url}"
+      ];
+    };
     homepage.name = lib.mkOption {
       type = lib.types.str;
       default = "InvoicePlane";
