@@ -1,6 +1,9 @@
 { ... }:
 {
   services.prometheus.exporters = {
+    shellyplug = {
+      enable = true;
+    };
     systemd = {
       enable = true;
       openFirewall = false;

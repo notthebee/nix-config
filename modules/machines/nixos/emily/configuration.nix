@@ -17,6 +17,9 @@ let
   ];
 in
 {
+  services.prometheus.exporters.shellyplug.targets = [
+    "192.168.32.4"
+  ];
   nixpkgs.config.packageOverrides = pkgs: {
     vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
   };

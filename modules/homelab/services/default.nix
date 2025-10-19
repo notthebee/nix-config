@@ -88,6 +88,7 @@
     ./miniflux
     ./monitoring/grafana
     ./monitoring/prometheus
+    ./monitoring/prometheus/exporters/shelly_plug_exporter
     ./navidrome
     ./nextcloud
     ./smarthome/homeassistant
