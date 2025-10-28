@@ -43,6 +43,7 @@ in
       "pcie_aspm=force"
       "consoleblank=60"
       "acpi_enforce_resources=lax"
+      "nvme_core.default_ps_max_latency_us=50000"
     ];
     kernelModules = [
       "coretemp"
@@ -56,7 +57,7 @@ in
     useDHCP = true;
     networkmanager.enable = false;
     hostName = "emily";
-    interfaces.enp1s0 = {
+    interfaces.enp8s0 = {
       ipv4.addresses = [
         {
           address = emilyIpAddress;
@@ -66,14 +67,14 @@ in
     };
     defaultGateway = {
       address = gatewayIpAddress;
-      interface = "enp1s0";
+      interface = "enp8s0";
     };
     hostId = "0730ae51";
     firewall = {
       enable = true;
       allowPing = true;
       trustedInterfaces = [
-        "enp1s0"
+        "enp8s0"
         "tailscale0"
       ];
     };

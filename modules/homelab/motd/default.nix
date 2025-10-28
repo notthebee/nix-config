@@ -17,10 +17,7 @@ let
       let
         svc = config.homelab.services.${x};
       in
-      if (svc ? monitoredServices) then
-        svc.monitoredServices
-      else
-        [ "$(list-units --type service | grep paperless)" ]
+      if (svc ? monitoredServices) then svc.monitoredServices else [ x ]
     )
   );
 
