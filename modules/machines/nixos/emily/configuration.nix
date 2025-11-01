@@ -87,7 +87,10 @@ in
         bootPool = "-part2";
         rootPool = "-part3";
       };
-      bootDevices = [ "nvme-WDC_PC_SN530_SDBPMPZ-256G-1101_221368801205" ];
+      bootDevices = [
+        "ata-Samsung_SSD_870_EVO_250GB_S6PENL0T902873K"
+        "ata-Samsung_SSD_870_EVO_250GB_S6PENL0T905657B"
+      ];
       immutable = true;
       availableKernelModules = [
         "uhci_hcd"

@@ -1,6 +1,7 @@
 { config, builtins, ... }:
 let
   diskMain = builtins.head config.zfs-root.bootDevices;
+  diskMirror = builtins.tail config.zfs-root.bootDevices;
 in
 {
   disko.devices = {
@@ -41,10 +42,47 @@ in
           };
         };
       };
+      mirror = {
+        type = "disk";
+        device = "/dev/disk/by-id/${diskMirror}";
+        content = {
+          type = "gpt";
+          partitions = {
+            efi = {
+              size = "1G";
+              type = "EF00";
+              content = {
+                type = "filesystem";
+                format = "vfat";
+                mountpoint = "/boot/efis/${diskMirror}-part2";
+              };
+            };
+            bpool = {
+              size = "4G";
+              content = {
+                type = "zfs";
+                pool = "bpool";
+              };
+            };
+            rpool = {
+              end = "-1M";
+              content = {
+                type = "zfs";
+                pool = "rpool";
+              };
+            };
+            bios = {
+              size = "100%";
+              type = "EF02";
+            };
+          };
+        };
+      };
     };
     zpool = {
       bpool = {
         type = "zpool";
+        mode = "mirror";
         options = {
           ashift = "12";
           autotrim = "on";
