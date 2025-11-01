@@ -83,8 +83,8 @@ in
     boot = {
       partitionScheme = {
         biosBoot = "-part4";
-        efiBoot = "-part1";
-        bootPool = "-part2";
+        efiBoot = "-part2";
+        bootPool = "-part1";
         rootPool = "-part3";
       };
       bootDevices = [
