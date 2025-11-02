@@ -20,6 +20,10 @@ in
   services.prometheus.exporters.shellyplug.targets = [
     "192.168.32.4"
   ];
+  services.udev.extraRules = ''
+    SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="68:05:ca:39:92:d8", ATTR{type}=="1", NAME="lan0"
+    SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="68:05:ca:39:92:d9", ATTR{type}=="1", NAME="lan1"
+  '';
   nixpkgs.config.packageOverrides = pkgs: {
     vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
   };
@@ -53,32 +57,36 @@ in
     ];
   };
 
-  networking = {
-    useDHCP = true;
-    networkmanager.enable = false;
-    hostName = "emily";
-    interfaces.enp8s0 = {
-      ipv4.addresses = [
-        {
-          address = emilyIpAddress;
-          prefixLength = 24;
-        }
-      ];
+  networking =
+    let
+      mainIface = "lan1";
+    in
+    {
+      useDHCP = true;
+      networkmanager.enable = false;
+      hostName = "emily";
+      interfaces.${mainIface} = {
+        ipv4.addresses = [
+          {
+            address = emilyIpAddress;
+            prefixLength = 24;
+          }
+        ];
+      };
+      defaultGateway = {
+        address = gatewayIpAddress;
+        interface = mainIface;
+      };
+      hostId = "0730ae51";
+      firewall = {
+        enable = true;
+        allowPing = true;
+        trustedInterfaces = [
+          mainIface
+          "tailscale0"
+        ];
+      };
     };
-    defaultGateway = {
-      address = gatewayIpAddress;
-      interface = "enp8s0";
-    };
-    hostId = "0730ae51";
-    firewall = {
-      enable = true;
-      allowPing = true;
-      trustedInterfaces = [
-        "enp8s0"
-        "tailscale0"
-      ];
-    };
-  };
   zfs-root = {
     boot = {
       partitionScheme = {
