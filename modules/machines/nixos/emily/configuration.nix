@@ -157,6 +157,12 @@ in
 
   system.autoUpgrade.enable = true;
 
+  services.withings2intervals = {
+    enable = true;
+    configFile = config.age.secrets.withings2intervals.path;
+    authCodeFile = config.age.secrets.withings2intervals_authcode.path;
+  };
+
   services.mover = {
     enable = true;
     cacheArray = hl.mounts.fast;
