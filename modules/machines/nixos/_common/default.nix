@@ -33,6 +33,7 @@
     flake = "/etc/nixos#${config.networking.hostName}";
     flags = [
       "-L"
+      "--accept-flake-config"
     ];
     dates = "Sat *-*-* 02:30:00";
     allowReboot = true;
