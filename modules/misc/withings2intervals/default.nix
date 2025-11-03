@@ -45,20 +45,30 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    systemd.services.withings2intervals = {
-      description = "Sync wellness data from Withings to Intervals.icu";
-      wantedBy = [ "multi-user.target" ];
-      serviceConfig = {
-        LoadCredential = "W2I_AUTHCODE_FILE:${cfg.authCodeFile}";
-        Type = "oneshot";
-        StateDirectory = "withings2intervals";
-        RuntimeDirectory = "withings2intervals";
-        WorkingDirectory = "/var/lib/withings2intervals";
+    systemd = {
+      timers.withings2intervals = {
+        wantedBy = [ "multi-user.target" ];
+        timerConfig = {
+          OnBootSec = "1min";
+          OnUnitActiveSec = "10min";
+          Unit = "withings2intervals.service";
+        };
       };
-      script = ''
-        export W2I_AUTHCODE=$(systemd-creds cat W2I_AUTHCODE_FILE)
-        ${lib.getExe withings2intervals} --config ${cfg.configFile} --auth-code $W2I_AUTHCODE
-      '';
+      services.withings2intervals = {
+        description = "Sync wellness data from Withings to Intervals.icu";
+        wantedBy = [ "multi-user.target" ];
+        serviceConfig = {
+          LoadCredential = "W2I_AUTHCODE_FILE:${cfg.authCodeFile}";
+          Type = "oneshot";
+          StateDirectory = "withings2intervals";
+          RuntimeDirectory = "withings2intervals";
+          WorkingDirectory = "/var/lib/withings2intervals";
+        };
+        script = ''
+          export W2I_AUTHCODE=$(systemd-creds cat W2I_AUTHCODE_FILE)
+          ${lib.getExe withings2intervals} --config ${cfg.configFile} --auth-code $W2I_AUTHCODE
+        '';
+      };
     };
   };
 }
