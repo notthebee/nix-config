@@ -61,7 +61,6 @@
         pyopenssl
       ]
     ))
-    ansible-language-server
     yq
     git-lfs
     pre-commit
@@ -91,7 +90,7 @@
     git-filter-repo
     slack
     google-cloud-sdk
-    pinentry.curses
+    pinentry-curses
     deploy-rs
     nixpkgs-fmt
     nil
