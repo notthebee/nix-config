@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 let
@@ -24,6 +25,12 @@ in
       type = lib.types.str;
       default = "invoice.${hl.baseDomain}";
     };
+    monitoredServices = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [
+        "phpfpm-invoiceplane-${cfg.url}"
+      ];
+    };
     homepage.name = lib.mkOption {
       type = lib.types.str;
       default = "InvoicePlane";
@@ -44,6 +51,11 @@ in
   config = lib.mkIf cfg.enable {
     services.${service} = {
       sites.${cfg.url} = {
+        invoiceTemplates =
+          let
+            notthebee = pkgs.callPackage ./template.nix { };
+          in
+          [ notthebee ];
         settings = {
           DISABLE_SETUP = true;
           SETUP_COMPLETED = true;

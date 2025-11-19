@@ -28,6 +28,15 @@ in
       type = lib.types.str;
       default = "paperless.${homelab.baseDomain}";
     };
+    monitoredServices = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [
+        "paperless-consumer"
+        "paperless-scheduler"
+        "paperless-task-queue"
+        "paperless-web"
+      ];
+    };
     homepage.name = lib.mkOption {
       type = lib.types.str;
       default = "Paperless-ngx";

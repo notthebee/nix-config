@@ -22,6 +22,12 @@ in
       type = lib.types.str;
       default = "cloud.${hl.baseDomain}";
     };
+    monitoredServices = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [
+        "phpfpm-nextcloud"
+      ];
+    };
     homepage.name = lib.mkOption {
       type = lib.types.str;
       default = "Nextcloud";

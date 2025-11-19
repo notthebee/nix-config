@@ -17,6 +17,13 @@ let
   ];
 in
 {
+  services.prometheus.exporters.shellyplug.targets = [
+    "192.168.32.4"
+  ];
+  services.udev.extraRules = ''
+    SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="68:05:ca:39:92:d8", ATTR{type}=="1", NAME="lan0"
+    SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="68:05:ca:39:92:d9", ATTR{type}=="1", NAME="lan1"
+  '';
   nixpkgs.config.packageOverrides = pkgs: {
     vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
   };
@@ -40,6 +47,7 @@ in
       "pcie_aspm=force"
       "consoleblank=60"
       "acpi_enforce_resources=lax"
+      "nvme_core.default_ps_max_latency_us=50000"
     ];
     kernelModules = [
       "coretemp"
@@ -49,41 +57,48 @@ in
     ];
   };
 
-  networking = {
-    useDHCP = true;
-    networkmanager.enable = false;
-    hostName = "emily";
-    interfaces.enp1s0 = {
-      ipv4.addresses = [
-        {
-          address = emilyIpAddress;
-          prefixLength = 24;
-        }
-      ];
+  networking =
+    let
+      mainIface = "lan1";
+    in
+    {
+      useDHCP = true;
+      networkmanager.enable = false;
+      hostName = "emily";
+      interfaces.${mainIface} = {
+        ipv4.addresses = [
+          {
+            address = emilyIpAddress;
+            prefixLength = 24;
+          }
+        ];
+      };
+      defaultGateway = {
+        address = gatewayIpAddress;
+        interface = mainIface;
+      };
+      hostId = "0730ae51";
+      firewall = {
+        enable = true;
+        allowPing = true;
+        trustedInterfaces = [
+          mainIface
+          "tailscale0"
+        ];
+      };
     };
-    defaultGateway = {
-      address = gatewayIpAddress;
-      interface = "enp1s0";
-    };
-    hostId = "0730ae51";
-    firewall = {
-      enable = true;
-      allowPing = true;
-      trustedInterfaces = [
-        "enp1s0"
-        "tailscale0"
-      ];
-    };
-  };
   zfs-root = {
     boot = {
       partitionScheme = {
         biosBoot = "-part4";
-        efiBoot = "-part1";
-        bootPool = "-part2";
+        efiBoot = "-part2";
+        bootPool = "-part1";
         rootPool = "-part3";
       };
-      bootDevices = [ "nvme-WDC_PC_SN530_SDBPMPZ-256G-1101_221368801205" ];
+      bootDevices = [
+        "ata-Samsung_SSD_870_EVO_250GB_S6PENL0T902873K"
+        "ata-Samsung_SSD_870_EVO_250GB_S6PENL0T905657B"
+      ];
       immutable = true;
       availableKernelModules = [
         "uhci_hcd"
@@ -141,6 +156,12 @@ in
   virtualisation.docker.storageDriver = "overlay2";
 
   system.autoUpgrade.enable = true;
+
+  services.withings2intervals = {
+    enable = true;
+    configFile = config.age.secrets.withings2intervals.path;
+    authCodeFile = config.age.secrets.withings2intervals_authcode.path;
+  };
 
   services.mover = {
     enable = true;

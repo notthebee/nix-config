@@ -66,6 +66,7 @@ in
     };
   };
   imports = [
+    ./backup
     ./services
     ./samba
     ./networks

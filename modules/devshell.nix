@@ -22,6 +22,7 @@
       packages.default = pkgs.mkShell {
         packages = [
           pkgs.just
+          pkgs.nh
           pkgs.nixos-rebuild-ng
         ];
       };

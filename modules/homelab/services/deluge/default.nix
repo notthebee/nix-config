@@ -20,6 +20,14 @@ in
       type = lib.types.str;
       default = "deluge.${hl.baseDomain}";
     };
+    monitoredServices = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [
+        "delugeweb"
+        "deluged-proxy"
+        "deluged"
+      ];
+    };
     homepage.name = lib.mkOption {
       type = lib.types.str;
       default = "Deluge";

@@ -1,0 +1,39 @@
+diff --git a/src/main/kotlin/click/dobel/shelly/exporter/server/BaseRedirect.kt b/src/main/kotlin/click/dobel/shelly/exporter/server/BaseRedirect.kt
+index bb2feef..9cff6aa 100644
+--- a/src/main/kotlin/click/dobel/shelly/exporter/server/BaseRedirect.kt
++++ b/src/main/kotlin/click/dobel/shelly/exporter/server/BaseRedirect.kt
+@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController
+ class BaseRedirect {
+   companion object {
+     internal const val PATH_ROOT = "/"
+-    internal const val PATH_PROMETHEUS = "/prometheus"
++    internal const val PATH_PROMETHEUS = "/metrics"
+   }
+ 
+   @GetMapping(PATH_ROOT)
+diff --git a/src/main/resources/application.yaml b/src/main/resources/application.yaml
+index 2b73df5..37ef4e8 100644
+--- a/src/main/resources/application.yaml
++++ b/src/main/resources/application.yaml
+@@ -26,7 +26,7 @@ management:
+     web:
+       base-path: /
+       path-mapping:
+-        prometheus: prometheus
++        prometheus: metrics
+       exposure:
+         include:
+           - prometheus
+diff --git a/src/test/kotlin/click/dobel/shelly/exporter/test/ValueFilteringPrometheusRegistryIntegrationTest.kt b/src/test/kotlin/click/dobel/shelly/exporter/test/ValueFilteringPrometheusRegistryIntegrationTest.kt
+index f05640b..12acaa8 100644
+--- a/src/test/kotlin/click/dobel/shelly/exporter/test/ValueFilteringPrometheusRegistryIntegrationTest.kt
++++ b/src/test/kotlin/click/dobel/shelly/exporter/test/ValueFilteringPrometheusRegistryIntegrationTest.kt
+@@ -34,7 +34,7 @@ class ValueFilteringPrometheusRegistryIntegrationTest(
+ 
+   val restTemplate = RestTemplate()
+   fun getMetrics() = restTemplate
+-    .getForObject<String?>("http://localhost:$port/prometheus")
++    .getForObject<String?>("http://localhost:$port/metrics")
+     ?.trim()
+     ?.lines()
+     ?.filterNot { it.startsWith("#") }

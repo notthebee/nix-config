@@ -14,6 +14,9 @@ let
   ];
 in
 {
+  services.prometheus.exporters.shellyplug.targets = [
+    "192.168.178.71"
+  ];
   boot.kernelModules = [ "nct6775" ];
   hardware.cpu.intel.updateMicrocode = true;
   hardware.enableRedistributableFirmware = true;

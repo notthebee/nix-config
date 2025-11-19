@@ -26,6 +26,8 @@
     minifluxCloudflared.file = "${inputs.secrets}/minifluxCloudflared.age";
     duckDNSDomain.file = "${inputs.secrets}/duckDNSDomain.age";
     duckDNSToken.file = "${inputs.secrets}/duckDNSToken.age";
+    withings2intervals.file = "${inputs.secrets}/withings2intervals.age";
+    withings2intervals_authcode.file = "${inputs.secrets}/withings2intervals_authcode.age";
     resticPassword = {
       file = "${inputs.secrets}/resticPassword.age";
       owner = "restic";

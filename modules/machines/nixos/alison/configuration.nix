@@ -65,7 +65,7 @@
       grafana.enable = true;
       prometheus = {
         enable = true;
-        scrapeTargets = lib.lists.forEach [ "smartctl" "node" "systemd" ] (exporter: {
+        scrapeTargets = lib.lists.forEach [ "smartctl" "node" "systemd" "shellyplug" ] (exporter: {
           job_name = exporter;
           static_configs = [
             {
