@@ -13,7 +13,7 @@
               content = {
                 type = "filesystem";
                 format = "vfat";
-                mountpoint = "/boot/efi";
+                mountpoint = "/boot/efis/ata-Samsung_SSD_860_EVO_500GB_S3Z2NB0KC53819J-part2";
               };
             };
             bpool = {
