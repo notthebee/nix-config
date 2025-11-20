@@ -112,10 +112,10 @@
     local.lan = {
       id = 1;
       cidr.v4 = "192.168.2.1";
-      interface = "lan1";
+      interface = "enp1s0";
       trusted = true;
       reservations = {
-        emily = { MACAddress = "68:05:ca:39:92:d9"; Address = "192.168.2.199"; };
+        emily = { Address = "192.168.2.199"; };
       };
     };
   };

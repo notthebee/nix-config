@@ -8,10 +8,6 @@ let
   hl = config.homelab;
 in
 {
-  services.udev.extraRules = ''
-    SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="68:05:ca:39:92:d8", ATTR{type}=="1", NAME="lan0"
-    SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="68:05:ca:39:92:d9", ATTR{type}=="1", NAME="lan1"
-  '';
   nixpkgs.config.packageOverrides = pkgs: {
     vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
   };
@@ -47,7 +43,7 @@ in
 
   networking =
     let
-      mainIface = "lan1";
+      mainIface = "enp1s0";
     in
     {
       useDHCP = false;
