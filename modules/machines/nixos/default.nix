@@ -12,7 +12,7 @@ let
       inherit (self) inputs;
     };
     home-manager.users.notthebee.imports = [
-      self.inputs.nix-index-database.homeModules.nix-index
+      # self.inputs.nix-index-database.homeModules.nix-index  # Temporarily disabled
       ../../users/notthebee/dots.nix
     ]
     ++ extraImports;
