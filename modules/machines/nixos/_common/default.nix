@@ -43,24 +43,24 @@
     ./filesystems
     ./nix
     ./monitoring
-    "${inputs.secrets}/networks.nix"
   ];
 
   time.timeZone = "Europe/Berlin";
 
+  # Plaintext passwords
   users.users = {
     notthebee = {
-      hashedPasswordFile = config.age.secrets.hashedUserPassword.path;
+      initialPassword = "Felix";
     };
     root = {
-      initialHashedPassword = config.age.secrets.hashedUserPassword.path;
+      initialPassword = "Felix!50";
     };
   };
 
   services.openssh = {
     enable = lib.mkDefault true;
     settings = {
-      PasswordAuthentication = lib.mkDefault false;
+      PasswordAuthentication = true;
       LoginGraceTime = 0;
       PermitRootLogin = "no";
     };
@@ -88,28 +88,13 @@
     defaultEditor = true;
   };
 
-  age = {
-    identityPaths = [
-      "/persist/ssh/ssh_host_ed25519_key"
-    ];
-    secrets = {
-      hashedUserPassword.file = "${inputs.secrets}/hashedUserPassword.age";
-      smtpPassword = {
-        file = "${inputs.secrets}/smtpPassword.age";
-        owner = "notthebee";
-        group = "notthebee";
-        mode = "0440";
-      };
-    };
-
-  };
   email = {
     enable = true;
     fromAddress = "moe@notthebe.ee";
     toAddress = "server_announcements@mailbox.org";
     smtpServer = "email-smtp.eu-west-1.amazonaws.com";
     smtpUsername = "AKIAYYXVLL34J7LSXFZF";
-    smtpPasswordPath = config.age.secrets.smtpPassword.path;
+    smtpPasswordPath = "/persist/secrets/smtpPassword";
   };
 
   security = {
@@ -121,6 +106,19 @@
   };
 
   homelab.motd.enable = true;
+
+  # Network configuration
+  homelab.networks = {
+    local.lan = {
+      id = 1;
+      cidr.v4 = "192.168.2.1";
+      interface = "lan1";
+      trusted = true;
+      reservations = {
+        emily = { MACAddress = "68:05:ca:39:92:d9"; Address = "192.168.2.199"; };
+      };
+    };
+  };
 
   environment.systemPackages = with pkgs; [
     wget
@@ -134,7 +132,6 @@
     nmap
     jq
     ripgrep
-    #inputs.agenix.packages."${system}".default
     lm_sensors
   ];
 

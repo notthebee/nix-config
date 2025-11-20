@@ -5,11 +5,6 @@
   ...
 }:
 {
-  age.secrets.gitIncludes = {
-    file = "${inputs.secrets}/gitIncludes.age";
-    path = "$HOME/.config/git/includes";
-  };
-
   programs.git = {
     enable = true;
     userName = "Wolfgang";
@@ -22,7 +17,7 @@
     };
     includes = [
       {
-        path = "~" + (lib.removePrefix "$HOME" config.age.secrets.gitIncludes.path);
+        path = "~/.config/git/includes";
         condition = "gitdir:~/Workspace/Projects/";
       }
     ];

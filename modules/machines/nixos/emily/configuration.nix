@@ -6,20 +6,8 @@
 }:
 let
   hl = config.homelab;
-  lan = hl.networks.local.lan;
-  emilyIpAddress = lan.reservations.emily.Address;
-  gatewayIpAddress = lan.cidr.v4;
-  hardDrives = [
-    "/dev/disk/by-label/Data1"
-    "/dev/disk/by-label/Data2"
-    "/dev/disk/by-label/Data3"
-    "/dev/disk/by-label/Parity1"
-  ];
 in
 {
-  services.prometheus.exporters.shellyplug.targets = [
-    "192.168.32.4"
-  ];
   services.udev.extraRules = ''
     SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="68:05:ca:39:92:d8", ATTR{type}=="1", NAME="lan0"
     SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="68:05:ca:39:92:d9", ATTR{type}=="1", NAME="lan1"
@@ -36,8 +24,8 @@ in
         intel-media-driver
         intel-vaapi-driver
         vaapiVdpau
-        intel-compute-runtime # OpenCL filter support (hardware tonemapping and subtitle burn-in)
-        vpl-gpu-rt # QSV on 11th gen or newer
+        intel-compute-runtime
+        vpl-gpu-rt
       ];
     };
   };
@@ -62,21 +50,22 @@ in
       mainIface = "lan1";
     in
     {
-      useDHCP = true;
+      useDHCP = false;
       networkmanager.enable = false;
       hostName = "emily";
       interfaces.${mainIface} = {
         ipv4.addresses = [
           {
-            address = emilyIpAddress;
+            address = "192.168.2.199";
             prefixLength = 24;
           }
         ];
       };
       defaultGateway = {
-        address = gatewayIpAddress;
+        address = "192.168.2.1";
         interface = mainIface;
       };
+      nameservers = [ "192.168.2.1" "8.8.8.8" ];
       hostId = "0730ae51";
       firewall = {
         enable = true;
@@ -87,6 +76,7 @@ in
         ];
       };
     };
+
   zfs-root = {
     boot = {
       partitionScheme = {
@@ -96,8 +86,7 @@ in
         rootPool = "-part3";
       };
       bootDevices = [
-        "ata-Samsung_SSD_870_EVO_250GB_S6PENL0T902873K"
-        "ata-Samsung_SSD_870_EVO_250GB_S6PENL0T905657B"
+        "ata-Samsung_SSD_860_EVO_500GB_S3Z2NB0KC53819J"
       ];
       immutable = true;
       availableKernelModules = [
@@ -110,78 +99,16 @@ in
       removableEfi = true;
     };
   };
+
   imports = [
     ../../../misc/tailscale
     ../../../misc/zfs-root
-    ../../../misc/agenix
-    ./filesystems
-    ./backup
     ./homelab
-    ./secrets
   ];
-
-  services.duckdns = {
-    enable = true;
-    domainsFile = config.age.secrets.duckDNSDomain.path;
-    tokenFile = config.age.secrets.duckDNSToken.path;
-  };
-
-  systemd.services.hd-idle = {
-    description = "External HD spin down daemon";
-    wantedBy = [ "multi-user.target" ];
-    serviceConfig = {
-      Type = "simple";
-      ExecStart =
-        let
-          idleTime = toString 900;
-          hardDriveParameter = lib.strings.concatMapStringsSep " " (x: "-a ${x} -i ${idleTime}") hardDrives;
-        in
-        "${pkgs.hd-idle}/bin/hd-idle -i 0 ${hardDriveParameter}";
-    };
-  };
-
-  services.hddfancontrol = {
-    enable = true;
-    settings = {
-      harddrives = {
-        disks = hardDrives;
-        pwmPaths = [ "/sys/class/hwmon/hwmon2/device/pwm2:50:50" ];
-        extraArgs = [
-          "-i 30sec"
-        ];
-      };
-    };
-  };
 
   virtualisation.docker.storageDriver = "overlay2";
 
   system.autoUpgrade.enable = true;
-
-  services.withings2intervals = {
-    enable = true;
-    configFile = config.age.secrets.withings2intervals.path;
-    authCodeFile = config.age.secrets.withings2intervals_authcode.path;
-  };
-
-  services.mover = {
-    enable = true;
-    cacheArray = hl.mounts.fast;
-    backingArray = hl.mounts.slow;
-    user = hl.user;
-    group = hl.group;
-    percentageFree = 60;
-    excludedPaths = [
-      "Media/Music"
-      "Media/Photos"
-      "YoutubeCurrent"
-      "Downloads.tmp"
-      "Media/Kiwix"
-      "Documents"
-      "TimeMachine"
-      ".DS_Store"
-      ".cache"
-    ];
-  };
 
   services.autoaspm.enable = true;
   powerManagement.powertop.enable = true;
@@ -190,8 +117,6 @@ in
     pciutils
     glances
     hdparm
-    hd-idle
-    hddtemp
     smartmontools
     cpufrequtils
     intel-gpu-tools
@@ -200,11 +125,11 @@ in
 
   tg-notify = {
     enable = true;
-    credentialsFile = config.age.secrets.tgNotifyCredentials.path;
+    credentialsFile = "/persist/secrets/tgNotifyCredentials";
   };
 
   services.adiosBot = {
     enable = true;
-    botTokenFile = config.age.secrets.adiosBotToken.path;
+    botTokenFile = "/persist/secrets/adiosBotToken";
   };
 }

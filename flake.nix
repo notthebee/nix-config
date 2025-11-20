@@ -41,14 +41,6 @@
       url = "github:notthebee/AutoASPM";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    agenix = {
-      url = "github:ryantm/agenix?shallow=true";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    nix-darwin = {
-      url = "github:LnL7/nix-darwin/master?shallow=true";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
     adios-bot = {
       url = "github:notthebee/adiosbot?shallow=true";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -56,14 +48,6 @@
     nix-index-database = {
       url = "github:Mic92/nix-index-database?shallow=true";
       inputs.nixpkgs.follows = "nixpkgs";
-    };
-    secrets = {
-      url = "git+ssh://git@github.com/notthebee/nix-private.git";
-      flake = false;
-    };
-    jovian = {
-      url = "github:Jovian-Experiments/Jovian-NixOS?shallow=true";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     alga = {
       url = "github:Tenzer/alga?shallow=true";
@@ -78,11 +62,9 @@
       {
         systems = [
           "x86_64-linux"
-          "aarch64-darwin"
         ];
         imports = [
           ./modules/machines/nixos
-          ./modules/machines/darwin
           ./modules/devshell.nix
         ];
         _module.args.rootPath = ./.;

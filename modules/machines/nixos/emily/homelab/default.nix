@@ -6,56 +6,42 @@
   ...
 }:
 let
-  wg = config.homelab.networks.external.spencer-wireguard;
-  wgBase = lib.strings.removeSuffix ".1" wg.gateway;
   hl = config.homelab;
 in
 {
-  services.fail2ban-cloudflare = {
-    enable = true;
-    apiKeyFile = config.age.secrets.cloudflareFirewallApiKey.path;
-    zoneId = "5a125e72bca5869bfb929db157d89d96";
-
-  };
   homelab = {
     enable = true;
     baseDomain = "goose.party";
-    cloudflare.dnsCredentialsFile = config.age.secrets.cloudflareDnsApiCredentials.path;
+    cloudflare.dnsCredentialsFile = "/persist/secrets/cloudflareDnsApiCredentials";
     timeZone = "Europe/Berlin";
     mounts = {
       config = "/persist/opt/services";
-      slow = "/mnt/mergerfs_slow";
-      fast = "/mnt/cache";
-      merged = "/mnt/user";
+      slow = "/mnt/data";
+      fast = "/mnt/data";
+      merged = "/mnt/data";
     };
     samba = {
       enable = true;
-      passwordFile = config.age.secrets.sambaPassword.path;
+      passwordFile = "/persist/secrets/sambaPassword";
       shares = {
         Backups = {
           path = "${hl.mounts.merged}/Backups";
         };
         Documents = {
-          path = "${hl.mounts.fast}/Documents";
+          path = "${hl.mounts.merged}/Documents";
         };
         Media = {
           path = "${hl.mounts.merged}/Media";
         };
         Music = {
-          path = "${hl.mounts.fast}/Media/Music";
+          path = "${hl.mounts.merged}/Media/Music";
         };
         Misc = {
           path = "${hl.mounts.merged}/Misc";
         };
         TimeMachine = {
-          path = "${hl.mounts.fast}/TimeMachine";
+          path = "${hl.mounts.merged}/TimeMachine";
           "fruit:time machine" = "yes";
-        };
-        YoutubeArchive = {
-          path = "${hl.mounts.merged}/YoutubeArchive";
-        };
-        YoutubeCurrent = {
-          path = "${hl.mounts.fast}/YoutubeCurrent";
         };
       };
     };
@@ -63,72 +49,41 @@ in
       enable = true;
       slskd = {
         enable = true;
-        environmentFile = config.age.secrets.slskdEnvironmentFile.path;
+        environmentFile = "/persist/secrets/slskdEnvironmentFile";
       };
       backup = {
         enable = true;
-        passwordFile = config.age.secrets.resticPassword.path;
-        s3.enable = true;
-        s3.url = "https://s3.eu-central-003.backblazeb2.com/notthebee-ojfca-backups";
-        s3.environmentFile = config.age.secrets.resticBackblazeEnv.path;
+        passwordFile = "/persist/secrets/resticPassword";
+        s3.enable = false;
         local.enable = true;
       };
       keycloak = {
         enable = true;
-        dbPasswordFile = config.age.secrets.keycloakDbPasswordFile.path;
+        dbPasswordFile = "/persist/secrets/keycloakDbPasswordFile";
         cloudflared = {
           tunnelId = "06b27fd2-4cb9-42e5-9d79-f4c4c44ca0c6";
-          credentialsFile = config.age.secrets.keycloakCloudflared.path;
+          credentialsFile = "/persist/secrets/keycloakCloudflared";
         };
       };
       radicale = {
         enable = true;
-        passwordFile = config.age.secrets.radicaleHtpasswd.path;
+        passwordFile = "/persist/secrets/radicaleHtpasswd";
       };
       immich = {
         enable = true;
-        mediaDir = "${hl.mounts.fast}/Media/Photos";
+        mediaDir = "${hl.mounts.merged}/Media/Photos";
       };
       invoiceplane = {
         enable = true;
       };
       homepage = {
         enable = true;
-        misc = [
-          {
-            PiKVM =
-              let
-                ip = config.homelab.networks.local.lan.reservations.pikvm.Address;
-              in
-              {
-                href = "https://${ip}";
-                siteMonitor = "https://${ip}";
-                description = "Open-source KVM solution";
-                icon = "pikvm.png";
-              };
-          }
-          {
-            FritzBox = {
-              href = "http://192.168.178.1";
-              siteMonitor = "http://192.168.178.1";
-              description = "Cable Modem WebUI";
-              icon = "avm-fritzbox.png";
-            };
-          }
-          {
-            "Immich (Parents)" = {
-              href = "https://photos.aria.goose.party";
-              description = "Self-hosted photo and video management solution";
-              icon = "immich.svg";
-              siteMonitor = "";
-            };
-          }
-        ];
+        misc = [];
       };
       jellyfin.enable = true;
       paperless = {
         enable = true;
-        passwordFile = config.age.secrets.paperlessPassword.path;
+        passwordFile = "/persist/secrets/paperlessPassword";
       };
       sabnzbd.enable = true;
       sonarr.enable = true;
@@ -143,51 +98,45 @@ in
         enable = true;
         admin = {
           username = "notthebee";
-          passwordFile = config.age.secrets.nextcloudAdminPassword.path;
+          passwordFile = "/persist/secrets/nextcloudAdminPassword";
         };
         cloudflared = {
           tunnelId = "cc246d42-a03d-41d4-97e2-48aa15d47297";
-          credentialsFile = config.age.secrets.nextcloudCloudflared.path;
+          credentialsFile = "/persist/secrets/nextcloudCloudflared";
         };
       };
       vaultwarden = {
         enable = true;
         cloudflared = {
           tunnelId = "3bcbbc74-3667-4504-9258-f272ce006a18";
-          credentialsFile = config.age.secrets.vaultwardenCloudflared.path;
+          credentialsFile = "/persist/secrets/vaultwardenCloudflared";
         };
       };
       microbin = {
         enable = true;
         cloudflared = {
           tunnelId = "216d72b6-6b2b-412f-90bc-1a44c1264871";
-          credentialsFile = config.age.secrets.microbinCloudflared.path;
+          credentialsFile = "/persist/secrets/microbinCloudflared";
         };
       };
       miniflux = {
         enable = true;
         cloudflared = {
           tunnelId = "9b2cac61-a439-4b1f-a979-f8519ea00e58";
-          credentialsFile = config.age.secrets.minifluxCloudflared.path;
+          credentialsFile = "/persist/secrets/minifluxCloudflared";
         };
-        adminCredentialsFile = config.age.secrets.minifluxAdminPassword.path;
+        adminCredentialsFile = "/persist/secrets/minifluxAdminPassword";
       };
       navidrome = {
         enable = true;
-        environmentFile = config.age.secrets.navidromeEnv.path;
+        environmentFile = "/persist/secrets/navidromeEnv";
         cloudflared = {
           tunnelId = "dc669277-8528-4a25-bacb-b844a262de17";
-          credentialsFile = config.age.secrets.navidromeCloudflared.path;
+          credentialsFile = "/persist/secrets/navidromeCloudflared";
         };
       };
       audiobookshelf.enable = true;
       deluge.enable = true;
-      wireguard-netns = {
-        enable = true;
-        configFile = config.age.secrets.wireguardCredentials.path;
-        privateIP = "${wgBase}.2";
-        dnsIP = wg.gateway;
-      };
     };
   };
 }
