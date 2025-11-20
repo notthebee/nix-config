@@ -7,9 +7,15 @@
         content = {
           type = "gpt";
           partitions = {
+            bios = {
+              size = "1M";
+              type = "EF02";
+              priority = 1;
+            };
             efi = {
               size = "1G";
               type = "EF00";
+              priority = 2;
               content = {
                 type = "filesystem";
                 format = "vfat";
@@ -18,21 +24,19 @@
             };
             bpool = {
               size = "4G";
+              priority = 3;
               content = {
                 type = "zfs";
                 pool = "bpool";
               };
             };
             rpool = {
-              end = "-1M";
+              size = "100%";
+              priority = 4;
               content = {
                 type = "zfs";
                 pool = "rpool";
               };
-            };
-            bios = {
-              size = "100%";
-              type = "EF02";
             };
           };
         };

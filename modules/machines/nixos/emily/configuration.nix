@@ -76,10 +76,10 @@ in
   zfs-root = {
     boot = {
       partitionScheme = {
-        biosBoot = "-part4";
+        biosBoot = "-part1";
         efiBoot = "-part2";
-        bootPool = "-part1";
-        rootPool = "-part3";
+        bootPool = "-part3";
+        rootPool = "-part4";
       };
       bootDevices = [
         "ata-Samsung_SSD_860_EVO_500GB_S3Z2NB0KC53819J"
