@@ -128,11 +128,8 @@ in
           cfg.musicDir
         ];
         serviceConfig.ReadOnlyPaths = lib.mkForce [ ];
-        serviceConfig.NetworkNamespacePath = lib.attrsets.optionalAttrs hl.services.wireguard-netns.enable [
-          "/var/run/netns/${ns}"
-        ];
-      }
-      // lib.attrsets.optionalAttrs hl.services.wireguard-netns.enable {
+      } // lib.optionalAttrs hl.services.wireguard-netns.enable {
+        serviceConfig.NetworkNamespacePath = "/var/run/netns/${ns}";
         bindsTo = [ "netns@${ns}.service" ];
         environment = {
           DOTNET_USE_POLLING_FILE_WATCHER = "true";
