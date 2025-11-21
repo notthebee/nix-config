@@ -13,6 +13,7 @@ let
     };
     home-manager.users.notthebee.imports = [
       self.inputs.agenix.homeManagerModules.default
+      self.inputs.nixvim.homeModules.nixvim
       self.inputs.nix-index-database.homeModules.nix-index
       ../../users/notthebee/dots.nix
       ../../users/notthebee/age.nix
@@ -39,12 +40,12 @@ in
 
           modules = [
             self.inputs.agenix.darwinModules.default
-            self.inputs.home-manager-unstable.darwinModules.home-manager
+            self.inputs.home-manager.darwinModules.home-manager
             (./. + "/_common/default.nix")
             (./. + "/${name}/configuration.nix")
-            (self.inputs.nixpkgs-unstable.lib.attrsets.recursiveUpdate (homeManagerCfg true) {
+            (self.inputs.nixpkgs.lib.attrsets.recursiveUpdate (homeManagerCfg true) {
               home-manager.users.notthebee.home.homeDirectory =
-                self.inputs.nixpkgs-unstable.lib.mkForce "/Users/notthebee";
+                self.inputs.nixpkgs.lib.mkForce "/Users/notthebee";
             })
           ];
         }
