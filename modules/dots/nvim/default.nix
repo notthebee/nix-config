@@ -1,11 +1,13 @@
 {
   inputs,
+  config,
   pkgs,
   ...
 }:
+let
+  coc = import ./coc.nix;
+in
 {
-  imports = [ inputs.nixvim.homeModules.nixvim ];
-
   home.packages = with pkgs; [
     figlet
     nodejs
@@ -17,7 +19,17 @@
     viAlias = true;
     vimAlias = true;
     defaultEditor = true;
-    enable = true;
+  };
+
+  xdg.configFile = {
+    "nvim/coc-settings.json" = {
+      source = pkgs.writeText "coc-settings.json" (
+        builtins.toJSON (coc {
+          homeDir = config.xdg.configHome;
+          pkgs = pkgs;
+        })
+      );
+    };
   };
 
   programs.nixvim = {
@@ -30,10 +42,11 @@
       };
     };
     plugins = {
+      notify.enable = true;
       web-devicons = {
         enable = true;
       };
-      dropbar.enable = true;
+      barbecue.enable = true;
       project-nvim = {
         enable = true;
       };
@@ -49,6 +62,10 @@
       };
       trim = {
         enable = true;
+        settings = {
+          ft_blocklist = [ "coc-explorer" ];
+          highlight = false;
+        };
       };
       lualine = {
         enable = true;
@@ -88,6 +105,10 @@
       };
     };
     extraPlugins = with pkgs.vimPlugins; [
+      llm-nvim
+      ansible-vim
+      coc-nvim
+      coc-markdownlint
       vim-suda
     ];
     opts = {
@@ -126,6 +147,7 @@
       mouse = "a";
       suffixesadd = ".js,.es,.jsx,.json,.css,.less,.sass,.styl,.php,.py,.md";
     };
+
     autoCmd = [
       {
         event = [
@@ -202,6 +224,18 @@
       };
     };
     globals = {
+      coc_filetype_map = {
+        "yaml.ansible" = "ansible";
+      };
+      coc_global_extensions = [
+        "coc-explorer"
+        "@yaegassy/coc-ansible"
+        "@yaegassy/coc-nginx"
+        "@yaegassy/coc-intelephense"
+        "@yaegassy/coc-phpstan"
+        "coc-nil"
+        "coc-pyright"
+      ];
       suda_smart_edit = 1;
       "suda#nopass" = 1;
     };
@@ -209,8 +243,14 @@
       vim.api.nvim_set_hl(0, "MatchParen", { bg="#4c566a", fg="#88c0d0" })
     '';
     extraConfigVim = ''
+      inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
       set undofile
       set clipboard+=unnamedplus
+      function CheckForExplorer()
+      if CocAction('runCommand', 'explorer.getNodeInfo', 'closest') isnot# v:null
+        CocCommand explorer --toggle
+          endif
+          endfunction
     '';
     keymaps = [
       {
