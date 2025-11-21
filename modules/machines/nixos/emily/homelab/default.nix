@@ -53,7 +53,18 @@ in
       bazarr.enable = false;
       prowlarr.enable = false;
       jellyseerr.enable = false;
-      nextcloud.enable = false;
+nextcloud = {
+  enable = true;
+  admin = {
+    username = "Felix";
+    passwordFile = "/persist/secrets/nextcloudAdminPassword";
+  };
+  cloudflared = {
+    tunnelId = "6fa5345a-8a6c-438f-9945-0e56b878d9cd";
+    credentialsFile = "/persist/secrets/nextcloudCloudflared";
+  };
+};
+
       vaultwarden.enable = false;
       microbin.enable = false;
       miniflux.enable = false;
