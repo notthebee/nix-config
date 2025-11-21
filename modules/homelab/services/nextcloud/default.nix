@@ -44,8 +44,14 @@ in
       type = lib.types.str;
       default = "Services";
     };
+    cloudflared.enable = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Enable Cloudflare tunnel for Nextcloud";
+    };
     cloudflared.credentialsFile = lib.mkOption {
       type = lib.types.str;
+      default = "";
       example = lib.literalExpression ''
         pkgs.writeText "cloudflare-credentials.json" '''
         {"AccountTag":"secret"."TunnelSecret":"secret","TunnelID":"secret"}
@@ -54,6 +60,7 @@ in
     };
     cloudflared.tunnelId = lib.mkOption {
       type = lib.types.str;
+      default = "";
       example = "00000000-0000-0000-0000-000000000000";
     };
     admin.username = lib.mkOption {
@@ -76,7 +83,7 @@ in
         port = 8009;
       }
     ];
-    services.cloudflared = {
+    services.cloudflared = lib.mkIf cfg.cloudflared.enable {
       enable = true;
       tunnels.${cfg.cloudflared.tunnelId} = {
         credentialsFile = cfg.cloudflared.credentialsFile;
