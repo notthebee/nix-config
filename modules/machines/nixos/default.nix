@@ -12,10 +12,8 @@ let
       inherit (self) inputs;
     };
     home-manager.users.notthebee.imports = [
-      self.inputs.agenix.homeManagerModules.default
-      self.inputs.nix-index-database.homeModules.nix-index
+      # self.inputs.nix-index-database.homeModules.nix-index  # Temporarily disabled
       ../../users/notthebee/dots.nix
-      ../../users/notthebee/age.nix
     ]
     ++ extraImports;
     home-manager.backupFileExtension = "bak";
@@ -51,7 +49,6 @@ in
               ../../misc/tg-notify
               ../../misc/mover
               ../../misc/withings2intervals
-              self.inputs.agenix.nixosModules.default
               self.inputs.adios-bot.nixosModules.default
               self.inputs.autoaspm.nixosModules.default
               self.inputs."home-manager${

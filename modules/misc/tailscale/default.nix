@@ -12,7 +12,7 @@
   services.tailscale = {
     package = inputs.nixpkgs-unstable.legacyPackages.${pkgs.system}.tailscale;
     enable = true;
-    authKeyFile = config.age.secrets.tailscaleAuthKey.path;
+    authKeyFile = "/persist/secrets/tailscaleAuthKey";
     extraUpFlags =
       let
         advertisedRoute =

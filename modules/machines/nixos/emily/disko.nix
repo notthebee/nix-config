@@ -1,3 +1,4 @@
+{
   disko.devices = {
     disk = {
       main = {
@@ -6,9 +7,15 @@
         content = {
           type = "gpt";
           partitions = {
+            bios = {
+              size = "1M";
+              type = "EF02";
+              priority = 1;
+            };
             efi = {
               size = "1G";
               type = "EF00";
+              priority = 2;
               content = {
                 type = "filesystem";
                 format = "vfat";
@@ -17,57 +24,19 @@
             };
             bpool = {
               size = "4G";
+              priority = 3;
               content = {
                 type = "zfs";
                 pool = "bpool";
               };
             };
             rpool = {
-              end = "-1M";
+              size = "100%";
+              priority = 4;
               content = {
                 type = "zfs";
                 pool = "rpool";
               };
-            };
-            bios = {
-              size = "100%";
-              type = "EF02";
-            };
-          };
-        };
-      };
-      mirror = {
-        type = "disk";
-        device = "/dev/disk/by-id/${diskMirror}";
-        content = {
-          type = "gpt";
-          partitions = {
-            efi = {
-              size = "1G";
-              type = "EF00";
-              content = {
-                type = "filesystem";
-                format = "vfat";
-                mountpoint = "/boot/efis/${diskMirror}-part2";
-              };
-            };
-            bpool = {
-              size = "4G";
-              content = {
-                type = "zfs";
-                pool = "bpool";
-              };
-            };
-            rpool = {
-              end = "-1M";
-              content = {
-                type = "zfs";
-                pool = "rpool";
-              };
-            };
-            bios = {
-              size = "100%";
-              type = "EF02";
             };
           };
         };
@@ -76,7 +45,6 @@
     zpool = {
       bpool = {
         type = "zpool";
-        mode = "mirror";
         options = {
           ashift = "12";
           autotrim = "on";
@@ -167,6 +135,12 @@
             options.mountpoint = "legacy";
             mountpoint = "/nix";
           };
+          # Data storage on the single SSD
+          "nixos/data" = {
+            type = "zfs_fs";
+            options.mountpoint = "legacy";
+            mountpoint = "/mnt/data";
+          };
           docker = {
             type = "zfs_volume";
             size = "50G";
@@ -180,3 +154,4 @@
       };
     };
   };
+}
