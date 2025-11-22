@@ -11,9 +11,9 @@ let
     home-manager.extraSpecialArgs = {
       inherit (self) inputs;
     };
-    home-manager.users.notthebee.imports = [
+    home-manager.users.bricklayer.imports = [
       # self.inputs.nix-index-database.homeModules.nix-index  # Temporarily disabled
-      ../../users/notthebee/dots.nix
+      ../../users/bricklayer/dots.nix
     ]
     ++ extraImports;
     home-manager.backupFileExtension = "bak";
@@ -56,7 +56,7 @@ in
               }".nixosModules.home-manager
               (./. + "/_common/default.nix")
               (./. + "/${name}/configuration.nix")
-              ../../users/notthebee
+              ../../users/bricklayer
               (homeManagerCfg false [ ])
             ];
           }

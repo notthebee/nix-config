@@ -1,8 +1,8 @@
 { ... }:
 let
   home = {
-    username = "notthebee";
-    homeDirectory = "/home/notthebee";
+    username = "bricklayer";
+    homeDirectory = "/home/bricklayer";
     stateVersion = "23.11";
   };
 in
