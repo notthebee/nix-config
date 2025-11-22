@@ -49,7 +49,7 @@
 
   # Plaintext passwords
   users.users = {
-    notthebee = {
+    bricklayer = {
       initialPassword = "Felix";
     };
     root = {
