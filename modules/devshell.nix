@@ -5,7 +5,13 @@
   ];
   imports = [ inputs.treefmt-nix.flakeModule ];
   perSystem =
-    { pkgs, ... }:
+    { pkgs, system, ... }:
+    let
+      pkgs-unstable = import inputs.nixpkgs-unstable {
+        inherit system;
+        config.allowUnfree = true;
+      };
+    in
     {
       treefmt = {
         projectRootFile = "flake.nix";
@@ -24,6 +30,7 @@
           pkgs.just
           pkgs.nh
           pkgs.nixos-rebuild-ng
+          pkgs-unstable.claude-code
         ];
       };
     };

@@ -3,11 +3,11 @@
   ...
 }:
 {
-  nix.settings.trusted-users = [ "notthebee" ];
+  nix.settings.trusted-users = [ "bricklayer" ];
 
   users = {
     users = {
-      notthebee = {
+      bricklayer = {
         shell = pkgs.zsh;
         uid = 1000;
         isNormalUser = true;
@@ -18,14 +18,14 @@
           "podman"
           "input"
         ];
-        group = "notthebee";
+        group = "bricklayer";
         openssh.authorizedKeys.keys = [
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKGUGMUo1dRl9xoDlMxQGb8dNSY+6xiEpbZWAu6FAbWw moe@notthebe.ee"
         ];
       };
     };
     groups = {
-      notthebee = {
+      bricklayer = {
         gid = 1000;
       };
     };
