@@ -41,6 +41,7 @@
       "raycast"
       "mattermost"
       "jitsi-meet"
+      "anki"
     ];
     taps = [
       "hashicorp/tap"
