@@ -14,6 +14,7 @@ let
     home-manager.users.notthebee.imports = [
       self.inputs.agenix.homeManagerModules.default
       self.inputs.nix-index-database.homeModules.nix-index
+      self.inputs.nixvim.homeModules.nixvim
       ../../users/notthebee/dots.nix
       ../../users/notthebee/age.nix
     ]

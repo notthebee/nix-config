@@ -18,7 +18,7 @@ let
       ../../users/notthebee/dots.nix
       ../../users/notthebee/age.nix
       ../../dots/tmux
-      ../../dots/kitty
+      ../../dots/ghostty
     ];
     home-manager.backupFileExtension = "bak";
     home-manager.useUserPackages = userPackages;

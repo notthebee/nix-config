@@ -102,6 +102,7 @@
     devenv
     nixfmt-rfc-style
     opentofu
+    thunderbird
   ];
 
   system.stateVersion = 4;
