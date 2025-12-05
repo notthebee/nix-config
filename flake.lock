@@ -249,6 +249,26 @@
         "type": "github"
       }
     },
+    "invoiceplane": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1764960373,
+        "narHash": "sha256-wCqknTb1g3isa7/PAHvPmPf+M4n+V8FL+TEM+4A0HyU=",
+        "owner": "notthebee",
+        "repo": "invoiceplane-nixos",
+        "rev": "429b7b76f924a26cf5730afb501f09a5600b26bf",
+        "type": "github"
+      },
+      "original": {
+        "owner": "notthebee",
+        "repo": "invoiceplane-nixos",
+        "type": "github"
+      }
+    },
     "ixx": {
       "inputs": {
         "flake-utils": [
@@ -499,6 +519,7 @@
         "flake-parts": "flake-parts",
         "home-manager": "home-manager_2",
         "home-manager-unstable": "home-manager-unstable",
+        "invoiceplane": "invoiceplane",
         "jovian": "jovian",
         "nix-darwin": "nix-darwin",
         "nix-index-database": "nix-index-database",

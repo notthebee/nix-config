@@ -60,7 +60,7 @@ in
       adminCredentialsFile = cfg.adminCredentialsFile;
       config = {
         BASE_URL = "https://${cfg.url}";
-        CREATE_ADMIN = "1";
+        CREATE_ADMIN = true;
         LISTEN_ADDR = "127.0.0.1:8067";
         OAUTH2_PROVIDER = "oidc";
         OAUTH2_CLIENT_ID = "miniflux";

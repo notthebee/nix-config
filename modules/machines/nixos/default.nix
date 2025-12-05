@@ -55,6 +55,7 @@ in
               self.inputs.agenix.nixosModules.default
               self.inputs.adios-bot.nixosModules.default
               self.inputs.autoaspm.nixosModules.default
+              self.inputs.invoiceplane.nixosModules.default
               self.inputs."home-manager${
                 lib.attrsets.attrByPath [ name ] "" nixpkgsMap
               }".nixosModules.home-manager
