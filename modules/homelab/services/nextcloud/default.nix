@@ -14,6 +14,10 @@ in
     enable = lib.mkEnableOption {
       description = "Enable ${service}";
     };
+    dataDir = lib.mkOption {
+      type = lib.types.str;
+      default = "${hl.mounts.fast}/Media/Nextcloud";
+    };
     configDir = lib.mkOption {
       type = lib.types.str;
       default = "/var/lib/${service}";
@@ -70,6 +74,9 @@ in
     };
   };
   config = lib.mkIf cfg.enable {
+    systemd.tmpfiles.rules = lib.lists.forEach [ "" ] (
+      x: "d ${cfg.dataDir}/${x} 0775 nextcloud ${hl.group} - -"
+    );
     services.nginx.virtualHosts."nix-nextcloud".listen = [
       {
         addr = "127.0.0.1";
@@ -85,6 +92,13 @@ in
       };
     };
 
+    fileSystems."${config.services.nextcloud.home}/data" = {
+      device = cfg.dataDir;
+      fsType = "none";
+      options = [
+        "bind"
+      ];
+    };
     services.nextcloud = {
       enable = true;
       hostName = "nix-nextcloud";
