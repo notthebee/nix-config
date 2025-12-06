@@ -84,7 +84,7 @@
     sqlite
     pwgen
     gnupg
-    inputs.agenix.packages."${system}".default
+    inputs.agenix.packages."${stdenv.hostPlatform.system}".default
     yt-dlp
     ffmpeg
     discord

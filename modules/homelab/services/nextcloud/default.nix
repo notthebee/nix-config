@@ -88,7 +88,7 @@ in
     services.nextcloud = {
       enable = true;
       hostName = "nix-nextcloud";
-      package = pkgs.nextcloud31;
+      package = pkgs.nextcloud32;
       database.createLocally = true;
       configureRedis = true;
       maxUploadSize = "16G";
@@ -106,9 +106,11 @@ in
 
       };
 
+      settings = {
+        overwriteprotocol = "https";
+        default_phone_region = "DE";
+      };
       config = {
-        overwriteProtocol = "https";
-        defaultPhoneRegion = "DE";
         dbtype = "pgsql";
         adminuser = cfg.admin.username;
         adminpassFile = cfg.admin.passwordFile;

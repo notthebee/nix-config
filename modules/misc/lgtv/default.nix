@@ -9,7 +9,7 @@ let
   cfg = config.services.lgtv;
 
   algaExec = "${lib.getExe pkgs.sudo} -u ${cfg.user} ${
-    lib.getExe inputs.alga.packages.${pkgs.system}.default
+    lib.getExe inputs.alga.packages.${pkgs.stdenv.hostPlatform.system}.default
   }";
 
   wolExec = "${lib.getExe pkgs.wol} --host ${cfg.ipAddress} ${cfg.macAddress}";
@@ -81,7 +81,7 @@ in
     environment.systemPackages = [
       pkgs.wol
       pkgs.sudo
-      inputs.alga.packages.${pkgs.system}.default
+      inputs.alga.packages.${pkgs.stdenv.hostPlatform.system}.default
       lgtv-on
       lgtv-off
     ];
@@ -98,7 +98,7 @@ in
         pkgs.gnused
         pkgs.wol
         pkgs.sudo
-        inputs.alga.packages.${pkgs.system}.default
+        inputs.alga.packages.${pkgs.stdenv.hostPlatform.system}.default
         pkgs.systemd
         lgtv-on
       ];

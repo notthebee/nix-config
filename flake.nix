@@ -76,7 +76,7 @@
   };
 
   outputs =
-    inputs@{ flake-parts, ... }:
+    inputs@{ ... }:
     inputs.flake-parts.lib.mkFlake { inherit inputs; } (
       { ... }:
       {
