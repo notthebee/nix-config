@@ -29,12 +29,21 @@ let
     DefaultLeaseTimeSec = 1800;
   };
   dhcpCfgDualStack = x: {
-    dhcpServerConfig = (dhcpCfgCommon x);
+    dhcpServerConfig = lib.mkMerge [
+      (dhcpCfgCommon x)
+      { IPv6OnlyPreferredSec = 300; }
+    ];
+    ipv6PREF64Prefixes = [
+      { Prefix = config.networking.jool.nat64.default.global.pool6; }
+    ];
     ipv6Prefixes = [ { Prefix = "${networks.${x}.cidr.v6}/64"; } ];
     ipv6SendRAConfig = {
       DNS = "${networks.${x}.cidr.v6}";
       EmitDNS = true;
       EmitDomains = false;
+    };
+    dhcpV4Config = {
+      IPv6OnlyMode = true;
     };
     networkConfig = lib.mkMerge [
       {
@@ -258,6 +267,10 @@ in
     };
   };
   networking = {
+    jool = {
+      nat64.default.global.pool6 = "64:ff9b::/96";
+      enable = true;
+    };
     hostName = "alison";
     domain = "${config.networking.hostName}.${config.homelab.baseDomain}";
     search = [ config.homelab.baseDomain ];

@@ -54,6 +54,8 @@ in
         prefetch = true;
         num-threads = 1;
         so-rcvbuf = "1m";
+        module-config = "\"dns64 validator iterator\"";
+        dns64-prefix = config.networking.jool.nat64.default.global.pool6;
         include = toString adblockLocalZones;
         qname-minimisation = true;
         access-control = [
