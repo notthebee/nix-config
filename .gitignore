@@ -6,3 +6,4 @@
 .direnv
 .env
 result
+.terraform

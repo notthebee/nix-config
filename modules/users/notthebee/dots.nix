@@ -20,7 +20,6 @@ in
 
   imports = [
     ../../dots/zsh/default.nix
-    ../../dots/nvim/default.nix
     ../../dots/neofetch/default.nix
     ./gitconfig.nix
   ];

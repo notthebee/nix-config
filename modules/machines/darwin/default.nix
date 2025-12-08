@@ -19,6 +19,7 @@ let
       ../../users/notthebee/age.nix
       ../../dots/tmux
       ../../dots/ghostty
+      ../../dots/nvim
     ];
     home-manager.backupFileExtension = "bak";
     home-manager.useUserPackages = userPackages;

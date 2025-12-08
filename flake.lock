@@ -533,11 +533,11 @@
     "secrets": {
       "flake": false,
       "locked": {
-        "lastModified": 1765019528,
-        "narHash": "sha256-pa0e9OpML29Q0mctbxH2o/78W4XnXk53tqAfV+SyQ6M=",
+        "lastModified": 1765230739,
+        "narHash": "sha256-U0/mbvbGk1Ij4zJFKUTKbvbUvO4IxMmQyIsH3Vgdhuo=",
         "ref": "refs/heads/main",
-        "rev": "b38906e2bdac39b57c45234953ce9decc59ba230",
-        "revCount": 90,
+        "rev": "1b29eb278fb246a5cd903af3c0c71c475b4c72a6",
+        "revCount": 91,
         "type": "git",
         "url": "ssh://git@github.com/notthebee/nix-private.git"
       },
