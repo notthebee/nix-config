@@ -69,7 +69,13 @@
         nixd.enable = true;
         phan.enable = true;
         systemd_ls.enable = true;
-        tofu_ls.enable = true;
+        terraformls = {
+          enable = true;
+          config = {
+            filetypes = [ "tf" ];
+          };
+        };
+        #tofu_ls.enable = true;
         ts_ls.enable = true;
         yamlls.enable = true;
       };
@@ -78,6 +84,23 @@
       neo-tree = {
         settings = {
           close_if_last_window = true;
+          default_component_configs = {
+            name.use_filtered_colors = false;
+            icon.use_filtered_colors = false;
+            git_status = {
+              symbols = {
+                added = "";
+                deleted = "";
+                modified = "";
+                renamed = "";
+                untracked = "";
+                ignored = "";
+                unstaged = "";
+                staged = "";
+                conflict = "";
+              };
+            };
+          };
           event_handlers = [
             {
               event = "file_open_requested";
@@ -347,6 +370,18 @@
       };
       NeoTreeDotfile = {
         link = "Comment";
+      };
+      NeoTreeModified = {
+        link = "NvimTreeGitDirty";
+      };
+      NeoTreeGitUntracked = {
+        link = "NvimTreeGitNew";
+      };
+      NeoTreeGitUnstaged = {
+        link = "NvimTreeGitDirty";
+      };
+      NeoTreeGitConflict = {
+        link = "NvimTreeGitDeleted";
       };
     };
     globals = {
