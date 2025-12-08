@@ -27,6 +27,7 @@
     };
     casks = [
       "notion"
+      "steam"
       "telegram"
       "libreoffice"
       "signal"
@@ -62,6 +63,8 @@
         pyopenssl
       ]
     ))
+    ansible
+    ansible-lint
     yq
     git-lfs
     pre-commit
