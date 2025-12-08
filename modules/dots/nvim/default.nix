@@ -1,11 +1,7 @@
 {
-  config,
   pkgs,
   ...
 }:
-let
-  coc = import ./coc.nix;
-in
 {
   home.packages = with pkgs; [
     figlet
@@ -20,17 +16,6 @@ in
     defaultEditor = true;
   };
 
-  xdg.configFile = {
-    "nvim/coc-settings.json" = {
-      source = pkgs.writeText "coc-settings.json" (
-        builtins.toJSON (coc {
-          homeDir = config.xdg.configHome;
-          pkgs = pkgs;
-        })
-      );
-    };
-  };
-
   programs.nixvim = {
     enable = true;
     colorschemes.nord = {
@@ -40,18 +25,207 @@ in
         contrast = true;
       };
     };
+    diagnostic.settings = {
+      update_in_insert = true;
+      severity_sort = true;
+      signs = true;
+      float = {
+        source = "always";
+        border = "rounded";
+      };
+      jump = {
+        severity.__raw = "vim.diagnostic.severity.WARN";
+      };
+    };
+    lsp = {
+      luaConfig.post = ''
+        local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
+        for type, icon in pairs(signs) do
+          local hl = "DiagnosticSign" .. type
+          vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
+        end
+      '';
+      inlayHints.enable = true;
+      servers = {
+        ansiblels = {
+          enable = true;
+          package = pkgs.callPackage ./ansible-language-server/package.nix { };
+          config = {
+            settings.ansible = {
+              useFullyQualifiedCollectionNames = true;
+            };
+          };
+        };
+        bashls.enable = true;
+        docker_language_server.enable = true;
+        emmet_language_server.enable = true;
+        eslint.enable = true;
+        helm_ls.enable = true;
+        jedi_language_server.enable = true;
+        just.enable = true;
+        jsonls.enable = true;
+        markdown_oxide.enable = true;
+        nginx_language_server.enable = true;
+        nixd.enable = true;
+        phan.enable = true;
+        systemd_ls.enable = true;
+        terraformls = {
+          enable = true;
+          config = {
+            filetypes = [ "tf" ];
+          };
+        };
+        #tofu_ls.enable = true;
+        ts_ls.enable = true;
+        yamlls.enable = true;
+      };
+    };
     plugins = {
-      notify.enable = true;
+      neo-tree = {
+        settings = {
+          close_if_last_window = true;
+          default_component_configs = {
+            name.use_filtered_colors = false;
+            icon.use_filtered_colors = false;
+            git_status = {
+              symbols = {
+                added = "";
+                deleted = "";
+                modified = "";
+                renamed = "";
+                untracked = "";
+                ignored = "";
+                unstaged = "";
+                staged = "";
+                conflict = "";
+              };
+            };
+          };
+          event_handlers = [
+            {
+              event = "file_open_requested";
+              handler = {
+                __raw = ''
+                  function()
+                    -- auto close
+                    -- vim.cmd("Neotree close")
+                    -- OR
+                    require("neo-tree.command").execute({ action = "close" })
+                  end
+                '';
+              };
+            }
+          ];
+          filesystem.filtered_items = {
+            visible = true;
+            children_inherit_highlights = true;
+          };
+          window = {
+            mappings = {
+              "sf" = "close_window";
+              "h" = "close_node";
+              "s" = false;
+              "f" = false;
+              "l" = {
+                __raw = ''
+                    function(state)
+                      local node = state.tree:get_node()
+                      local path = node:get_id()
+                      if node.type == 'directory' then
+                          if not node:is_expanded() then
+                              require('neo-tree.sources.filesystem').toggle_directory(state, node)
+                          elseif node:has_children() then
+                              require('neo-tree.ui.renderer').focus_node(state, node:get_child_ids()[1])
+                          end
+                      end
+                      if node.type == 'file' then
+                          require('neo-tree.utils').open_file(state, path)
+                      end
+                  end
+                '';
+              };
+            };
+          };
+        };
+        enable = true;
+      };
+      cmp-nvim-lsp.enable = true;
+      cmp-nvim-lsp-signature-help.enable = true;
+      cmp-path.enable = true;
+      cmp-buffer.enable = true;
+      cmp-git.enable = true;
+      luasnip.enable = true;
+      cmp-treesitter.enable = true;
+      lspkind.enable = true;
+      lspkind.cmp.enable = true;
+      lsp-format.enable = true;
+      cmp = {
+        enable = true;
+        settings = {
+          snippet = {
+            expand = ''
+              function(args)
+              require("luasnip").lsp_expand(args.body)
+              end
+            '';
+          };
+          autoEnableSources = true;
+          mapping = {
+            "<Tab>" = "cmp.mapping(cmp.mapping.select_next_item(), {'i', 's'})";
+            "<Down>" = "cmp.mapping.select_next_item()";
+            "<Up>" = "cmp.mapping.select_prev_item()";
+            "<C-E>" = "cmp.mapping.abort()";
+            "<C-B>" = "cmp.mapping.scroll_docs(-4)";
+            "<C-F>" = "cmp.mapping.scroll_docs(4)";
+            "<C-Space>" = "cmp.mapping.complete()";
+            "<CR>" = "cmp.mapping.confirm({ select = true })";
+          };
+          window = {
+            completion = {
+              border = "rounded";
+              winhighlight = "Normal:Normal,FloatBorder:Normal,CursorLine:Visual,Search:None";
+              zindex = 1001;
+              scrolloff = 0;
+              colOffset = 0;
+              sidePadding = 1;
+              scrollbar = true;
+            };
+          };
+          sources = [
+            { name = "path"; }
+            {
+              name = "nvim_lsp";
+            }
+            {
+              name = "buffer";
+            }
+            {
+              name = "luasnip";
+              option = {
+                show_autosnippets = true;
+              };
+            }
+          ];
+        };
+      };
+      lspconfig.enable = true;
       web-devicons = {
         enable = true;
       };
-      barbecue.enable = true;
       project-nvim = {
         enable = true;
       };
       telescope = {
+        keymaps = {
+          ";f" = "find_files";
+          ";b" = "file_browser";
+          ";;" = "buffers";
+          ";r" = "live_grep";
+          ";d" = "diagnostics";
+        };
         enable = true;
       };
+      # Starting screen
       alpha = {
         enable = true;
         theme = "startify";
@@ -59,13 +233,14 @@ in
       fugitive = {
         enable = true;
       };
+      # Trim whitespace and lines
       trim = {
         enable = true;
         settings = {
-          ft_blocklist = [ "coc-explorer" ];
           highlight = false;
         };
       };
+      # Status line
       lualine = {
         enable = true;
         settings = {
@@ -104,11 +279,7 @@ in
       };
     };
     extraPlugins = with pkgs.vimPlugins; [
-      llm-nvim
       ansible-vim
-      coc-nvim
-      coc-markdownlint
-      vim-suda
     ];
     opts = {
       number = true;
@@ -149,6 +320,12 @@ in
 
     autoCmd = [
       {
+        event = [ "CursorHold" ];
+        callback = {
+          __raw = "function() vim.diagnostic.open_float(nil, { focus = false }) end";
+        };
+      }
+      {
         event = [
           "BufRead"
           "BufNewFile"
@@ -187,75 +364,84 @@ in
         command = "set nocul";
       }
     ];
-    highlight = {
-      BufferCurrent = {
-        fg = "#eceff4";
-        bg = "#434c5e";
-        bold = true;
+    highlightOverride = {
+      NeoTreeDimText = {
+        link = "Comment";
       };
-      BufferCurrentMod = {
-        fg = "#ebcb8b";
-        bg = "#434c5e";
-        bold = true;
+      NeoTreeDotfile = {
+        link = "Comment";
       };
-      BufferCurrentSign = {
-        fg = "#4c566a";
-        bg = "#4c566a";
+      NeoTreeModified = {
+        link = "NvimTreeGitDirty";
       };
-      BufferCurrentTarget = {
-        bg = "#434c5e";
+      NeoTreeGitUntracked = {
+        link = "NvimTreeGitNew";
       };
-      BufferInactive = {
-        fg = "#4c566a";
-        bg = "none";
+      NeoTreeGitUnstaged = {
+        link = "NvimTreeGitDirty";
       };
-      BufferInactiveSign = {
-        fg = "#4c566a";
-        bg = "none";
-      };
-      BufferInactiveMod = {
-        fg = "#ebcb8b";
-        bg = "none";
-      };
-      BufferTabpageFill = {
-        fg = "#4c566a";
-        bg = "none";
+      NeoTreeGitConflict = {
+        link = "NvimTreeGitDeleted";
       };
     };
     globals = {
-      coc_filetype_map = {
-        "yaml.ansible" = "ansible";
-      };
-      coc_global_extensions = [
-        "coc-explorer"
-        "@yaegassy/coc-ansible"
-        "@yaegassy/coc-nginx"
-        "@yaegassy/coc-intelephense"
-        "@yaegassy/coc-phpstan"
-        "coc-nil"
-        "coc-pyright"
-      ];
       suda_smart_edit = 1;
       "suda#nopass" = 1;
     };
     extraConfigLua = ''
       vim.api.nvim_set_hl(0, "MatchParen", { bg="#4c566a", fg="#88c0d0" })
+      local _border = "rounded"
+
+      vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
+        vim.lsp.handlers.hover, {
+          border = _border
+        }
+      )
+
+      vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(
+        vim.lsp.handlers.signature_help, {
+          border = _border
+        }
+      )
+
+      vim.diagnostic.config{
+        float={border=_border}
+      };
+
+      require('lspconfig.ui.windows').default_options = {
+        border = _border
+      }
     '';
     extraConfigVim = ''
-      inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
       set undofile
       set clipboard+=unnamedplus
-      function CheckForExplorer()
-      if CocAction('runCommand', 'explorer.getNodeInfo', 'closest') isnot# v:null
-        CocCommand explorer --toggle
-          endif
-          endfunction
     '';
     keymaps = [
       {
         mode = "n";
+        key = "[d";
+        action = {
+          __raw = "function() vim.diagnostic.goto_prev({ float = true }) end";
+        };
+        options = {
+          silent = true;
+        };
+      }
+      {
+        mode = "n";
+        key = "]d";
+        action = {
+          __raw = "function() vim.diagnostic.goto_next({ float = true }) end";
+        };
+        options = {
+          silent = true;
+        };
+      }
+
+      {
+        mode = "n";
         key = "sf";
-        action = "<cmd>CocCommand explorer<cr>";
+        action = "<cmd>Neotree filesystem reveal left toggle<CR>";
         options = {
           silent = true;
         };
@@ -316,38 +502,6 @@ in
         options = {
           silent = true;
           remap = true;
-        };
-      }
-      {
-        mode = "n";
-        key = ";r";
-        action = ":call CheckForExplorer()<CR> <cmd>lua require('telescope.builtin').live_grep()<cr>";
-        options = {
-          silent = true;
-        };
-      }
-      {
-        mode = "n";
-        key = ";f";
-        action = ":call CheckForExplorer()<CR> <cmd>lua require('telescope.builtin').find_files()<cr>";
-        options = {
-          silent = true;
-        };
-      }
-      {
-        mode = "n";
-        key = ";b";
-        action = ":call CheckForExplorer()<CR> <cmd>lua require('telescope.builtin').file_browser()<cr>";
-        options = {
-          silent = true;
-        };
-      }
-      {
-        mode = "n";
-        key = ";;";
-        action = ":call CheckForExplorer()<CR> <cmd>Telescope buffers<cr>";
-        options = {
-          silent = true;
         };
       }
     ];
