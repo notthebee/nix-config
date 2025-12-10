@@ -91,6 +91,18 @@ in
       };
     };
     networks = {
+      "60-wg0" = {
+        matchConfig.Name = "wg0";
+        networkConfig = lib.mkMerge [
+          {
+            IPMasquerade = "both";
+            Address = [
+              "${wg0Net.cidr.v4}/24"
+              "${wg0Net.cidr.v6}1/64"
+            ];
+          }
+        ];
+      };
       "10-wan0" = {
         matchConfig.Driver = "virtio_net";
         networkConfig = {
