@@ -4,8 +4,8 @@
   ...
 }:
 let
-  wg = config.homelab.networks.external.spencer-wireguard;
-  wgBase = lib.strings.removeSuffix ".1" wg.gateway;
+  wg = config.homelab.networks.local.wireguard-ext;
+  wgBase = lib.strings.removeSuffix ".1" wg.cidr.v4;
   hl = config.homelab;
 in
 {
@@ -183,7 +183,7 @@ in
         enable = true;
         configFile = config.age.secrets.wireguardCredentials.path;
         privateIP = "${wgBase}.2";
-        dnsIP = wg.gateway;
+        dnsIP = wg.cidr.v4;
       };
     };
   };

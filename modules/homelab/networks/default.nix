@@ -8,21 +8,39 @@ in
       default = { };
       example = lib.literalExpression ''
         hostname = {
-          address = "192.168.2.2";
-          gateway = "192.168.2.1";
+          v4 = {
+            address = "192.168.2.2/24";
+            gateway = "192.168.2.1";
+          };
+          v6 = {
+            address = "fd80:dead:beef::1";
+            gateway = "fd80:dead::1";
+          };
           interface = "enp1s0";
         };
       '';
       type = lib.types.attrsOf (
         lib.types.submodule {
           options = {
-            address = lib.mkOption {
-              example = "192.168.2.2";
-              type = lib.types.str;
+            v4 = {
+              address = lib.mkOption {
+                example = "192.168.2.2/24";
+                type = lib.types.str;
+              };
+              gateway = lib.mkOption {
+                example = "192.168.2.1";
+                type = lib.types.str;
+              };
             };
-            gateway = lib.mkOption {
-              example = "192.168.2.1";
-              type = lib.types.str;
+            v6 = {
+              address = lib.mkOption {
+                example = "fd80:dead:beef::1/48";
+                type = lib.types.str;
+              };
+              gateway = lib.mkOption {
+                example = "fd80:dead::1";
+                type = lib.types.str;
+              };
             };
             interface = lib.mkOption {
               example = "enp4s0";
