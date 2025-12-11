@@ -235,11 +235,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1765170903,
-        "narHash": "sha256-O8VTGey1xxiRW+Fpb+Ps9zU7ShmxUA1a7cMTcENCVNg=",
+        "lastModified": 1765384171,
+        "narHash": "sha256-FuFtkJrW1Z7u+3lhzPRau69E0CNjADku1mLQQflUORo=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "20561be440a11ec57a89715480717baf19fe6343",
+        "rev": "44777152652bc9eacf8876976fa72cc77ca8b9d8",
         "type": "github"
       },
       "original": {
@@ -305,11 +305,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1765270480,
-        "narHash": "sha256-RUknLx2grxAphg1h9e4CiEAsZli2FV3U4zkFKGh0n7A=",
+        "lastModified": 1765365489,
+        "narHash": "sha256-L0uvs+o8P5JzEcTPe2WPA48+0ZiO6+8nlfh7XSjQql4=",
         "owner": "Jovian-Experiments",
         "repo": "Jovian-NixOS",
-        "rev": "491926ed7cc85a2b9a6a85ee8d3c9e932c49d14d",
+        "rev": "ddf5db234397043a8af5c38433b5ae933d660f27",
         "type": "github"
       },
       "original": {
@@ -383,11 +383,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1764983851,
-        "narHash": "sha256-y7RPKl/jJ/KAP/VKLMghMgXTlvNIJMHKskl8/Uuar7o=",
+        "lastModified": 1765311797,
+        "narHash": "sha256-mSD5Ob7a+T2RNjvPvOA1dkJHGVrNVl8ZOrAwBjKBDQo=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "d9bc5c7dceb30d8d6fafa10aeb6aa8a48c218454",
+        "rev": "09eb77e94fa25202af8f3e81ddc7353d9970ac1b",
         "type": "github"
       },
       "original": {
@@ -533,11 +533,11 @@
     "secrets": {
       "flake": false,
       "locked": {
-        "lastModified": 1765308956,
-        "narHash": "sha256-CY1+IaWunYve4IZh9iZ/SnIO0oJ2debGTwyrJrHHGpU=",
+        "lastModified": 1765393597,
+        "narHash": "sha256-OD2VW6rPYVXzvizDNwvDYFpcMQjcnmrlcn3kdNkT3qg=",
         "ref": "refs/heads/main",
-        "rev": "a1937c851dcb00c54673c9458ff75167e8b968e8",
-        "revCount": 92,
+        "rev": "d605ac2135f1d0680f888927294654edc5f27fda",
+        "revCount": 101,
         "type": "git",
         "url": "ssh://git@github.com/notthebee/nix-private.git"
       },
