@@ -6,7 +6,9 @@
 let
   networks = config.homelab.networks.local;
   internalInterfaces = lib.attrsets.mapAttrsToList (_: val: val.interface) networks;
-  dhcpLeases = x: lib.attrsets.mapAttrsToList (_: value: value) networks.${x}.reservations;
+  dhcpLeases =
+    x:
+    lib.attrsets.mapAttrsToList (_: value: value) networks.${x}.reservations;
   dnsCfg = x: {
     DNS = (
       lib.lists.remove null [
@@ -31,7 +33,6 @@ let
   dhcpCfgDualStack = x: {
     dhcpServerConfig = lib.mkMerge [
       (dhcpCfgCommon x)
-      { IPv6OnlyPreferredSec = 300; }
     ];
     ipv6PREF64Prefixes = [
       { Prefix = config.networking.jool.nat64.default.global.pool6; }
@@ -41,9 +42,6 @@ let
       DNS = "${networks.${x}.cidr.v6}";
       EmitDNS = true;
       EmitDomains = false;
-    };
-    dhcpV4Config = {
-      IPv6OnlyMode = true;
     };
     networkConfig = lib.mkMerge [
       {

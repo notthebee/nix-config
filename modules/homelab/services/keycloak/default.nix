@@ -54,6 +54,7 @@ in
     services.cloudflared = {
       enable = true;
       tunnels.${cfg.cloudflared.tunnelId} = {
+        edgeIPVersion = "auto";
         credentialsFile = cfg.cloudflared.credentialsFile;
         default = "http_status:404";
         ingress."${cfg.url}".service = "http://127.0.0.1:${

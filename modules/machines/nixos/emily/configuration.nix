@@ -7,8 +7,7 @@
 let
   hl = config.homelab;
   lan = hl.networks.local.lan;
-  emilyIpAddress = lan.reservations.emily.Address;
-  gatewayIpAddress = lan.cidr.v4;
+  emilyIPAddress = lan.reservations.emily.Address;
   hardDrives = [
     "/dev/disk/by-label/Data1"
     "/dev/disk/by-label/Data2"
@@ -57,36 +56,52 @@ in
     ];
   };
 
-  networking =
-    let
-      mainIface = "lan1";
-    in
-    {
-      useDHCP = true;
-      networkmanager.enable = false;
-      hostName = "emily";
-      interfaces.${mainIface} = {
-        ipv4.addresses = [
-          {
-            address = emilyIpAddress;
-            prefixLength = 24;
-          }
-        ];
-      };
-      defaultGateway = {
-        address = gatewayIpAddress;
-        interface = mainIface;
-      };
-      hostId = "0730ae51";
-      firewall = {
-        enable = true;
-        allowPing = true;
-        trustedInterfaces = [
-          mainIface
-          "tailscale0"
-        ];
+  systemd.network = {
+    enable = true;
+    networks = {
+      "10-lan1" = {
+        matchConfig.Name = "lan1";
+        networkConfig = {
+          DHCP = true;
+          Address = emilyIPAddress;
+          IPv6AcceptRA = true;
+          LinkLocalAddressing = "ipv6";
+        };
+        dhcpV4Config = {
+          UseHostname = false;
+          UseDNS = true;
+          UseNTP = true;
+          UseSIP = false;
+          ClientIdentifier = "mac";
+        };
+        ipv6AcceptRAConfig = {
+          UseDNS = true;
+          DHCPv6Client = true;
+        };
+        dhcpV6Config = {
+          WithoutRA = "solicit";
+          UseDelegatedPrefix = true;
+          UseHostname = false;
+          UseDNS = true;
+          UseNTP = false;
+        };
+        linkConfig.RequiredForOnline = "routable";
       };
     };
+  };
+  networking = {
+    useDHCP = false;
+    hostName = "emily";
+    hostId = "0730ae51";
+    firewall = {
+      enable = true;
+      allowPing = true;
+      trustedInterfaces = [
+        "lan1"
+        "tailscale0"
+      ];
+    };
+  };
   zfs-root = {
     boot = {
       partitionScheme = {

@@ -72,6 +72,7 @@ in
         enable = true;
         tunnels.${cfg.cloudflared.tunnelId} = {
           credentialsFile = cfg.cloudflared.credentialsFile;
+          edgeIPVersion = "auto";
           default = "http_status:404";
           ingress."${cfg.url}".service = "http://${config.services.${service}.config.ROCKET_ADDRESS}:${
             toString config.services.${service}.config.ROCKET_PORT
