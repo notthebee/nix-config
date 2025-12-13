@@ -54,11 +54,11 @@
         "uv2nix": "uv2nix"
       },
       "locked": {
-        "lastModified": 1765206511,
-        "narHash": "sha256-M9+lMtnY3UyqAEz4dOk810ZXdQZ/+P+jWALVqqO+ab4=",
+        "lastModified": 1765579030,
+        "narHash": "sha256-wY91i1B2GNN6pFnquCJ/4OFmNdhKn9WIF7KrJlHcErM=",
         "owner": "Tenzer",
         "repo": "alga",
-        "rev": "b0acb687f54c55b28f977fc77834db1610b547d1",
+        "rev": "9bb286af9b5a91594e079516f327e8ffe50432e2",
         "type": "github"
       },
       "original": {
@@ -305,11 +305,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1765365489,
-        "narHash": "sha256-L0uvs+o8P5JzEcTPe2WPA48+0ZiO6+8nlfh7XSjQql4=",
+        "lastModified": 1765526639,
+        "narHash": "sha256-4U8crbUT3PDQdqhaMLnVaxnciBlcnDAw8XAJaXiS0pA=",
         "owner": "Jovian-Experiments",
         "repo": "Jovian-NixOS",
-        "rev": "ddf5db234397043a8af5c38433b5ae933d660f27",
+        "rev": "457a55ed77a105088a47cb55b9eccf7768559451",
         "type": "github"
       },
       "original": {
@@ -533,11 +533,11 @@
     "secrets": {
       "flake": false,
       "locked": {
-        "lastModified": 1765490444,
-        "narHash": "sha256-+qsolTRCt5GhxeD1GhSlEYijnR08BdZOB4qzMFMurjw=",
+        "lastModified": 1765523883,
+        "narHash": "sha256-Q6+YwvMF3k5DAKPiyjcgR+KrbQC8FZrIqDeGEcAVUn8=",
         "ref": "refs/heads/main",
-        "rev": "0334708e1b8af12f41732d6a378ed15dab6589e8",
-        "revCount": 103,
+        "rev": "9f151e45c4f49784a7db3f420c35f95796702c03",
+        "revCount": 105,
         "type": "git",
         "url": "ssh://git@github.com/notthebee/nix-private.git"
       },
