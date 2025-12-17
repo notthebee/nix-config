@@ -5,6 +5,11 @@
     cloudflare.dnsCredentialsFile = config.age.secrets.cloudflareDnsApiCredentialsNotthebee.path;
     services = {
       enable = true;
+      forgejo-runner = {
+        enable = true;
+        forgejoUrl = config.homelab.services.forgejo.url;
+        tokenFile = config.age.secrets.forgejoRunnerTokenSpencer.path;
+      };
       forgejo.enable = true;
       matrix = {
         registrationSecretFile = config.age.secrets.matrixRegistrationSecret.path;

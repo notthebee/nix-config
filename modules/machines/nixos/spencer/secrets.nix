@@ -15,6 +15,11 @@
       group = "plausible";
       file = "${inputs.secrets}/plausibleSecretKeybaseFile.age";
     };
+    forgejoRunnerTokenSpencer = {
+      owner = "gitea-runner";
+      group = "gitea-runner";
+      file = "${inputs.secrets}/forgejoRunnerTokenSpencer.age";
+    };
     smtpPassword = {
       owner = "notthebee";
       group = lib.mkForce "forgejo";

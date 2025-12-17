@@ -79,6 +79,7 @@
     ./deluge
     #./deemix
     ./forgejo
+    ./forgejo-runner
     ./homepage
     ./immich
     ./invoiceplane
