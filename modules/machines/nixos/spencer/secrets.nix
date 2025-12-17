@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ inputs, lib, ... }:
 {
   age.secrets = {
     wireguardPrivateKeySpencer = {
@@ -14,6 +14,11 @@
       owner = "plausible";
       group = "plausible";
       file = "${inputs.secrets}/plausibleSecretKeybaseFile.age";
+    };
+    smtpPassword = {
+      owner = "notthebee";
+      group = lib.mkForce "forgejo";
+      mode = "0440";
     };
     cloudflareDnsApiCredentialsNotthebee.file = "${inputs.secrets}/cloudflareDnsApiCredentialsNotthebee.age";
   };

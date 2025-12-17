@@ -78,6 +78,7 @@
     ./audiobookshelf
     ./deluge
     #./deemix
+    ./forgejo
     ./homepage
     ./immich
     ./invoiceplane

@@ -145,6 +145,8 @@ in
       allowedUDPPorts = [ 51820 ];
     };
   };
-  services.openssh.openFirewall = true;
+  services.openssh = {
+    openFirewall = true;
+  };
 
 }

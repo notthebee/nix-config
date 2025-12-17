@@ -5,6 +5,7 @@
     cloudflare.dnsCredentialsFile = config.age.secrets.cloudflareDnsApiCredentialsNotthebee.path;
     services = {
       enable = true;
+      forgejo.enable = true;
       matrix = {
         registrationSecretFile = config.age.secrets.matrixRegistrationSecret.path;
         enable = true;
