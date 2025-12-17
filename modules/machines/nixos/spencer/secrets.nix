@@ -15,5 +15,6 @@
       group = "plausible";
       file = "${inputs.secrets}/plausibleSecretKeybaseFile.age";
     };
+    cloudflareDnsApiCredentialsNotthebee.file = "${inputs.secrets}/cloudflareDnsApiCredentialsNotthebee.age";
   };
 }

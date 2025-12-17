@@ -43,9 +43,8 @@ in
   imports = [
     ../../../misc/notthebe.ee
     ../../../misc/agenix
-    ./matrix.nix
     ./secrets.nix
-    ./plausible.nix
+    ./homelab.nix
     (modulesPath + "/profiles/qemu-guest.nix")
   ];
 

@@ -83,6 +83,8 @@
     ./invoiceplane
     ./jellyfin
     ./keycloak
+    ./matrix
+    ./plausible
     ./microbin
     ./miniflux
     ./monitoring/grafana
