@@ -68,7 +68,10 @@ in
         "network-online.target"
         "${ns}.service"
       ];
-      services.deluged.serviceConfig.NetworkNamespacePath = [ "/var/run/netns/${ns}" ];
+      services.deluged.serviceConfig = {
+        NetworkNamespacePath = [ "/var/run/netns/${ns}" ];
+        BindReadOnlyPaths = "/etc/netns/${ns}/resolv.conf:/etc/resolv.conf";
+      };
       sockets."deluged-proxy" = {
         enable = true;
         description = "Socket for Proxy to Deluge WebUI";
